@@ -1,11 +1,11 @@
 import React from "react"
 import clsx from "clsx"
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
 import PageLayout from "@theme/PageLayout"
 import Button from "@theme/Button"
 import seCss from "../css/section.module.css"
 import paCss from "../css/community/page.module.css"
 import MailchimpSubscribe from "react-mailchimp-subscribe"
+import customFields from "../config/customFields"
 
 type FormProps = {
   status: string
@@ -77,7 +77,6 @@ const contribution: Contribute[] = [
 ]
 
 const Community = () => {
-  const { siteConfig } = useDocusaurusContext()
   const newsletterUrl =
     "https://questdb.us7.list-manage.com/subscribe/post?u=f692ae4038a31e8ae997a0f29&amp;id=bdd4ec2744"
   const title = "QuestDB developer community"
@@ -137,17 +136,11 @@ const Community = () => {
                 className={`${paCss.default_text} ${paCss.join_slack_description}`}
               >
                 Join our growing community on &nbsp;
-                <a
-                  className={paCss.link_item}
-                  href={siteConfig.customFields.slackUrl}
-                >
+                <a className={paCss.link_item} href={customFields.slackUrl}>
                   QuestDB’s Slack
                 </a>
               </p>
-              <a
-                className={paCss.link_item}
-                href={siteConfig.customFields.slackUrl}
-              >
+              <a className={paCss.link_item} href={customFields.slackUrl}>
                 <img
                   src="/img/pages/community/slack-logo.svg"
                   alt="slack logo"
@@ -191,21 +184,24 @@ const Community = () => {
                 To claim your swag for the this level:
               </p>
               <p className={paCss.property}>
-                You have joined our{" "}
-                <a
-                  className={paCss.link_item}
-                  href={siteConfig.customFields.slackUrl}
-                >
-                  Community Slack
+                You have{" "}
+                <a className={paCss.link_item} href={customFields.githubUrl}>
+                  starred our GitHub repository
                 </a>
               </p>
               <p className={paCss.property}>
                 You have{" "}
                 <a
                   className={paCss.link_item}
-                  href={siteConfig.customFields.githubUrl}
+                  href={customFields.stackoverflowUrl}
                 >
-                  starred our repository on GitHub
+                  watched our Stack Overflow tag
+                </a>
+              </p>
+              <p className={paCss.property}>
+                You have{" "}
+                <a className={paCss.link_item} href={customFields.slackUrl}>
+                  joined our Community Slack
                 </a>
               </p>
               <div className={paCss.custom_box}>
@@ -213,7 +209,7 @@ const Community = () => {
                   What you get:
                 </p>
                 <p className={paCss.second_text}>
-                  Stickers, pins, bottles and virtual swag{" "}
+                  QuestDB stickers, soft touch pen{" "}
                   <span className={paCss.pink__color}>(new!)</span>
                 </p>
               </div>
@@ -233,18 +229,18 @@ const Community = () => {
               You have asked or answered a question on Stack Overflow{" "}
               <a
                 className={paCss.link_item}
-                href={siteConfig.customFields.stackoverflowUrl}
+                href={customFields.stackoverflowUrl}
               >
                 with the QuestDB tag
               </a>
             </p>
             <p className={paCss.property}>
-              You have voted, commented on, or opened a{" "}
+              You have opened a valid{" "}
               <a
                 className={paCss.link_item}
-                href="https://github.com/questdb/questdb/issues"
+                href="https://github.com/questdb/questdb"
               >
-                GitHub issue
+                GitHub issue or Pull Request
               </a>
             </p>
             <div className={paCss.contribution}>
@@ -295,7 +291,9 @@ const Community = () => {
               <p className={`${paCss.default_text} ${paCss.mb5}`}>
                 What you get:
               </p>
-              <p className={paCss.second_text}>High-quality QuestDB t-shirt</p>
+              <p className={paCss.second_text}>
+                Stickers, high-quality QuestDB T-shirt
+              </p>
             </div>
           </div>
         </div>
@@ -325,28 +323,16 @@ const Community = () => {
                 How can you claim swag?
               </p>
               <p className={`${paCss.default_text} ${paCss.mb5}`}>
-                Send an email to{" "}
-                <a className={paCss.link_item} href="mailto: swag@questdb.io">
-                  swag@questdb.io
+                Fill out the{" "}
+                <a
+                  className={paCss.link_item}
+                  href="https://forms.gle/X6ze4mJqaUC6odaEA"
+                >
+                  swag request form
                 </a>{" "}
-                with the following information:
+                with required information. And our team will validate your
+                request!
               </p>
-              <p className={paCss.list__description}>
-                Subject: Level (1/2/3) Swag!
-              </p>
-              <p className={paCss.list__description}>
-                Your message must contain:
-              </p>
-              <div className={paCss.message__contents}>
-                <p className={paCss.message__content}>First name & last name</p>
-                <p className={paCss.message__content}>A shipping address</p>
-                <p className={paCss.message__content}>
-                  Shirt size (if applicable)
-                </p>
-                <p className={paCss.message__content}>
-                  Claim details e.g. (GitHub username, relevant URLs)
-                </p>
-              </div>
             </div>
           </div>
           <div className={`${paCss.half__section} ${paCss.section_center}`}>
