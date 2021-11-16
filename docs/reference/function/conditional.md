@@ -59,7 +59,7 @@ or otherwise returns `value1`.
 
 This function is an implementation of the `NULLIF` expression in PostgreSQL and
 as such, should follow the expected behavior described in the
-[nullif PostgreSQL documentation](https://www.postgresql.org/docs/current/functions-conditional.html#FUNCTIONS-COALESCE-NVL-IFNULL)
+[nullif PostgreSQL documentation](https://www.postgresql.org/docs/current/functions-conditional.html#FUNCTIONS-COALESCE-NVL-IFNULL).
 
 **Arguments:**
 
