@@ -114,7 +114,7 @@ We have client libraries for a growing number of languages:
 ### Examples
 
 These examples send a few rows of input. These use client libraries for C++, C#,
-Golang, Java and C, and raw TCP socket connections for NodeJS and Python.
+Golang, Java, and C, as well as raw TCP socket connections for NodeJS and Python.
 
 <Tabs defaultValue="cpp" values={[
   { label: "C++", value: "cpp" },
