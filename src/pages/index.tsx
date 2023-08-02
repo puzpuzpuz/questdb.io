@@ -3,6 +3,7 @@ import React from "react"
 import Customers from "../components/Customers"
 import customFields from "../config/customFields"
 import { QueryScroller } from "../components/QueryScroller"
+import { Link } from "react-router-dom";
 
 import Layout from "../theme/Layout"
 import { Header } from "../modules/index-header"
@@ -30,39 +31,58 @@ const Cards = () => (
       >
         {[
           {
-            header: "DevOps, monitoring and observability",
-            content:
-              "Collect CPU, memory and storage metrics from your infrastructure and get real-time visibility into your entire stack.",
-          },
-
-          {
             header: "Financial market data",
-            content:
-              "Store market tick data to identify historical trends, find correlations and analyze trades in real-time. Build aggregated views across multiple venues and efficiently compute live order books.",
-          },
-
-          {
-            header: "Network traffic analysis",
-            content:
-              "Collects Flow or other network traffic metadata to run analytics and detect anomalies in real-time.",
-          },
-
-          {
-            header: "Connected devices",
-            content:
-              "Capture, store and respond to sensor data and telemetry at any resolution in industrial or machine-to-machine applications.",
+            content: (
+              <>
+                Store years of market tick data to identify historical trends,
+                and correlate it with orders and executed trades via{" "}
+                <Link to="/docs/reference/sql/join/#asof-join">ASOF joins</Link>.
+                Monitor market activity in real-time, compute time-series charts
+                and price candles on the fly. Open source kdb+ alternative.
+              </>
+            ),
           },
 
           {
             header: "Application metrics",
             content:
-              "Empower application developers and UX teams to track and visualize user behavior data, API calls, data latency, and other application events in real-time.",
+              "Track and visualize user behavior data, API calls, data latency, and other application events and analytics in real-time.",
+          },
+
+          {
+            header: "Connected devices, IoT",
+            content: (
+              <>
+                Capture, store and respond to sensor data and telemetry at any
+                resolution in industrial applications—process{" "}
+                <Link to="/glossary/high-cardinality">high cardinality data</Link>{" "}
+                without hiccups.
+              </>
+            ),
+          },
+
+          {
+            header: "Network traffic analysis",
+            content:
+              "Ingest Flow or other network traffic metadata leveraging QuestDB's native IPv4 type. Detect anomalies in real-time from blasts of networking data.",
           },
 
           {
             header: "Machine learning with time-series data",
+            content: (
+              <>
+                Load{" "}
+                <Link to="/docs/third-party-tools/pandas/">Pandas DataFrames</Link>{" "}
+                into QuestDB to the tune of millions of rows per second. Download
+                data from QuestDB to train machine learning models.
+              </>
+            ),
+          },
+
+          {
+            header: "AdTech",
             content:
-              "Use QuestDB with popular Python frameworks and tools for leveraging anomaly detection algorithms, machine learning libraries, statistical analysis with Pandas, or Jupyter notebooks.",
+              "Monitor user activity by storing and analyzing Ad impressions, clicks, scrolls, and conversions in AdTech platforms.",
           },
         ].map(({ header, content }, index) => (
           <div key={index} className={feCss.feature}>
