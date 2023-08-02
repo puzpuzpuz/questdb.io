@@ -151,6 +151,7 @@ module.exports = {
         "third-party-tools/prometheus",
         "third-party-tools/redpanda",
         "third-party-tools/telegraf",
+        "third-party-tools/qstudio",
       ],
     },
     {
