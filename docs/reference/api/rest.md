@@ -329,18 +329,6 @@ Here is an example with column-level errors due to unsuccessful casts:
 }
 ```
 
-#### Out-of-order import
-
-The following example imports a file which contains out-of-order records. The
-`timestamp` and `partitionBy` parameters **must be provided** for commit lag and
-max uncommitted rows to have any effect. For more information on these
-parameters, see [the commit lag guide](/docs/guides/out-of-order-commit-lag/).
-
-```shell
-curl -F data=@weather.csv \
-'http://localhost:9000/imp?&timestamp=ts&partitionBy=DAY&commitLag=120000000&maxUncommittedRows=10000'
-```
-
 ## /exec - Execute queries
 
 `/exec` compiles and executes the SQL query supplied as a parameter and returns

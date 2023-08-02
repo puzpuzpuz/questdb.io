@@ -315,29 +315,6 @@ Additional notes about defining the alias and volume root paths:
 - Volume root paths must be valid and exist at bootstrap time and at the time when the table is created.
 - Aliases and/or volume root paths can be single quoted, it is not required.
 
-## QuestDB 6.5.5 and earlier versions
-
-![Flow chart showing the syntax of keyword to specify WITH table commit parameters](/img/docs/diagrams/createTableWithCommitParam.svg)
-
-From [QuestDB 6.6](https://github.com/questdb/questdb/releases/tag/6.6) onwards,
-the database adjusts relevant settings automatically and provides optimal
-ingestion speed.
-
-- `commitLag` - equivalent to `cairo.commit.lag` expects a value with a modifier
-  to specify the unit of time for the value:
-
-  | unit | description  |
-  | ---- | ------------ |
-  | us   | microseconds |
-  | s    | seconds      |
-  | m    | minutes      |
-  | h    | hours        |
-  | d    | days         |
-
-For more information on commit lag and the maximum uncommitted rows, see the
-guide for [out-of-order commits](/docs/guides/out-of-order-commit-lag/) and
-[ILP commit strategy](/docs/reference/api/ilp/tcp-receiver#commit-strategy/).
-
 ## CREATE TABLE LIKE
 
 The `LIKE` keyword clones the table schema of an existing table without copying

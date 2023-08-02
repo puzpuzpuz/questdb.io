@@ -123,19 +123,6 @@ For more details on using these functions and reference documentation for the
 types of units that can be passed, see the
 [date and time functions documentation](/docs/reference/function/date-time#timestamp_ceil).
 
-### Out-of-order parameters via REST API
-
-It's now possible to pass parameters relating to out-of-order ingestion via REST
-API. The `/imp` endpoint accepts the `commitLag` and `maxUncommittedRows` query
-parameters on partitioned tables. For more information on the meaning and usage
-of these parameters, see the
-[out-of-order ingestion](/docs/guides/out-of-order-commit-lag) documentation.
-
-```bash title="Out-of-order params via REST API"
-curl -F data=@weather.csv \
-'http://localhost:9000/imp?timestamp=ts&partitionBy=DAY&commitLag=120000000&maxUncommittedRows=10000'
-```
-
 ## Run QuestDB 6.0.5
 
 The release notes including a changelog is

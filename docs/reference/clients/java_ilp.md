@@ -111,13 +111,9 @@ assign a specific timestamp, use `at(long)` instead of `atNow()`.
 QuestDB works best when rows are ingested in chronological order. This means
 rows with older timestamps are ingested before rows with newer timestamps.
 
-Receiving out-of-order data can have a performance impact:
+For QuestDB 6.6 and later versions, the out-of-order data ingestion has been optimized and automated.
 
-- For QuestDB 6.6 and later versions, the out-of-order data ingestion has been
-  optimized and automated.
 
-- For QuestDB 6.5.5 and earlier versions, users need to configure
-  [Out-of-order commit lag](/docs/guides/out-of-order-commit-lag/) setting.
 
 :::
 

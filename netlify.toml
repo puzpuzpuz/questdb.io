@@ -194,8 +194,8 @@
   to = "/docs/reference/web-console/"
 
 [[redirects]]
-  from = "/docs/guides/hysteresis"
-  to = "/docs/guides/out-of-order-commit-lag/"
+  from = "/docs/guides/out-of-order-commit-lag/"
+  to = "/blog/2022/11/25/questdb-6.6.1-dynamic-commits/#questdbs-data-structure-and-out-of-order-data-ingestion"
 
 [[redirects]]
   from = "/tutorial/2021/09/05/telegraf-and-questdb-for-storing-metrics-in-a-timeseries-database"

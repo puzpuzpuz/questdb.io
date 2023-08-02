@@ -369,11 +369,6 @@ follow these guidelines:
 
 - **Don't change column type between rows.**
 
-- **Supply timestamps in order.** These need to be at least equal to previous
-  ones in the same table, unless using the out of order feature. This is not
-  necessary if you use the [out-of-order](/docs/guides/out-of-order-commit-lag/)
-  feature.
-
 ### Error handling
 
 QuestDB will always log any ILP errors in its
