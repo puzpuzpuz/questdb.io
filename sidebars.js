@@ -161,6 +161,7 @@ module.exports = {
         "concept/write-ahead-log",
         "concept/storage-model",
         "concept/designated-timestamp",
+        "concept/deduplication",
         "concept/sql-extensions",
         "concept/jit-compiler",
         "concept/partitions",
@@ -251,6 +252,8 @@ module.exports = {
                 "reference/sql/alter-table-set-param",
                 "reference/sql/alter-table-set-type",
                 "reference/sql/alter-table-squash-partitions",
+                "reference/sql/alter-table-enable-deduplication",
+                "reference/sql/alter-table-disable-deduplication",                
               ],
             },
             {

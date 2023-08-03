@@ -254,3 +254,9 @@ Explain
 
 analyticFunction
 ::= functionName 'OVER' '(' ( 'PARTITION' 'BY' ( columnName? (',' columnName?)* ))?  ('ORDER' 'BY' ( columnName (ASC | DESC) ? (',' columnName (ASC | DESC) ?)* ))? ')'
+
+disableDedup
+ ::= 'ALTER' 'TABLE' tableName 'DEDUP' 'DISABLE'
+
+enableDedup
+ ::= 'ALTER' 'TABLE' tableName 'DEDUP' 'ENABLE' 'UPSERT' 'KEYS' '(' (column ( ',' column )* ) ')'

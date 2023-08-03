@@ -30,21 +30,21 @@ Returns a `table`.
 tables();
 ```
 
-| id  | name        | designatedTimestamp | partitionBy | maxUncommittedRows | o3MaxLag   | walEnabled | directoryName    |
-| --- | ----------- | ------------------- | ----------- | ------------------ | ---------- | ---------- | ---------------- |
-| 1   | my_table    | ts                  | DAY         | 500000             | 30000000 0 | false      | my_table         |
-| 2   | device_data | null                | NONE        | 10000              | 30000000   | false      | device_data      |
-| 3   | short_lived | null                | HOUR        | 10000              | 30000000   | false      | short_lived (->) |
+| id  | name        | designatedTimestamp | partitionBy | maxUncommittedRows | o3MaxLag   | walEnabled | directoryName    | dedup |
+| --- | ----------- | ------------------- | ----------- | ------------------ | ---------- | ---------- | ---------------- | ----- |
+| 1   | my_table    | ts                  | DAY         | 500000             | 30000000 0 | false      | my_table         | false |
+| 2   | device_data | null                | NONE        | 10000              | 30000000   | false      | device_data      | false |
+| 3   | short_lived | null                | HOUR        | 10000              | 30000000   | false      | short_lived (->) | false |
 
 ```questdb-sql title="All tables in reverse alphabetical order"
 tables() ORDER BY name DESC;
 ```
 
-| id  | name        | designatedTimestamp | partitionBy | maxUncommittedRows | o3MaxLag  | walEnabled | directoryName    |
-| --- | ----------- | ------------------- | ----------- | ------------------ | --------- | ---------- | ---------------- |
-| 2   | device_data | null                | NONE        | 10000              | 30000000  | false      | device_data      |
-| 1   | my_table    | ts                  | DAY         | 500000             | 300000000 | false      | my_table         |
-| 3   | short_lived | ts                  | HOUR        | 10000              | 30000000  | false      | short_lived (->) |
+| id  | name        | designatedTimestamp | partitionBy | maxUncommittedRows | o3MaxLag  | walEnabled | directoryName    | dedup |
+| --- | ----------- | ------------------- | ----------- | ------------------ | --------- | ---------- | ---------------- | ----- |
+| 2   | device_data | null                | NONE        | 10000              | 30000000  | false      | device_data      | false |
+| 1   | my_table    | ts                  | DAY         | 500000             | 300000000 | false      | my_table         | false |
+| 3   | short_lived | ts                  | HOUR        | 10000              | 30000000  | false      | short_lived (->) | false |
 
 :::note
 
@@ -57,9 +57,9 @@ tables() ORDER BY name DESC;
 tables() WHERE partitionBy = 'DAY'
 ```
 
-| id  | name     | designatedTimestamp | partitionBy | maxUncommittedRows | walEnabled | directoryName |
-| --- | -------- | ------------------- | ----------- | ------------------ | ---------- | ------------- |
-| 1   | my_table | ts                  | DAY         | 500000             | true       | my_table      |
+| id  | name     | designatedTimestamp | partitionBy | maxUncommittedRows | walEnabled | directoryName | dedup |
+| --- | -------- | ------------------- | ----------- | ------------------ | ---------- | ------------- | ----- |
+| 1   | my_table | ts                  | DAY         | 500000             | true       | my_table      | false |
 
 ## wal_tables
 
@@ -113,6 +113,7 @@ Returns a `table` with the following columns:
   expected to have
 - `designated` - if this is set as the designated timestamp column for this
   table
+- `upsertKey` - if this column is a part of UPSERT KEYS list for table [deduplication](/docs/concept/deduplication)
 
 For more details on the meaning and use of these values, see the
 [CREATE TABLE](/docs/reference/sql/create-table/) documentation.
@@ -123,12 +124,12 @@ For more details on the meaning and use of these values, see the
 table_columns('my_table')
 ```
 
-| column | type      | indexed | indexBlockCapacity | symbolCached | symbolCapacity | designated |
-| ------ | --------- | ------- | ------------------ | ------------ | -------------- | ---------- |
-| symb   | SYMBOL    | true    | 1048576            | false        | 256            | false      |
-| price  | DOUBLE    | false   | 0                  | false        | 0              | false      |
-| ts     | TIMESTAMP | false   | 0                  | false        | 0              | true       |
-| s      | STRING    | false   | 0                  | false        | 0              | false      |
+| column | type      | indexed | indexBlockCapacity | symbolCached | symbolCapacity | designated | upsertKey |
+| ------ | --------- | ------- | ------------------ | ------------ | -------------- | ---------- | --------- |
+| symb   | SYMBOL    | true    | 1048576            | false        | 256            | false      | false     |
+| price  | DOUBLE    | false   | 0                  | false        | 0              | false      | false     |
+| ts     | TIMESTAMP | false   | 0                  | false        | 0              | true       | false     |
+| s      | STRING    | false   | 0                  | false        | 0              | false      | false     |
 
 ```questdb-sql title="Get designated timestamp column"
 SELECT column, type, designated FROM table_columns('my_table') WHERE designated = true;
@@ -207,7 +208,7 @@ table_partitions('my_table');
 ```
 
 | index | partitionBy | name     | minTimestamp          | maxTimestamp          | numRows | diskSize | diskSizeHuman | readOnly | active | attached | detached | attachable |
-| ----- | ----------- | -------- | --------------------- | --------------------- | ------- | -------- |---------------| -------- | ------ | -------- | -------- | ---------- |
+| ----- | ----------- | -------- | --------------------- | --------------------- | ------- | -------- | ------------- | -------- | ------ | -------- | -------- | ---------- |
 | 0     | WEEK        | 2022-W52 | 2023-01-01 00:36:00.0 | 2023-01-01 23:24:00.0 | 39      | 98304    | 96.0 KiB      | false    | false  | true     | false    | false      |
 | 1     | WEEK        | 2023-W01 | 2023-01-02 00:00:00.0 | 2023-01-08 23:24:00.0 | 280     | 98304    | 96.0 KiB      | false    | false  | true     | false    | false      |
 | 2     | WEEK        | 2023-W02 | 2023-01-09 00:00:00.0 | 2023-01-15 23:24:00.0 | 280     | 98304    | 96.0 KiB      | false    | false  | true     | false    | false      |
@@ -226,7 +227,7 @@ SELECT * FROM table_partitions('my_table') WHERE active = true
 ```
 
 | index | partitionBy | name     | minTimestamp          | maxTimestamp          | numRows | diskSize | diskSizeHuman | readOnly | active | attached | detached | attachable |
-| ----- | ----------- | -------- | --------------------- | --------------------- | ------- | -------- |---------------| -------- | ------ | -------- | -------- | ---------- |
+| ----- | ----------- | -------- | --------------------- | --------------------- | ------- | -------- | ------------- | -------- | ------ | -------- | -------- | ---------- |
 | 3     | WEEK        | 2023-W03 | 2023-01-16 00:00:00.0 | 2023-01-18 12:00:00.0 | 101     | 83902464 | 80.0 MiB      | false    | true   | true     | false    | false      |
 
 ## version/pg_catalog.version
@@ -252,6 +253,6 @@ SELECT version();
 SELECT pg_catalog.version();
 ```
 
-| version                                                               |
-| --------------------------------------------------------------------- |
+| version                                                             |
+| ------------------------------------------------------------------- |
 | PostgreSQL 12.3, compiled by Visual C++ build 1914, 64-bit, QuestDB |
