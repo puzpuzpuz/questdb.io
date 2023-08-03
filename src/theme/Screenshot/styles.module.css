@@ -28,6 +28,11 @@
   max-width: 500px;
 }
 
+figure {
+  width: 100%;
+  margin: 0 auto;
+}
+
 .caption {
   margin-bottom: 2rem;
   text-align: center;
