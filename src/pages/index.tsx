@@ -3,7 +3,7 @@ import React from "react"
 import Customers from "../components/Customers"
 import customFields from "../config/customFields"
 import { QueryScroller } from "../components/QueryScroller"
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
 import Layout from "../theme/Layout"
 import { Header } from "../modules/index-header"
@@ -36,9 +36,10 @@ const Cards = () => (
               <>
                 Store years of market tick data to identify historical trends,
                 and correlate it with orders and executed trades via{" "}
-                <Link to="/docs/reference/sql/join/#asof-join">ASOF joins</Link>.
-                Monitor market activity in real-time, compute time-series charts
-                and price candles on the fly. Open source kdb+ alternative.
+                <Link to="/docs/reference/sql/join/#asof-join">ASOF joins</Link>
+                . Monitor market activity in real-time, compute time-series
+                charts and price candles on the fly. Open source kdb+
+                alternative.
               </>
             ),
           },
@@ -55,7 +56,9 @@ const Cards = () => (
               <>
                 Capture, store and respond to sensor data and telemetry at any
                 resolution in industrial applications—process{" "}
-                <Link to="/glossary/high-cardinality">high cardinality data</Link>{" "}
+                <Link to="/glossary/high-cardinality">
+                  high cardinality data
+                </Link>{" "}
                 without hiccups.
               </>
             ),
@@ -72,9 +75,11 @@ const Cards = () => (
             content: (
               <>
                 Load{" "}
-                <Link to="/docs/third-party-tools/pandas/">Pandas DataFrames</Link>{" "}
-                into QuestDB to the tune of millions of rows per second. Download
-                data from QuestDB to train machine learning models.
+                <Link to="/docs/third-party-tools/pandas/">
+                  Pandas DataFrames
+                </Link>{" "}
+                into QuestDB to the tune of millions of rows per second.
+                Download data from QuestDB to train machine learning models.
               </>
             ),
           },

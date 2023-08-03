@@ -137,7 +137,7 @@ function BlogPostPage(props: Props): JSX.Element {
                 <h3 className={styles.avatarName}>
                   <Link href={authorURL}>{author}</Link>
                 </h3>
-                <small>{authorTitle}</small>
+                <small className={styles.avatarTitle}>{authorTitle}</small>
               </>
             )}
           </div>

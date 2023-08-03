@@ -32,9 +32,8 @@
 
 .avatar {
   margin: 1rem 0;
-  display: grid;
-  grid-template-columns: 45px auto;
-  grid-template-rows: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 0 1rem;
 }
 
@@ -52,8 +51,8 @@
   margin: 0;
 }
 
-.readMore {
-  margin-left: auto;
+.avatarTitle {
+  flex: 1 0 100%;
 }
 
 .markdown h2 {
