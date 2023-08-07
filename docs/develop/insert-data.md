@@ -12,7 +12,7 @@ languages and tools.
 
 QuestDB supports the following data ingestion methods:
 
-- [InfluxDB Line Protocol](#influxdb-line-protocol): the recommended primary
+- [InfluxDB Line Protocol](#influxdb-line-protocol-ilp): the recommended primary
   ingestion method in QuestDB for high-performance applications.
   - Dedicated ILP [client libraries](/docs/reference/clients/overview/) available
 - [PostgreSQL wire protocol](#postgresql-wire-protocol): interoperability with
