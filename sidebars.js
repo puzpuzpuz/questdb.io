@@ -114,20 +114,8 @@ module.exports = {
             hidden: true, // hidden from sidebar but accessible via link
           },
         },
-        {
-          customProps: {
-            tag: "New",
-          },
-          type: "doc",
-          id: "third-party-tools/spark",
-        },
-        {
-          customProps: {
-            tag: "New",
-          },
-          type: "doc",
-          id: "third-party-tools/sqlalchemy",
-        },
+
+        "third-party-tools/grafana",
         {
           customProps: {
             tag: "New",
@@ -135,8 +123,6 @@ module.exports = {
           type: "doc",
           id: "third-party-tools/superset",
         },
-        "third-party-tools/flink",
-        "third-party-tools/grafana",
         {
           label: "Kafka",
           type: "category",
@@ -146,11 +132,30 @@ module.exports = {
             "third-party-tools/kafka/jdbc",
           ],
         },
-        "third-party-tools/mindsdb",
+
         "third-party-tools/pandas",
+        "third-party-tools/telegraf",
         "third-party-tools/prometheus",
         "third-party-tools/redpanda",
-        "third-party-tools/telegraf",
+        "third-party-tools/flink",
+        {
+          customProps: {
+            tag: "New",
+          },
+          type: "doc",
+          id: "third-party-tools/spark",
+        },
+
+        "third-party-tools/mindsdb",
+
+        {
+          customProps: {
+            tag: "New",
+          },
+          type: "doc",
+          id: "third-party-tools/sqlalchemy",
+        },
+
         "third-party-tools/qstudio",
       ],
     },
@@ -253,7 +258,7 @@ module.exports = {
                 "reference/sql/alter-table-set-type",
                 "reference/sql/alter-table-squash-partitions",
                 "reference/sql/alter-table-enable-deduplication",
-                "reference/sql/alter-table-disable-deduplication",                
+                "reference/sql/alter-table-disable-deduplication",
               ],
             },
             {
