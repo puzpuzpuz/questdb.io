@@ -1,0 +1,182 @@
+---
+title: "QuestDB 7.3 Release: Deduplication and IPv4 Support"
+author: QuestDB
+author_url: https://github.com/questdb
+author_image_url: https://avatars.githubusercontent.com/u/52297642?s=200&v=4
+description: QuestDB 7.3 release notes
+tags: [release, open source, questdb]
+image: /img/blog/2023-08-07/7-3.webp
+slug: questdb-release-7.3-deduplication-ipv4
+---
+
+import Screenshot from "@theme/Screenshot"
+
+<Screenshot
+  alt="Release highlight"
+  title="Highlights of the 7.3 release of QuestDB"
+  height={366}
+  src="/img/blog/2023-08-07/7-3.webp"
+  width={650}
+/>
+
+## QuestDB 7.3 release overview
+
+Headlining our latest release is support for [data deduplication](#data-deduplication) and the [IPv4 data type](#support-for-ipv4). Additionally, we are pleased to offer new SQL syntax for combining two longs into a single UUID, improved tuning for WAL tables, and several fixes and stability improvements.
+
+Let's take a deeper look.
+
+## Data deduplication
+
+[Data deduplication](https://questdb.io/docs/concept/deduplication/) preserves the clarity of data from any source. With deduplication, duplicates are discarded discretely before they hit the disk. As a result, they will not contribute to an increase in storage cost or SQL query performance. And the best part? 
+
+**Data deduplication has a negligible impact on ingestion performance!**
+
+You can turn it on, and keep it on.
+
+### Why data duplication?
+
+Those who know time-series data know all about the madness of duplicate data. When many different sources blast streams of fluctuating data together, there is bound to be overlap. If unintended, this overlap burns storage resources, and compromises the integrity of sensitive data sets. 
+
+Consider a pair of common use cases for deduplication...
+
+#### Mistakes? Refresh, don't duplicate
+
+A bursting data stream generates 500,000 data points over a brief window of time. But alas, its latest burst was inaccurate as the stream was mis-calibrated. To try fix it, the operator cancelled the burst mid-send. But even though the burst did not complete, 250,000 rows still made it through with success. Now a range of time is inaccurate.
+
+The operator recalibrates the stream, and the revised data are re-sent over the same time period. It now succeeds in full. Unfortunately, the prior 250,000 inaccurate records are still present. To make matters worse, there are now duplicates that share a timestamp, half correct and half incorrect. 
+
+In total, there are 750,000 events instead of the intended 500,000. With deduplication, existing timestamps that match the new insert are overwritten and the remaining sequence streams in as intended. Now the entire burst is in chronology, accurate, clean and whole at 500,000 data points.
+
+<Screenshot
+  alt="Release highlight"
+  title="Prevent duplication on repeat ingest - dedup!"
+  height={366}
+  src="/img/blog/2023-08-07/duplicate-visual.webp"
+  width={650}
+/>
+
+#### Deduplicate, the DRY way
+
+What about outside of timestamps? Picture an organization that measures precise temperatures from various sensors. A sensor takes thousands of readings every second. 
+
+The organization analyzes fluctuations in temperature from their baseline, which means that an unbroken sequence of repeated readings is not ideal. It just adds noise to their data. Instead, they are most interested in variation.
+
+The `timestamp` column keeps ticking upwards, `temperature` repeats - not interesting:
+
+| sensor  | timestamp | temperature |
+| ------------- | ------------- | ------------- |
+| A  | 00:00:00.001000  | 21.9793  |
+| A  | 00:00:00.002000  | 21.9793 |
+| A  | 00:00:00.003000  | 21.9793 |
+| A  | 00:00:00.004000  | 21.9793 |
+
+If the temperature changes, then returns to baseline - very interesting:
+
+| sensor  | timestamp | temperature |
+| ------------- | ------------- | ------------- |
+| A  | 00:00:00.001000  | 21.9793  |
+| A  | 00:00:00.002000  | 21.9793 |
+| A  | 00:00:00.003000  | 22.2918 |
+| A  | 00:00:00.004000  | 21.9793 |
+
+Deduplication provides a cleaner look.
+
+Now the `temperature` column folds repetitions together until new values appear:
+
+| sensor  | timestamp | temperature |
+| ------------- | ------------- | ------------- |
+| A  | 00:00:00.001000  | 21.9793  |
+| A  | 00:00:00.003000  | 22.2918 |
+| A  | 00:00:00.004000  | 21.9793 |
+
+Deduplication support is a popular request from QuestDB users. And it is easy to understand why! Duplicates muddle data, use unnecessary resources and often require clean-up. Deduplication ensures that any repetitions are handled with grace, even if data originate from multiple sources.
+
+### How can I enable data deduplication? 
+
+Enable dedup on WAL enabled tables with the following SQL syntax:
+
+```sql
+-- enable dedup on example_table on timestamp & source column
+
+ALTER TABLE example_table DEDUP ENABLE UPSERT KEYS(ts TIMESTAMP, source);
+```
+For a deeper explanation on how to deduplicate, see [the documentation](/docs/concept/deduplication).
+
+### Support for IPv4 
+
+IPv4 addresses are a common data type with their own unique numerical convention. We often hear from teams who are tracking the activity of users, servers or sensors, that managing IP addresses without native support for subnets and netmasks creates additional complexity. 
+
+Those working with IPs will appreciate IPv4 support, which is more flexible and performant with SQL execution, and much kinder on storage demand. 
+
+### Are all forms of IPv4 address supported?
+
+Yes! IPv4 addresses are stored as strings. 
+
+String arguments may be appear as: 
+
+* an ip address without netmask: `23.62.200.1`
+* an ip address with netmask: `5.43.11.8/2` 
+* a subnet with netmask: `2.232/16` 
+
+All together, we support the full range of IPv4 addresses.
+
+### Which SQL operations can be performed on IPv4 addresses?
+
+The following operations are supported:
+
+* `<<`: is an ip address strictly contained by subnet? (Boolean)
+* `<<=`: is an ip address contained by or equal to subnet? (Boolean)
+* `&`: computes bitwise AND (String)
+* `~`: computes bitwise NOT (String)
+* `|`: computes bitwise OR (String)
+* `+`: adds an offset to an ip address (String)
+* `-`: ipv4 & int: subtracts an offset from an ip address (String)
+* `-`: ipv4 & ipc4: computes the difference between two ip addresses (Long)
+
+There are also two additional functions for testing:
+
+* `rnd_ipv4()`: random address generator (String)
+* `rnd_ipv4(string, int)`: random address generator within a range (String)
+
+### How do I insert and read IPv4 data?
+
+We currently support two methods: ILP and INSERT SQL. In either case, IPv4 values are provided as a string. When queried, IPv4 values deliver as string to both HTTP and PostegreSQL clients.
+
+If you already store IPv4 addresses in QuestDB as a string, then there is no need to modify your existing workflow. After upgrade, your deployment is compatible with the IPv4 data type.
+
+### How can I enable support for IPv4?
+
+Create a new table with IPv4 support using `CREATE TABLE`:
+
+```sql
+--- Create a new example table with for both ipv4 source and destination
+
+CREATE TABLE example (ts TIMESTAMP, src IPV4, dst IPV4) timestamp(ts) PARTITION BY DAY;
+```
+
+## SQL Function: Two Longs, One UUID
+
+What if you need to combine 2 IDs from different sources into a one unique ID?
+
+Each long value has 64 bits. UUID values have 128 bits. 
+
+Combine two longs into a single UUID:
+
+```sql
+SELECT to_uuid(2, 1) AS uuid FROM long_sequence(1);
+```
+
+This results in a unified UUID:
+
+```sql
+00000000-0000-0001-0000-000000000002
+```
+
+## Breaking changes for QuestDB 7.3
+
+There are no breaking changes in this release.
+
+## Additional resources
+
+- [QuestDB 7.3 release notes](https://github.com/questdb/questdb/releases/tag/7.3)
+- [Deduplication documentation](/docs/concept/deduplication)

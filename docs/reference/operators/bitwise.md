@@ -4,8 +4,7 @@ sidebar_label: Bitwise
 description: Bitwise operators reference documentation.
 ---
 
-This page describes the available operators to assist with performing bitwise
-operations on numeric values.
+This page describes the available operators to assist with performing bitwise operations on numeric values.
 
 Precedence of these operators is as follows:
 
