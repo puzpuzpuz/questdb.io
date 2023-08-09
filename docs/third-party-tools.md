@@ -5,7 +5,7 @@ description:
   some of the most popular integrations.
 ---
 
-QuestDB integrates well with a number of third-party tools. 
+QuestDB integrates well with a number of third-party tools.
 
 The following is a list of our most popular integrations:
 
@@ -31,6 +31,8 @@ The following is a list of our most popular integrations:
   real-time data streams seamlessly.
 - [Telegraf](./third-party-tools/telegraf.md): Collect and report metrics from
   various sources to QuestDB for storage and analysis.
+- [qStudio](./third-party-tools/qstudio.md): free SQL GUI for running SQL
+  scripts, easy browsing of tables, charting and exporting results.
 
 Is there something missing? Please let us know by opening an issue on
 [QuestDB Github]({@githubUrl@}/issues/new/choose).
