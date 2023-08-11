@@ -1,15 +1,15 @@
 import React from "react"
 import style from "./styles.module.css"
-import type { Label, ProductInfo } from "../products"
+import type { ProductInfo } from "../products"
 import clsx from "clsx"
 import Link from "@docusaurus/Link"
 import buttonStyle from "../../../../theme/Button/styles.module.css"
 
-const StyledLabel = ({
+const Label = ({
   labels,
   className,
 }: {
-  labels: Label[]
+  labels: ProductInfo["pricingLabel"]
   className: string
 }) => (
   <div className={className}>
@@ -39,12 +39,9 @@ export const ProductCard = (product: ProductInfo) => (
     </header>
 
     <div className={style.pricingLabels}>
-      <StyledLabel
-        className={style.pricingLabel}
-        labels={product.pricingLabel}
-      />
+      <Label className={style.pricingLabel} labels={product.pricingLabel} />
 
-      <StyledLabel
+      <Label
         className={style.pricingSublabel}
         labels={product.pricingSublabel}
       />
@@ -52,7 +49,13 @@ export const ProductCard = (product: ProductInfo) => (
 
     <ul className={style.specs}>
       {product.specs.map((spec, index) => (
-        <li key={index}>{spec}</li>
+        <li key={index}>
+          {typeof spec === "string" ? (
+            spec
+          ) : (
+            <Link to={spec.href}>{spec.label}</Link>
+          )}
+        </li>
       ))}
     </ul>
 

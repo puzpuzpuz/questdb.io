@@ -8,7 +8,7 @@ import styles from "./styles.module.css"
 export const GetStarted = () => (
   <Section center fullWidth noGap className={styles.root}>
     <Button size="small" to={customFields.cloudUrl}>
-      Get started
+      Start building now
     </Button>
     Have questions?
     <BookADemo />

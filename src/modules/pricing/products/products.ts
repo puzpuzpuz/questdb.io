@@ -1,4 +1,6 @@
-export type Label = string | { text: string; emphasized: true }
+import customFields from "../../../config/customFields"
+
+type Label = string | { text: string; emphasized: true }
 
 export type ProductInfo = {
   type: "open-source" | "cloud" | "enterprise"
@@ -7,7 +9,7 @@ export type ProductInfo = {
   highlight?: string
   pricingLabel: Label[]
   pricingSublabel: Label[]
-  specs: string[]
+  specs: Array<{ label: string; href: string } | string>
   url: string
   ctaLabel: string
 }
@@ -23,6 +25,7 @@ export const products: ProductInfo[] = [
       "Fast ingest, dynamic schema",
       "Sub-second SQL queries",
       "Performant with high-cardinality data",
+      "Time-series SQL extensions",
     ],
     url: "/get-questdb/",
     ctaLabel: "Get QuestDB",
@@ -56,12 +59,16 @@ export const products: ProductInfo[] = [
       "per month (est)",
     ],
     specs: [
-      "Up to 80% data compression ratio",
+      "Up to 80% compression ratio",
       "Elastic & highly available",
       "Role-based permissions",
+      {
+        label: "Explore pricing",
+        href: "#pricing-options",
+      },
     ],
-    url: "#pricing-options",
-    ctaLabel: "Explore pricing",
+    url: customFields.cloudUrl,
+    ctaLabel: "Start building now",
   },
 
   {
@@ -70,8 +77,16 @@ export const products: ProductInfo[] = [
     subtitle: "Self-hosted, custom specs",
     pricingLabel: [{ text: "Contact us", emphasized: true }],
     pricingSublabel: ["for a quote"],
-    specs: ["Security and permissions", "High availability", "Enterprise SLAs"],
-    url: "/enterprise/",
-    ctaLabel: "Learn more",
+    specs: [
+      "Security and permissions",
+      "High availability",
+      "Enterprise SLAs",
+      {
+        label: "Learn More",
+        href: "/enterprise/",
+      },
+    ],
+    url: "/enterprise/contact",
+    ctaLabel: "Contact us",
   },
 ]

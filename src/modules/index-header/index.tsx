@@ -22,7 +22,7 @@ export const Header = () => {
 
         <div className={styles.mainCTA}>
           <Button to={cloudUrl} newTab={false}>
-            Start building with Cloud
+            Start building now
           </Button>
           <span>$200 in free credits</span>
         </div>
