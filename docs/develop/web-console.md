@@ -217,7 +217,6 @@ The Settings panel displays the following configurations:
 | Atomicity                         | Error behavior. Rejected rows or columns will be reported in the [Details](#import-details) panel after the import is completed.                                                                                                                                 | Skip column   |
 | Force header                      | Whether to interpret the first line as the header. The result will be reported in the [Details](#import-details) panel after the import is completed.                                                                                                            | FALSE         |
 | Skip line extra values            | Whether the parser should ignore extra values by ignoring the entire line. An extra value is something in addition to what is defined by the header.                                                                                                             | FALSE         |
-| Durable                           | Whether the import should be resilient against OS errors and power losses by forcing the data to be fully persisted before sending a response back to the user.                                                                                                  | FALSE         |
 
 ### Import details
 
