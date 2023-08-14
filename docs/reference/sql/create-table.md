@@ -121,6 +121,19 @@ existing column in the `selectSql`
 ```questdb-sql
 CREATE TABLE test AS (SELECT CAST(x as DOUBLE) x FROM long_sequence(10));
 ```
+### IPv4 addresses
+
+Create an IPv4-friendly table using the following pattern:
+
+```sql
+CREATE TABLE traffic (ts timestamp, src ipv4, dst ipv4) timestamp(ts) PARTITION BY DAY; 
+```
+
+This demonstrates:
+
+* creation of a table called `traffic`
+* columns for timestamp, source ipv4 address, destination ipv4 address
+* a partition based on a day
 
 ## Column indexes
 

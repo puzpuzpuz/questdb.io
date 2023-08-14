@@ -9,6 +9,7 @@ The type system is derived from Java types.
 | Type Name         | Storage bits | Nullable | Description                                                                                                                                                                                                                                                         |
 | ----------------- | ------------ | -------- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `boolean`         | `1`          | No       | Boolean `true` or `false`.                                                                                                                                                                                                                                          |
+| `ipv4`         | `32`          | Yes       | `0.0.0.1` to `255.255.255. 255`                                                                                                                                                                                 |
 | `byte`            | `8`          | No       | Signed integer `-128` to `127`.                                                                                                                                                                                                                                     |
 | `short`           | `16`         | No       | Signed integer `-32768` to `32767`.                                                                                                                                                                                                                                 |
 | `char`            | `16`         | Yes      | `unicode` character.                                                                                                                                                                                                                                                |
@@ -55,6 +56,8 @@ Nullable types use a specific value to mark `NULL` values:
 | `symbol`         | `0x80000000`                                                         | Symbols are stored as `int` offsets in a lookup file.                                                                  |
 | `string`         | `0xffffffff`                                                         | Strings are length prefixed, the length is an `int` and `-1` marks it `NULL` (no further storage is used).             |
 | `binary`         | `0xffffffffffffffff`                                                 | Binary columns are also length prefixed, the length is a `long` and `-1` marks it `NULL` (no further storage is used). |
+| `ipv4`         | `null`                                                 | IPv4 addresses are stored as `int`. |
+
 
 To filter columns that contain, or don't contain, `NULL` values use a filter
 like:
@@ -105,3 +108,15 @@ ps.setObject(1, uuid);
 
 [QuestDB Client Libraries](https://questdb.io/docs/reference/clients/overview/) can
 send `UUIDs` as `strings` to be converted to UUIDs by the server.
+
+## IPv4
+
+For a full list of operators, see [IPv4 Operators](/docs/reference/operators/ipv4/)
+
+### Limitations
+
+IPv4 column types cannot be created via ILP as the protocol lacks support for IPv4. 
+
+As a result, the server cannot distinguish between string and IPv4 data. 
+
+However, ILP can still insert string data into a pre-existing column of type ipv4.

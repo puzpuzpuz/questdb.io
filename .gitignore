@@ -1,6 +1,9 @@
 # Dependencies
 node_modules
 
+# Workspaces
+*code-workspace
+
 # Production
 /build
 plugins/*/compiled

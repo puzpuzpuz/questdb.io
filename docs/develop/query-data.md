@@ -567,3 +567,9 @@ func checkErr(err error) {
 
 </Tabs>
 
+## Query IPv4 data
+
+IPv4 addresses are stored as 32-bit integers.
+
+IPv4 values are then delivered as string to both HTTP and PostegreSQL clients.
+

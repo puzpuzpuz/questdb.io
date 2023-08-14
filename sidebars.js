@@ -234,6 +234,7 @@ module.exports = {
           items: [
             "reference/operators/bitwise",
             "reference/operators/comparison",
+            "reference/operators/ipv4",
             "reference/operators/pattern-matching",
             "reference/operators/spatial",
           ],
