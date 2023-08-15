@@ -10,6 +10,9 @@ tags: [tutorial, kafka, time-series, market data]
 slug: processing-time-series-with-questdb-apache-kafka
 ---
 
+import Banner from "@theme/Banner"
+import Screenshot from "@theme/Screenshot"
+
 ## Introduction: Choosing Apache Kafka and QuestDB to stream time-series data
 
 
@@ -32,8 +35,6 @@ could work in practice. We will poll an external data source (FinnHub) for
 real-time quotes of stocks and ETFs, and publish that information to Kafka.
 Kafka Connect will then grab those records and publish it to a time series
 database (QuestDB) for analysis.
-
-import Banner from "@theme/Banner"
 
 <Banner
   alt="Diagram showing Go to Kafka and to QuestDB"

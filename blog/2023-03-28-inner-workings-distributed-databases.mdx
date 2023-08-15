@@ -11,6 +11,7 @@ slug: inner-workings-distributed-databases
 ---
 
 import Banner from "@theme/Banner"
+import Screenshot from "@theme/Screenshot"
 
 <Banner
   alt="The problem of replication"
@@ -77,13 +78,13 @@ The application should switch to a replicated node and continue inserting data.
 For example, if I had an application `App` writing to DB `Node 1` with replica
 DB `Node 2` I could draw this scenario as a sequence diagram:
 
-<Banner
+<Screenshot
   alt="Write failover use case"
   src="/img/blog/2023-03-28/Write failover sequence diagram.webp"
   width={531}
 >
   Write failover use case
-</Banner>
+</Screenshot>
 
 Seems straightforward, but is it easy to get a database to play its part in this
 dance? I believe it's not. To achieve this, the database has to be able to write
@@ -149,13 +150,13 @@ simultaneously trying to roll another alongside you at all times. You can
 imagine that it's pretty hard to ride while simultaneously balancing on two
 bikes, and that it's nearly impossible to actually cycle quickly!
 
-<Banner
+<Screenshot
   alt="Sync bike riding"
   src="/img/blog/2023-03-28/bikes_alongside.jpeg"
   width={650}
 >
   Sync replication bike riding
-</Banner>
+</Screenshot>
 
 On the other hand, a database configured in single primary with a read-only
 Async replica is similar to me buying a spare bike, storing it at work, and
@@ -257,13 +258,13 @@ ClickHouse Keeper). Zookeeper notifies each node about the new part, and the
 nodes download the data from the source and apply it to the local table replica.
 The same process happens simultaneously with `INSERT 2`.
 
-<Banner
+<Screenshot
   alt="ClickHouse multi-master replication"
   src="/img/blog/2023-03-28/Multi-maser-replication-ClickHouse.webp"
   width={744}
 >
   ClickHouse multi-master replication
-</Banner>
+</Screenshot>
 
 In this architecture, inserts can be written to each of the nodes in parallel.
 
@@ -322,13 +323,13 @@ where they have built InfluxDB Cloud v2. While this is a closed-source system,
 its high-level architecture is deducible from the marketing diagrams InfluxData
 officially provides.
 
-<Banner
+<Screenshot
   alt="InfluxDB cloud architecture"
   src="/img/blog/2023-03-28/Influx Cloud Architecture.webp"
   width={750}
 >
   InfluxDB cloud architecture
-</Banner>
+</Screenshot>
 
 InfluxDB Cloud v2 persists incoming writes to the Write Ahead Log (WAL) written
 over a Kafka cluster. It is a clean solution that solves the durability and
@@ -462,13 +463,13 @@ order of commits is maintained in a Sequencer component. The most complicated
 bit is automatic schema conflict resolution so that table schema changes can
 also be be performed in parallel.
 
-<Banner
+<Screenshot
   alt="QuestDB WAL writing"
   src="/img/blog/2023-03-28/QuestDB sequencer WAL diagram.webp"
   width={750}
 >
   QuestDB WAL writing
-</Banner>
+</Screenshot>
 
 We tried to avoid having a Write Ahead Log for a long time, writing directly
 into the table storage. It was not an easy decision to accept WAL write

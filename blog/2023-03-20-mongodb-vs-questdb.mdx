@@ -12,6 +12,7 @@ slug: mongodb-time-series-benchmark-review
 ---
 
 import Banner from "@theme/Banner"
+import Screenshot from "@theme/Screenshot"
 
 <Banner
   alt="MongoDB vs QuestDB"
@@ -132,13 +133,13 @@ time-series data.
 
 The diagram below summarizes the results for ingestion performance:
 
-<Banner
+<Screenshot
   alt="Time Series Benchmarking Suite: Ingestion rate for MongoDB and QuestDB"
   src="/img/blog/2023-03-20/ingestion-benchmark.webp"
   width={800}
 >
   Time required to load 691,200,000 metrics. Lower is better.
-</Banner>
+</Screenshot>
 
 To load just over 691 million metrics, MongoDB requires more than 2,000 seconds,
 while it takes less than 90 seconds for QuestDB; QuestDB is 24 times faster than
@@ -191,13 +192,13 @@ $ ./tsbs_run_queries_mongo --file=/tmp/mongo_query_lastpoint --workers=10
 Again, we use 10 concurrent client connections for the comparison. We measure
 how much time each query takes, in milliseconds per query:
 
-<Banner
+<Screenshot
   alt="Query performance comparison displayed as a table."
   src="/img/blog/2023-03-20/query-benchmark.webp"
   width={800}
 >
   Query benchmark results. Lower is better.
-</Banner>
+</Screenshot>
 
 Two conclusions from the benchmark:
 
