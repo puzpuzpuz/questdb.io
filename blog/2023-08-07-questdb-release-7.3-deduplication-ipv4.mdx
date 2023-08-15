@@ -104,39 +104,58 @@ For a deeper explanation on how to deduplicate, see [the documentation](/docs/co
 
 ### Support for IPv4 
 
-IPv4 addresses are a common data type with their own unique numerical convention. We often hear from teams who are tracking the activity of users, servers or sensors, that managing IP addresses without native support for subnets and netmasks creates additional complexity. 
+IPv4 addresses are a common data type with their own unique numerical convention. We often hear from teams who are tracking the activity of users, servers or sensors, that managing IP addresses without validity checks and type-specific functions can be frustrating. 
 
 Those working with IPs will appreciate IPv4 support, which is more flexible and performant with SQL execution, and much kinder on storage demand. 
 
 ### Are all forms of IPv4 address supported?
 
-Yes! IPv4 addresses are stored as strings. 
+Yes! IPv4 addresses are stored as integers on disk, and passed as strings. 
 
-String arguments may be appear as: 
+Do note that IPv4 addresses may not contain netmasks when being stored on disk. However, when they are being passed as a string argument to a function - like with subnet inclusion operators: `<<=` & `<<` - they may include netmask or subnet with a netmask as demonstrated below.
+
+IPv4 arguments may appear as: 
+
+* an ip address without netmask: `23.62.200.1`
+
+String arguments may appear as: 
 
 * an ip address without netmask: `23.62.200.1`
 * an ip address with netmask: `5.43.11.8/2` 
 * a subnet with netmask: `2.232/16` 
 
-All together, we support the full range of IPv4 addresses.
+Altogether, we support the full range of IPv4 addresses.
 
 ### Which SQL operations can be performed on IPv4 addresses?
 
 The following operations are supported:
 
-* `<<`: is an ip address strictly contained by subnet? (Boolean)
-* `<<=`: is an ip address contained by or equal to subnet? (Boolean)
-* `&`: computes bitwise AND (String)
-* `~`: computes bitwise NOT (String)
-* `|`: computes bitwise OR (String)
-* `+`: adds an offset to an ip address (String)
-* `-`: ipv4 & int: subtracts an offset from an ip address (String)
-* `-`: ipv4 & ipc4: computes the difference between two ip addresses (Long)
+* `<`: is an ip address less than another? (`boolean`)
+* `<=`: is an ip address less than or equal to another? (`boolean`)
+* `>`: is an ip address greater than another? (`boolean`)
+* `>=`: is an ip address greater than or equal to another? (`boolean`)
+* `=`: is an ip address equal to another? (`boolean`)
+* `!=` is an ip address not equal to another? (`boolean`)
+* `<<`: is an ip address strictly contained by a subnet? (`boolean`)
+* `<<=`: is an ip address contained by or equal to a subnet? (`boolean`)
+* `&`: computes bitwise AND (`ipv4`)
+* `~`: computes bitwise NOT (`ipv4`)
+* `|`: computes bitwise OR (`ipv4`)
+* `+`: adds an offset to an ip address (`ipv4`)
+* `-`: `ipv4-int`: subtracts an offset from an ip address (`ipv4`)
+* `-`: `ipv4 - ipv4`: computes the difference between two ip addresses (`long`)
 
-There are also two additional functions for testing:
+There are also two additional random functions for testing as well as a netmask function:
 
 * `rnd_ipv4()`: random address generator (String)
 * `rnd_ipv4(string, int)`: random address generator within a range (String)
+* `netmask(string)` : returns an ip address' subnet mask (`ipv4`)
+
+For a full list of operators, see the [IPv4 documentation](/docs/reference/operators/ipv4/).
+
+### Which SQL functions can be performed on IPv4 columns?
+
+The IPv4 data type supports SQL functions, like `ORDER BY`, `SAMPLE BY`, `LATEST BY` and many more. For a full list, [checkout our documentation](/docs/reference/function/ipv4/).
 
 ### How do I insert and read IPv4 data?
 
@@ -178,5 +197,8 @@ There are no breaking changes in this release.
 
 ## Additional resources
 
-- [QuestDB 7.3 release notes](https://github.com/questdb/questdb/releases/tag/7.3)
+- [QuestDB 7.3.1 release notes](https://github.com/questdb/questdb/releases/tag/7.3.1)
 - [Deduplication documentation](/docs/concept/deduplication)
+- [IPv4 documentation](/docs/reference/operators/ipv4/)
+- [`to_uuid()` documentation](/docs/reference/function/aggregation/#to_uuid)
+

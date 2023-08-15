@@ -10,9 +10,11 @@ IPv4 addresses are **passed** as string, but are **stored** as 32-bit integers.
 
 When applied as IPv4, they are presented between the range `0.0.0.1 - 255.255.255.255`.
 
-When passed as a string, they may contain a subnet mask: `35.24.65.2/16`
+When passed as a string, they may contain a subnet mask: `35.24.65.2/16`.
 
-Addresses when passed may contain trailing and leading dots: `...1.1.1.1...`
+Addresses when passed may contain trailing and leading dots: `...1.1.1.1...`.
+
+See [IPv4 SQL functions](/docs/reference/function/ipv4/) for more context about IPv4 beyond operators.
 
 ## Operators
 

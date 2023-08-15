@@ -217,6 +217,7 @@ module.exports = {
             "reference/function/boolean",
             "reference/function/conditional",
             "reference/function/date-time",
+            "reference/function/ipv4",
             "reference/function/meta",
             "reference/function/numeric",
             "reference/function/random-value-generator",
