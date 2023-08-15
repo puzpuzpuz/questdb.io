@@ -92,3 +92,4 @@ Once installed and initialized, Apache Superset is accessible via
 - [QuestDB Connect at GitHub](https://github.com/questdb/questdb-connect/)
 - [QuestDB Connect Python module](https://pypi.org/project/questdb-connect/)
 - [Apache Superset install](https://superset.apache.org/docs/installation/installing-superset-from-scratch/)
+- [Blog post with Superset dashboard example](/blog/time-series-data-visualization-apache-superset-and-questdb/)
