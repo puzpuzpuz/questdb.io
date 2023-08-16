@@ -1,0 +1,167 @@
+---
+title: Fuzz Testing Is the Best Thing To Happen to Our Application Tests
+author: Andrey Pechkurov
+author_title: Core Database Engineer
+author_url: https://github.com/puzpuzpuz
+author_image_url: https://avatars.githubusercontent.com/puzpuzpuz
+description: Fuzz tests have helped us catch many critical bugs. Should your team consider fuzz testing? They're the best thing to happen to our application tests so far.
+tags: [questdb, testing, java, sqlancer]
+image: /img/blog/2023-08-16/fuzzy-banner.webp
+slug: fuzz-testing-questdb
+---
+
+import Banner from "@theme/Banner"
+import Screenshot from "@theme/Screenshot"
+
+> QuestDB is a time-series database that offers fast ingest speeds, ILP and PGWire support and SQL query syntax. Databases are placed under constant and demanding workloads, and building one teaches many hard lessons. We're happy to share them with you.
+
+Almost two years ago, we were playing an endless game of whack-a-mole game with segfaults, data corruption, and various concurrency bugs. Our users were reporting them and, for each report, we had to reproduce the bug, analyze and - finally - fix it. Eventually, we decided to take a step back and come up with a deeper solution. This article details our pain, and the journey we took to get out of it. Maybe we can help you out of a similar bind.
+
+## Slaying the many headed hydra 
+
+One bug solved, five more appear. We caught bugs and our users caught bugs. Each report lead to an investigation and - in most cases - a resolution. But sometimes users would apply workarounds and proceed forward without reporting the issue, and some bugs would go unresolved. This loop led to frustration for both our users and the QuestDB team.
+
+We introduced the first fuzz test into the QuestDB project in an attempt to make the database more robust, and since then we have added many more of them. It's hard to quantify the bugs found by fuzzing, but all of the known critical ones are gone and it's a very rare case nowadays to see a critical issue reported by the community. 
+
+On top of that, recently the SQLancer team added QuestDB support to their testing tool and helped us to find a number of issues in our SQL engine. That's why we believe that almost any complex application would gain a lot from this kind of test, so if yours doesn't have them, today we hope to inspire you to start writing fuzz tests.
+
+## What is fuzzing?
+
+> "What's the fuzz? Tell me what's happening." - Modified lyrics from a well-known [rock opera](https://en.wikipedia.org/wiki/Jesus_Christ_Superstar)
+
+Before sharing our story, let's start with the basics and define a fuzz test. 
+
+[Wikipedia says](https://en.wikipedia.org/wiki/Fuzzing) that:
+
+> ... fuzzing or fuzz testing is an automated software testing technique that involves providing invalid, unexpected, or random data as inputs to a computer program. The program is then monitored for exceptions such as crashes, failing built-in code assertions, or potential memory leaks. 
+
+So for instance, if you write a compiler, you can use fuzzing to generate source code variations, including invalid ones, and test whether your compiler is able to give a meaningful result for the input program. If you have a web service, you can write a fuzz test that would try to send invalid or semi-valid requests to your service, and then analyze whether any of the requests break the security of your service. Or even crash it. 
+
+Furthermore, if you have a command line utility, like `curl`, you may use fuzz testing to find nasty things [like memory corruption bugs](https://blog.trailofbits.com/2023/02/14/curl-audit-fuzzing-libcurl-command-line-interface/). But not only that. In the database world, fuzzing is usually applied to APIs that accept a query language, like [SQL](https://questdb.io/docs/concept/sql-execution-order/) or a specialized protocol like the [InfluxDB Line Protocol](https://questdb.io/docs/reference/api/ilp/overview/) (ILP). Lastly, it would be silly not to mention that fuzzing can be used to find general vulnerabilities in programs.
+
+So how do we write them?
+
+## Getting fuzzy
+
+There are a number of different approaches to writing fuzz tests: 
+
+1. Your fuzzer may be generation-based and generate inputs from scratch. Or it may be mutation-based, and have a corpus of seed inputs that it modifies to produce a final input. 
+
+2. The test may be dumb, if it is producing unstructured, random inputs, like random strings instead of proper SQL statements. Or it may be smart, if it's aware of the expected input structure. 
+
+3. You may choose to use a white-, grey-, or black-box testing technique, depending on the awareness of the program-under-test structure.
+
+If you were to fuzz test a database, the test could be as simple as the following test written in Java-inspired pseudo-code:
+
+```java
+public void testSqlEngine() {
+    try (Connection conn = openConnection()) {
+        int len = randomInt();
+        String stmt = randomString(len);
+        executeSql(stmt);
+        assertDatabaseDidNotCrash();
+    }
+}
+```
+
+Here we generate a string filled with random characters, send it over the database connection and, finally, check if the database process is still up and running. This is a (1) generation-based, (2) dumb, (3) black-box test that makes no assumptions about the SQL syntax and only follows the database network protocol. 
+
+Interestingly, it is very close to what the [original authors](https://en.wikipedia.org/wiki/Fuzzing#History) of the term "fuzz" did in 1988 when they were testing Unix utilities. Of course, such an approach is not very efficient when applied to database software. At QuestDB, we prefer fuzzers to be generation-based and smart, but that is our preference. Other combinations may be useful in other software projects.
+
+With the basics covered, let's look at how fuzzing helped us make QuestDB better...
+
+## Our fuzzing story
+
+As we already mentioned, our first fuzz test was written almost two years ago. It tested the ILP protocol by sending semi-random, potentially invalid messages. The first test immediately revealed a number of critical issues, including a few segfaults.
+
+To give you an impression of that fuzzer, let's dive into our ILP protocol [implementation](https://questdb.io/docs/reference/api/ilp/overview/). Creating a single-row table with ILP is as simple as sending the following to `<questdb_host>:9009`:
+
+```shell
+weather,city=Sofia temperature=27.5 1692010877000000000\n
+```
+
+Once sent, this message tells QuestDB to create a table with the following structure:
+
+```questdb-sql
+CREATE TABLE 'weather' (
+  city SYMBOL,
+  temperature DOUBLE,
+  timestamp TIMESTAMP
+) timestamp (timestamp) PARTITION BY DAY WAL;
+```
+
+And with the below row:
+
+| city  | temperature | timestamp                   |
+| :---- | :---------- | :-------------------------- |
+| Sofia | 27.5        | 2023-08-14T11:01:17.000000Z |
+
+Here we have a [partitioned](https://questdb.io/docs/concept/designated-timestamp/) table named `weather`. The table structure, column names and row values are fully defined in our ILP message. Now, let's send another message over TCP:
+
+```shell
+weather,city=Berlin temperature=28,humidity=0.42 1692011659000000000\n
+```
+
+As a result, we got a new `humidity` column of type `DOUBLE` in the table. 
+
+The table contents are now:
+
+| city   | temperature | humidity | timestamp                   |
+| :----- | :---------- | :------- | :-------------------------- |
+| Sofia  | 27.5        | 0        | 2023-08-14T11:01:17.000000Z |
+| Berlin | 28          | 0.42     | 2023-08-14T11:14:19.000000Z |
+
+Shall we send another row? Let's do that:
+
+```shell
+weather,country=France,CiTy=Paris HuMiDiTy=0.58,TeMpErAtUrE=26 1692012370000000000\n
+```
+
+Here, we've changed the order for the `humidity` and `temperature` columns, added a new column named `country` and slightly ImProVeD letter capitalization in the older column names. Again, the database should add the new column and should also ignore the capitalization difference in the column names. With all that said, the message should yield the following rows:
+
+| city   | temperature | humidity | timestamp                   | country |
+| :----- | :---------- | :------- | :-------------------------- | ------- |
+| Sofia  | 27.5        | 0        | 2023-08-14T11:01:17.000000Z |         |
+| Berlin | 28          | 0.42     | 2023-08-14T11:14:19.000000Z |         |
+| Paris  | 26          | 0.58     | 2023-08-14T11:26:10.000000Z | France  |
+
+Adding new columns, reordering columns, and changing column names are not the only things that we can potentially do over the ILP protocol. 
+
+To give you an idea of what we can do, we can: 
+
+* include non-ASCII characters in table and column names, as well as column values
+* skip existing columns and the timestamp value in the messages
+* duplicate certain columns, so that the column name and its value is repeated multiple times in the same message 
+* continue with the list of mutations leading to valid and invalid ILP messages
+
+Next, we can decide whether to apply or not to apply these mutations based on a RNG (Random Number Generator) and run the scenario over multiple connections. Once all messages are sent and received, we can compare the table's contents with the expected rows.
+
+The above description is basically what our first fuzz test was doing. While being simple, it revealed - as we say - a "can of worms", i.e. many issues, around our ILP code. Since the first fuzzer, we wrote 62 additional tests, most of which are aimed to stress our storage, protocol implementation, and concurrent code. Needless to say, the number keeps growing. 
+
+While 62 fuzzers doesn't sound like a huge number, each of these tests produces a great number of different test scenarios, all thanks to randomization. To increase our chances of finding bugs, our CI runs the fuzzers periodically. If you'd like to see what the tests look like, [take a look at the test](https://github.com/questdb/questdb/blob/e98177f8f74c35184019c008d2c332d242abddb2/core/src/test/java/io/questdb/test/griffin/wal/DedupInsertFuzzTest.java) that covers the new deduplication feature.
+
+Based on our experience, we believe that any complex software dealing with messages and events can benefit from fuzzing. Using randomness to produce combinations of messages and events along with the verification logic for the end result is a very powerful approach. And it's not only about databases, compilers, and CLI tools - you may successfully add fuzzers to applications of almost any kind.
+
+As for the QuestDB team, we want to improve our fuzzers by adding tests dedicated to our SQL engine. Luckily, in the interim, the SQLancer team has come to our rescue.
+
+## SQL fuzzing
+
+[SQLancer](https://github.com/sqlancer/sqlancer) (Synthesized Query Lancer) is a tool to automatically test SQL Database Management Systems (DBMS) to find logic bugs in their implementation. 
+
+It operates in two phases:
+
+1. **Database generation.** During this phase, SQLancer creates a populated database and stresses the DBMS to increase the probability of causing an inconsistent state. First, it creates random tables. Then, random SQL statements are chosen to generate, modify, and delete data.
+
+2. **Testing.** Here, SQLancer detects logic bugs based on the generated database.
+
+Both of the above phases support a number of testing approaches, depending on the supported database. For instance, the testing phase supports the so-called Non-optimizing Reference Engine Construction (NoREC) approach. NoREC is aimed to find optimization bugs. It translates a query that may be optimized by the database into another query for which optimizations are much less likely to be applicable. Then it runs both queries and compares the result. 
+
+Interestingly, we do a similar thing when testing our SIMD [JIT compiler](https://questdb.io/blog/2022/01/12/jit-sql-compiler/). We also have a [non-fuzz test](https://github.com/questdb/questdb/blob/6335238526d445d026550c8f34a3cf7b5da02090/core/src/test/java/io/questdb/test/griffin/CompiledFilterRegressionTest.java) that runs a query with an enabled and disabled JIT compiler that then checks if the result sets are equal. Such an approach is usually called [test oracle](https://en.wikipedia.org/wiki/Test_oracle) (or just oracle).
+
+Initial QuestDB support was contributed to SQLancer by [Suri Zhang](https://github.com/SuriZhang) and after that, we received [a number of GH issues](https://github.com/questdb/questdb/issues/created_by/YuanchengJiang) from the SQLancer team. We're very thankful to the SQLancer team for all of the reported issues, and continue to fix them in new releases. Needless to say: we'll keep using SQLancer to find bugs in the SQL engine. We're also [working on a patch](https://github.com/sqlancer/sqlancer/pull/798) to improve QuestDB support.
+
+## Do I need fuzzing?
+
+We believe that the answer is "yes, you do". Fuzzers are valuable for any complex software. Fuzz tests are not only about databases, compilers, and CLI tools - you may successfully add them to applications of almost any kind. It doesn't mean that you should go all-in for this kind of test and nothing else, but writing a fuzzer, as an addition, once you've written "traditional" tests, helped us to build a more robust database and it will certainly help you.
+
+As usual, we encourage you to try the latest QuestDB release and share your feedback with our [Slack Community](https://slack.questdb.io/). You can also play with our [live demo](https://demo.questdb.io/) to see how fast it executes your queries. And, of course, contributions to our [open-source database on GitHub](https://github.com/questdb/questdb) are more than welcome.
