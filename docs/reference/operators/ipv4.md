@@ -6,11 +6,11 @@ description: Operator examples with IPv4 type data.
 
 This document outlines the IPv4 data type operators.
 
-IPv4 addresses are **passed** as string, but are **stored** as 32-bit integers.
+IPv4 addresses are **passed** as `string`, but are **stored** as `int`.
 
 When applied as IPv4, they are presented between the range `0.0.0.1 - 255.255.255.255`.
 
-When passed as a string, they may contain a subnet mask: `35.24.65.2/16`.
+When passed as a `string`, they may contain a subnet mask: `35.24.65.2/16`
 
 Addresses when passed may contain trailing and leading dots: `...1.1.1.1...`.
 
@@ -18,11 +18,95 @@ See [IPv4 SQL functions](/docs/reference/function/ipv4/) for more context about 
 
 ## Operators
 
+### < Less than
+
+Takes two IPv4 arguments.
+
+Returns a boolean.
+
+#### Example
+
+Use case: testing to see if one IP address is less than another.
+
+```sql
+ipv4 '33.1.8.43' < ipv4 '200.6.38.9' -> T
+```
+
+### <= Less than or equal
+
+Takes two IPv4 arguments.
+
+Returns a boolean.
+
+#### Example
+
+Use case: testing to see if one IP address is less than or equal to another.
+
+```sql
+ipv4 '33.1.8.43' <= ipv4 '33.1.8.43' -> T
+```
+
+### > Greater than
+
+Takes two IPv4 arguments.
+
+Returns a boolean.
+
+#### Example
+
+Use case: testing to see if one IP address is greater than another.
+
+```sql
+ipv4 '33.1.8.43' > ipv4 '200.6.38.9' -> F
+```
+
+### >= Greater than or equal
+
+Takes two IPv4 arguments.
+
+Returns a boolean.
+
+#### Example
+
+Use case: testing to see if one IP address is greater than or equal to another.
+
+```sql
+ipv4 '33.1.8.43' >= ipv4 '200.6.38.9' -> F
+```
+
+### = Equals
+
+Takes two IPv4 arguments.
+
+Returns a boolean.
+
+#### Example
+
+Use case: testing to see if one IP address is equal to another.
+
+```sql
+ipv4 '44.8.9.10' = ipv4 '6.2.90.1' -> F
+```
+
+### != Does not equal
+
+Takes two IPv4 arguments.
+
+Returns a boolean.
+
+#### Example
+
+Use case: testing to see if one IP address is not equal to another.
+
+```sql
+ipv4 '44.8.9.10' != ipv4 '6.2.90.1' -> T
+```
+
 ### << Strict IP address contained by 
 
 Takes one IPv4 argument and one string argument.
 
-The string argument can accept IPv4 addresses with a subnet mask.
+The string argument can accept IPv4 addresses with a subnet mask, the IPv4 argument cannot.
 
 Returns a boolean.
 
@@ -39,7 +123,7 @@ ipv4 '35.24.65.11' << '35.24.65.2/32' -> F
 
 Takes one IPv4 argument and one string argument
 
-The string argument can accept IPv4 addresses with a subnet mask.
+The string argument can accept IPv4 addresses with a subnet mask, the IPv4 argument cannot.
 
 Returns a boolean.
 
@@ -56,7 +140,6 @@ ipv4 '35.24.65.11' << '35.24.65.2/32' -> T
 
 Takes two IPv4 arguments.
 
-
 Returns an IPv4 address.
 
 #### Example
@@ -70,7 +153,6 @@ ipv4 '99.8.63.41' & ipv4 '0.0.63.41' -> 0.0.63.41
 ### ~ Bitewise NOT
 
 Takes one IPv4 argument.
-
 
 Returns an IPv4 address.
 
@@ -86,7 +168,6 @@ Use case: computing broadcast address' bitmask from a netmask
 
 Takes two IPv4 arguments.
 
-
 Returns an IPv4 address.
 
 #### Example
@@ -100,7 +181,6 @@ ipv4 '92.11.8.40' | '0.0.255.255' -> 92.11.255.255
 ### + Add offset to an IP address
 
 Takes one IPv4 argument and one integer argument.
-
 
 Returns an IPv4 address.
 
@@ -116,7 +196,6 @@ ipv4 '92.11.8.40' + 5 -> 92.11.8.45
 ### - Subtract offset from IP address
 
 Takes one IPv4 argument and one integer argument.
-
 
 Returns an IPv4 address.
 

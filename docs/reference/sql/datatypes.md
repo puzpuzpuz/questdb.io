@@ -111,7 +111,39 @@ send `UUIDs` as `strings` to be converted to UUIDs by the server.
 
 ## IPv4
 
-For a full list of operators, see [IPv4 Operators](/docs/reference/operators/ipv4/)
+QuestDB supports the IPv4 data type. 
+
+The data type adds validity checks and type-specific functions.
+
+They are - as one would imagine - very useful when dealing with IP addresses.
+
+Within a column, all addresses are stored as a 32-bit `int`. 
+
+When passed as an `IPv4` argument, they may not include a netmask. When passed as a `string` argument (in functions where this is explicitly allowed), they may include a netmask or a subnet with a netmask. 
+
+
+`IPv4` arguments may take the following form: 
+
+* ip address without a netmask: `23.62.200.1`
+
+`String` arguments may take the following forms:
+
+* ip address without a netmask: `23.62.200.1`
+* ip address with a netmask: `5.43.11.8/2` 
+* a subnet with a netmask: `2.232/16` 
+
+Columns may be created with the IPv4 data type like so:
+
+```sql
+-- Creating a table named traffic with two ipv4 columns: src and dst.
+CREATE TABLE traffic (ts timestamp, src ipv4, dst ipv4) timestamp(ts) PARTITION BY DAY;
+```
+
+IPv4 addresses also support a wide range of existing SQL functions and contain their own operators:
+
+* For a table of supported SQL functions, see [IPv4 Supported SQL Functions](docs/reference/function/ipv4).
+
+* For a full list of operators, see [IPv4 Operators](/docs/reference/operators/ipv4/).
 
 ### Limitations
 
