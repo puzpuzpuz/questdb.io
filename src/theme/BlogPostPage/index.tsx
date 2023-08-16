@@ -52,7 +52,6 @@ function BlogPostPage(props: Props): JSX.Element {
     editUrl,
   } = metadata as MetadataWithSource
   const { author, image, keywords } = frontMatter
-
   const authorURL = frontMatter.author_url ?? frontMatter.authorURL
   const authorTitle = frontMatter.author_title ?? frontMatter.authorTitle
   const authorImageURL =
@@ -111,7 +110,7 @@ function BlogPostPage(props: Props): JSX.Element {
         }}
       </StructuredData>
 
-      <Layout title={title} description={description}>
+      <Layout title={title} description={description} image={image}>
         <header className={styles.header}>
           <h1 className={styles.title}>{title}</h1>
 
