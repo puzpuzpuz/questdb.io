@@ -273,6 +273,11 @@ html[data-theme="light"] .markdown img[src$=".svg"][alt*="chart"] {
   filter: invert(1) hue-rotate(200deg);
 }
 
+.markdown table code {
+  display: inline-block;
+  max-width: 25ch;
+}
+
 .alert,
 .admonition.admonition-note {
   border: 0;
