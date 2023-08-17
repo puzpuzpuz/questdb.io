@@ -141,7 +141,7 @@ CREATE TABLE traffic (ts timestamp, src ipv4, dst ipv4) timestamp(ts) PARTITION 
 
 IPv4 addresses also support a wide range of existing SQL functions and contain their own operators:
 
-* For a table of supported SQL functions, see [IPv4 Supported SQL Functions](docs/reference/function/ipv4).
+* For a table of supported SQL functions, see [IPv4 Supported SQL Functions](/docs/reference/function/ipv4).
 
 * For a full list of operators, see [IPv4 Operators](/docs/reference/operators/ipv4/).
 
