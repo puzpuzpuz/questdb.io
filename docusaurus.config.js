@@ -84,10 +84,16 @@ const config = {
       respectPrefersColorScheme: true,
     },
     image: "/img/og.gif",
-    gtag: {
-      trackingID: "G-HS91L4C362",
-      anonymizeIP: true,
-    },
+
+    ...(typeof process.env.GOOGLE_ANALYTICS_ID === "string"
+      ? {
+          gtag: {
+            trackingID: process.env.GOOGLE_ANALYTICS_ID,
+            anonymizeIP: true,
+          },
+        }
+      : {}),
+
     prism: {
       defaultLanguage: "questdb-sql",
       additionalLanguages: [
@@ -105,11 +111,18 @@ const config = {
       theme: require("./src/internals/prism-github"),
       darkTheme: require("./src/internals/prism-dracula"),
     },
-    algolia: {
-      appId: "QL9L2YL7AQ",
-      apiKey: "2f67aeacbe73ad08a49efb9214ea27f3",
-      indexName: "questdb",
-    },
+
+    ...(typeof process.env.ALGOLIA_API_KEY === "string" &&
+    typeof process.env.ALGOLIA_APP_ID === "string"
+      ? {
+          algolia: {
+            appId: process.env.ALGOLIA_APP_ID,
+            apiKey: process.env.ALGOLIA_API_KEY,
+            indexName: "questdb",
+          },
+        }
+      : {}),
+
     navbar: {
       title: " ",
       logo: {
