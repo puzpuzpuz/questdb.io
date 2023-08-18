@@ -72,9 +72,9 @@ With the basics covered, let's look at how fuzzing helped us make QuestDB better
 
 ## Our fuzzing story
 
-As we already mentioned, our first fuzz test was written almost two years ago. It tested InfluxDB Line Protocol protocol by sending semi-random, potentially invalid messages. The first test immediately revealed a number of critical issues, including a few segfaults.
+As we already mentioned, our first fuzz test was written almost two years ago. It tested InfluxDB Line Protocol by sending semi-random, potentially invalid messages. The first test immediately revealed a number of critical issues, including a few segfaults.
 
-To give you an impression of that fuzzer, let's dive into our InfluxDB Line Protocol protocol [implementation](https://questdb.io/docs/reference/api/ilp/overview/). Creating a single-row table is as simple as sending the following to `<questdb_host>:9009`:
+To give you an impression of that fuzzer, let's dive into our InfluxDB Line Protocol [implementation](https://questdb.io/docs/reference/api/ilp/overview/). Creating a single-row table is as simple as sending the following to `<questdb_host>:9009`:
 
 ```shell
 weather,city=Sofia temperature=27.5 1692010877000000000\n
@@ -125,7 +125,7 @@ Here, we've changed the order for the `humidity` and `temperature` columns, adde
 | Berlin | 28          | 0.42     | 2023-08-14T11:14:19.000000Z |         |
 | Paris  | 26          | 0.58     | 2023-08-14T11:26:10.000000Z | France  |
 
-Adding new columns, reordering columns, and changing column names are not the only things that we can potentially do over the InfluxDB Line Protocol protocol. 
+Adding new columns, reordering columns, and changing column names are not the only things that we can potentially do over the InfluxDB Line Protocol. 
 
 To give you an idea of what we can do, we can: 
 

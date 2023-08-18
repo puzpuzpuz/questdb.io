@@ -3,7 +3,7 @@ title: QuestDB Flink connector
 sidebar_label: Flink
 description:
   QuestDB ships a QuestDB Flink connector for ingesting messages from Apache
-  Flink via the InfluxDB Line Protocol protocol.
+  Flink via the InfluxDB Line Protocol.
 ---
 
 import InterpolateReleaseData from "../../src/components/InterpolateReleaseData"

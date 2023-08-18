@@ -2,7 +2,7 @@
 title: QuestDB Kafka Connector
 description:
   QuestDB ships a QuestDB Kafka connector for ingesting messages from Kafka via
-  the InfluxDB Line Protocol protocol.
+  the InfluxDB Line Protocol.
 ---
 
 QuestDB ships a
@@ -303,6 +303,7 @@ partitioning, creating indexes, etc.
   <summary>Does this connector work with Schema Registry? </summary>
 <p>
 
+
 The Connector works independently of the serialization strategy used. It relies
 on Kafka Connect converters to deserialize data. Converters can be configured
 using `key.converter` and `value.converter` options, see the configuration
@@ -311,10 +312,12 @@ section above.
 </p>
 </details>
 
+
 <details>
   <summary>I'm getting this error:
 "org.apache.kafka.connect.errors.DataException: JsonConverter with schemas.enable requires 'schema' and 'payload' fields and may not contain additional fields. If you are trying to deserialize plain JSON data, set schemas.enable=false in your converter configuration."</summary>
 <p>
+
 
 This error means that the connector is trying to deserialize data using a
 converter that expects a schema. The connector does not require schemas, so you
@@ -325,9 +328,11 @@ or `key.converter.schemas.enable=false` in the connector configuration.
 </p>
 </details>
 
+
 <details>
   <summary>Does this connector work with Debezium?</summary>
 <p>
+
 
 Yes, it's been tested with Debezium as a source and a
 [sample project](https://github.com/questdb/kafka-questdb-connector/tree/main/kafka-questdb-connector-samples/stocks)
@@ -340,11 +345,13 @@ is no need to handle them explicitly.
 </p>
 </details>
 
+
 <details>
   <summary>QuestDB is a 
   <a href="/glossary/time-series-database/"> time-series database</a>, how does it fit into Change Data
 Capture via Debezium?</summary>
 <p>
+
 
 QuestDB works with Debezium just great! This is the recommended pattern:
 Transactional applications use a
@@ -361,9 +368,11 @@ recent stock prices and a chart with the history of changes.
 </p>
 </details>
 
+
 <details>
   <summary>How I can select which fields to include in the target table?</summary>
 <p>
+
 
 Use the ReplaceField transformation to remove unwanted fields. For example, if
 you want to remove the `address` field, you can use the following configuration:
@@ -392,10 +401,12 @@ for more details.
 </p>
 </details>
 
+
 <details>
   <summary>I need to run Kafka Connect on Java 8, but the connector says it requires
 Java 11. What should I do? </summary>
 <p>
+
 
 The Kafka Connect-specific part of the connectors works with Java 8. The
 requirement for Java 11 is coming from QuestDB client itself. The zip archive
@@ -408,6 +419,7 @@ issues. If you do, please report them to us.
 
 </p>
 </details>
+
 
 ## See also
 
