@@ -1,0 +1,275 @@
+---
+title: "QuestDB Enterprise: Role-based Access Control Walkthrough"
+author: QuestDB Team
+author_url: https://github.com/questdb
+author_image_url: https://avatars.githubusercontent.com/u/52297642?s=200&v=4
+description: Role-based access control is now available in QuestDB Enterprise. This article presents a walkthrough of a basic implementation.
+tags: [tutorial, open source, questdb, rbac, acl, enterprise]
+image: /img/blog/2023-08-15/roles.webp
+slug: enterprise-rbac-access-control-list-tutorial
+---
+
+import Screenshot from "@theme/Screenshot"
+
+<Screenshot
+  alt="Three rows of ten diverse lego people - their colourful outfits demonstrate various roles and jobs, and a radical amount of personality."
+  src="/img/blog/2023-08-15/roles.webp"
+/>
+
+## Introducing role-based access control
+
+Role-based Access Control (RBAC) is a common request from teams with fast growing datasets. **[QuestDB Enterprise](/enterprise/)** and **[QuestDB Cloud](/cloud/)** deployments now provide a robust, SQL-based access control syntax to keep permissions organized and your team free from the looming stress of accidental destruction.
+
+This tutorial demonstrates RBAC basics with both Postgres Wire (PGWire) and InfluxDB Line Protocol (ILP) ingest examples. After reading, you will be ready to administer an instance of any size.
+
+## Role call!
+
+Full administrative access to all tables and operations is useful for moving fast during implementation. But eventually, projects demonstrate value and datasets grow, and more team members request access. These people often span many types of role and possess a wide range of technical comfort. We want to accommodate their needs, and make it easy to grant or revoke access as required.
+
+For example, analysts, support agents and similar may just want to `SELECT` and read wherever appropriate and work with the peace-of-mind that they will not **blow something up** by mistake. While an overall administrator will want to alter permissions, see everything, create tables and `INSERT` data. 
+
+If someone no longer needs access? One command and they are revoked.
+
+How does it work? Proceed!
+
+## RBAC in QuestBD Enterprise
+
+Role-based Access Control is the concept and an Access Control List (ACL) is how the concept is put into practice. We start with the assumption that you have a local QuestDB Enterprise binary running. If you can already access your QuestDB Enterprise deployment via QuestDB Cloud, [skip ahead to the next section](#simple-sql-setup).
+
+In our QuestDB `server.conf`, set the following to `true`:
+
+```shell
+# Enable access control and authentication
+acl.enabled=true
+```
+
+Access control automatically enables authentication.
+If you are after authentication without authorization, use this config option instead:
+
+```shell
+# Enable authentication only, no ACL
+auth.enabled=true
+```
+
+Using the default credential of `admin` / `quest`, the user can now login with full permissions. We are experimenting and this data is not sensitive, but obligatory warning: **do not proceed with default passwords!** Luckily, that is a key reason why we are interested in a flexible ACL: security.
+
+Next we need to put data in, and then we can unpack how the ACL functions.
+
+### Simple SQL setup
+
+The handy [Create my first dataset](/docs/get-started/first-database/) document guides the creation of a small two-table data set. While QuestDB is most adept at ingesting vast amounts of time-series data, our demo case will use static data. We will work with temperature, and begin with basic SQL commands.
+
+First, create a table with sensors of various make and some cities:
+
+```sql
+/* 
+1. Create an initial sensors table
+2. Fill it with sample data
+*/
+
+CREATE TABLE sensors 
+AS (
+    SELECT
+        x ID,
+        rnd_symbol('Eberle', 'Honeywell', 'Omron', 'United Automation', 'RS Pro') make,
+        rnd_symbol('New York', 'Miami', 'Boston', 'Chicago', 'San Francisco') city
+    FROM long_sequence(10000) x
+);
+```
+
+Another table will do, to demonstrate temperature readings across time:
+
+```sql
+/* 
+1. Create an initial temperature readings table
+2. Fill it, too, with sample data across time
+*/
+
+CREATE TABLE readings
+AS(
+    SELECT
+        x ID,
+        timestamp_sequence(to_timestamp('2019-10-17T00:00:00', 'yyyy-MM-ddTHH:mm:ss'), rnd_long(1,10,0) * 100000L) ts,
+        rnd_double(0)*8 + 15 temp,
+        rnd_long(0, 10000, 0) sensorId
+    FROM long_sequence(10000000) x)
+TIMESTAMP(ts)
+PARTITION BY MONTH;
+```
+
+Right now we are an admin, the `root` user. 
+
+We can configure all available options and blow stuff up as much as we please.
+
+But now we have company coming, and the house must be in order.
+
+## Meet Alex the analyst
+
+A new analyst joins the team.
+
+Alex is new to SQL, but has a keen eye for data analysis. 
+
+They request access to the dataset to create charts and reports.
+
+As administrators, we agree that Alex should:
+
+* have access to both tables in the dataset
+* be able to `SELECT` (read) only
+* have no destructive capabilities
+
+We also assume there may be more analysts like Alex in the near future.
+
+For now, create a user for Alex and provide a password:
+
+```sql
+CREATE USER alex_analyst WITH PASSWORD s3cr3t$$$$444!#;
+```
+
+Before we provide them their credentials, we should think more about how to provide permissions.
+
+### Group well, secure well
+
+Right now, Alex is a fully restricted user by default. But we want to open things up. An ACL is most helpful when we can be granular with our permissions. With granularity, we choose what someone can and cannot access to a fine and careful degree. 
+
+At this point, we could setup permissions for _just_ Alex. But once other analysts see the marvelous new reports, we expect that more access requests will follow. It would therefore be ideal to setup a group for all present and future analysts. 
+
+To do so, create a group and assign permissions to it:
+
+```sql
+CREATE GROUP analysts;
+```
+
+Next, determine what the group can and cannot do.
+
+To start, analysts can read everything in the `readings` table:
+
+```sql
+GRANT SELECT ON readings(ID, temp, sensorId, ts, timestamp) TO analysts;
+```
+
+Great -- that is `readings`, and an analyst can access the table and all columns. By adding explicit permissions to the analyst group, we have implicitly restricted everything else. For all future analysts, the `sensors` table and any additional `reading` columns are to remain a secret. 
+
+To demonstrate, add Alex's user to the new group:
+
+```sql
+ADD user alex_analyst to analysts;
+```
+
+### Tuning a group
+
+Once a user is assigned to a group and that group has permissions, any further access must be explicit. We have said what they _can_ see, and everything else is now restricted. Users in an access controlled group can see what is granted and nothing more. 
+
+Consider that Alex logged in and tried a broad `SELECT` statement:
+
+```sql
+SELECT * FROM readings;
+```
+
+As expected, all data are present (_table truncated for clarity_):
+
+| ID | ts | temp | sensorId |
+|---|---|---|---|
+| 1 | 2019-10-17T00:00:00.000000Z | 17.707507619309 | 875 |
+| 2 | 2019-10-17T00:00:00.700000Z | 19.45109059006 | 7279 |
+| 3 | 2019-10-17T00:00:01.200000Z | 16.971598905071 | 2116 |
+| 4 | 2019-10-17T00:00:01.400000Z | 19.621503912462 | 8183 |
+
+The `*` query worked because the group can see all of the columns. If they lacked permission to just one of the columns, any `SELECT` statements would need to include only the permitted columns, or else they would be rejected. This applies to tables, too. 
+
+If Alex tries to `SELECT` from the `sensors` table?
+
+```sql
+SELECT * FROM sensors;
+x Access denied [SELECT on sensors(ID)]
+```
+
+Not allowed!
+
+### Practicing "no"
+
+If we were to adjust the group and remove access to a column, the change takes effect the moment the permission is altered. For example, if we decide analysts do not need to see the `sensorId` column, OK - we can adjust access using `REVOKE`. 
+
+This is true across all contexts. If a user were to try to `JOIN` into an area where they lack permissions, then a denial will be received. If they cannot see the column, table or database, then they cannot access it via any aggregate.
+
+While the group concept is valuable for overall organization, direct changes to a specific user within a group may be needed. In that case, no problem. It is possible to `GRANT` access to specific users, and that access will form a union with the group permission.
+
+Alex already has `readings` access from the analysts group.
+
+But now we can be direct and grant Alex `SELECT` on `sensors`:
+ 
+```sql
+GRANT SELECT ON sensors TO alex_analyst;
+```
+
+Alex can now do interesting `JOIN` statements across the entire access plane:
+
+```sql
+SELECT *
+FROM readings
+JOIN(
+    SELECT ID sensId, make, city
+    FROM sensors)
+ON readings.sensorId = sensId;
+```
+
+As above however, what if analysts lose access to `sensId`?
+
+```sql
+REVOKE SELECT ON readings(sensorId) FROM analysts;
+```
+
+On Alex's next `SELECT * FROM readings;` attempt, they will receive an error:
+
+```sql
+Access denied [SELECT on readings(sensorId)]
+```
+
+On Alex's broad `JOIN` query? The same thing, rejected.
+
+Alex has explicit full access to `sensors` and limited group access to `readings`. This demonstrates inherited permissions. New users have no permissions. They are locked down by default. But once placed within a group or granted an explicit individual permission, their scope is then limited.
+
+## Implications of ILP
+
+When using InfluxDB Line Protocol (ILP) for ingest, if `table_name` is set and does not yet exist in QuestDB, the table is created. What if, in the future, we wanted a specific role to create tables only over ILP?
+
+Consider we have a specialized data entry role we call `streamers`. These individuals setup new data streams via ILP. No one else requires ILP, so we need only apply the permission to their group.
+
+There is a specific permission to allow this:
+
+```sql
+/* Create a new group */
+CREATE GROUP streamers;
+
+/* Create a user without a password! Until next section... */
+CREATE USER sam_streamer;
+
+/* Add new user to new group */
+ADD user sam_streamer to streamers;
+
+/* Grant group permissions for creating tables via ILP */
+GRANT CREATE TABLE OVER ILP to streamers;
+```
+
+A person who creates a table gets ALL table and column level permissions for the entire table.
+
+A person who adds a new column to a table will get ALL column level permissions for the newly created column.
+
+This is very helpful for our `streamers`, who need to setup and tune new streams and will therefore automatically receive permissions to do whatever is needed within their creations. If an analyst were to want to view these new tables? They cannot, they now require access to do so.
+
+### Authentication, password or JWK
+
+Our walkthrough so far demonstrates basic password authentication. Above, we created `sam_streamer` but did not provide Sam a password. That is because we expect Sam to use JWK keypair authentication instead of basic password authentication. Why? The ILP protocol does not support the option.
+
+To do so, we `ALTER` the user and create a JWK access token:
+
+```sql
+ALTER USER sam_streamer CREATE TOKEN TYPE JWK;
+```
+
+This return the needed key values. The client can now use these values to authenticate into the database, with no server restart required. With their keys in hand, `sam_streamer` creates an authenticated stream which can create new tables in the database.
+
+## Summary
+
+RBAC is essential for a secure and scalable deployment. Deep coverage across databases, tables and columns and the ability to flexibly group and to provide roles that span across groups, means that granular control over access is at your fingertips.
+
+> RBAC with QuestDB is available in QuestDB Cloud or QuestDB Enterprise. The best way to test RBAC is to [create your own Cloud deployment](https://cloud.questdb.com) and check it out with your own data. Right now, new sign-ups receive $200 in free credit. We would love to hear what you think!
