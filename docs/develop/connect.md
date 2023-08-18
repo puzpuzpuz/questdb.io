@@ -40,10 +40,10 @@ import Screenshot from "@theme/Screenshot"
     />
 </a>
 
-## InfluxDB Line Protocol
+## InfluxDB Line Protocol (ILP)
 
 The fastest way to insert data into QuestDB is using the InfluxDB Line
-Protocol (ILP).
+Protocol.
 
 It is an insert-only protocol that bypasses SQL `INSERT` statements achieving
 higher throughput.
@@ -54,7 +54,7 @@ readings,city=London temperature=23.6 1465839830100700000\n
 readings,make=Honeywell temperature=23.2,humidity=0.443 1465839830100800000\n
 ```
 
-Our [ILP tutorial](/docs/develop/insert-data/#influxdb-line-protocol) covers
+Our [InfluxDB Line Protocol tutorial](/docs/develop/insert-data/#influxdb-line-protocol) covers
 ingesting data with various client libraries.
 
 For a more in-depth understanding, see our

@@ -390,7 +390,7 @@ see the [Java API documentation](/docs/reference/api/java-embedded/).
 
 ## InfluxDB Line Protocol
 
-Geohashes may also be inserted via InfluxDB Line Protocol (ILP) by the following
+Geohashes may also be inserted via InfluxDB Line Protocol by the following
 steps:
 
 1. Create a table with columns of geohash type beforehand:
@@ -399,7 +399,7 @@ steps:
 CREATE TABLE tracking (ts timestamp, geohash geohash(8c));
 ```
 
-2. Insert via ILP using the `geohash` field:
+2. Insert via InfluxDB Line Protocol using the `geohash` field:
 
 ```bash
 tracking geohash="46swgj10"
@@ -407,7 +407,7 @@ tracking geohash="46swgj10"
 
 :::note
 
-The ILP parser does not support geohash literals, only strings. This means that
+The InfluxDB Line Protocol parser does not support geohash literals, only strings. This means that
 table columns of type `geohash` type with the desired precision must exist
 before inserting rows with this protocol.
 
@@ -454,7 +454,7 @@ ts,geohash
 17/01/2022 01:02:21,46swgj10
 ```
 
-Just like ILP, CSV import supports geohash strings only, so the same
+Just like InfluxDB Line Protocol, CSV import supports geohash strings only, so the same
 restrictions apply.
 
 ## The PostgreSQL wire protocol

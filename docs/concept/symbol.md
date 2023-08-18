@@ -31,7 +31,7 @@ This page presents the concept, optional setting, and their indication for
   data.
 - Columns defined as `symbol` types support indexing.
 - By default, QuestDB caches `symbol` types in memory for improved query speed
-  and ILP ingestion speed. The setting is configurable.
+  and InfluxDB Line Protocol ingestion speed. The setting is configurable.
 
 ## Usage of `symbols`
 

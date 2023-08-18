@@ -14,7 +14,7 @@ Deduplication can only be enabled for [Write-Ahead Log (WAL)](/docs/concept/writ
 
 Deduplication in QuestDB makes table inserts [idempotent](https://en.wikipedia.org/wiki/Idempotence). The primary use case is to allow for re-sending data within a given time range without creating duplicates.
 
-This can be particularly useful in situations where there is an error in sending data, such as when using [ILP](/docs/reference/api/ilp/overview), and there is no clear indication of how much of the data has already been written. With deduplication enabled, it is safe to re-send data from a fixed period in the past to resume the writing process.
+This can be particularly useful in situations where there is an error in sending data, such as when using [InfluxDB Line Protocol](/docs/reference/api/ilp/overview), and there is no clear indication of how much of the data has already been written. With deduplication enabled, it is safe to re-send data from a fixed period in the past to resume the writing process.
 
 Enabling deduplication on a table has an impact on writing performance, especially when multiple `UPSERT KEYS` are configured. Generally, if the data have mostly unique timestamps across all the rows, the performance impact of deduplication is low. Conversely, the most demanding data pattern occurs when there are many rows with the same timestamp that need to be deduplicated on additional columns.
 

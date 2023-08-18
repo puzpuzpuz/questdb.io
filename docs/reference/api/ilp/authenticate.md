@@ -5,7 +5,7 @@ description:
   TCP using JSON web keys.
 ---
 
-ILP Authentication works by using an
+InfluxDB Line Protocol Authentication works by using an
 [elliptic curve P-256](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography)
 JSON Web Token (JWT) to sign a server challenge. This page shows how to
 authenticate clients with QuestDB when using
@@ -262,7 +262,7 @@ func main() {
 	}
 	// Make sure to close the sender on exit to release resources.
 	defer sender.Close()
-	// Send a few ILP messages.
+	// Send a few InfluxDB Line Protocol messages.
 	err = sender.
 		Table("trades").
 		Symbol("name", "test_ilp1").

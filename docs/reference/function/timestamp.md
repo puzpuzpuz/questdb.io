@@ -10,7 +10,7 @@ description: Timestamp function reference documentation.
 - during a [CREATE TABLE](/docs/reference/sql/create-table/#timestamp) operation
 - during a [SELECT](/docs/reference/sql/select#timestamp/) operation
   (`dynamic timestamp`)
-- when ingesting data via ILP, for tables that do not already exist in QuestDB,
+- when ingesting data via InfluxDB Line Protocol, for tables that do not already exist in QuestDB,
   partitions are applied automatically by day by default with a `timestamp`
   column
 

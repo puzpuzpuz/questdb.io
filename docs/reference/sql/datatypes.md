@@ -7,9 +7,9 @@ description: Data types reference documentation.
 The type system is derived from Java types.
 
 | Type Name         | Storage bits | Nullable | Description                                                                                                                                                                                                                                                         |
-| ----------------- | ------------ | -------- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------- | ------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `boolean`         | `1`          | No       | Boolean `true` or `false`.                                                                                                                                                                                                                                          |
-| `ipv4`         | `32`          | Yes       | `0.0.0.1` to `255.255.255. 255`                                                                                                                                                                                 |
+| `ipv4`            | `32`         | Yes      | `0.0.0.1` to `255.255.255. 255`                                                                                                                                                                                                                                     |
 | `byte`            | `8`          | No       | Signed integer `-128` to `127`.                                                                                                                                                                                                                                     |
 | `short`           | `16`         | No       | Signed integer `-32768` to `32767`.                                                                                                                                                                                                                                 |
 | `char`            | `16`         | Yes      | `unicode` character.                                                                                                                                                                                                                                                |
@@ -39,7 +39,7 @@ characters) or disk size, whichever is smaller.
 Nullable types use a specific value to mark `NULL` values:
 
 | Type Name        | Null value                                                           | Description                                                                                                            |
-|------------------| -------------------------------------------------------------------- |------------------------------------------------------------------------------------------------------------------------|
+| ---------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `float`          | `NaN`                                                                | As defined by IEEE 754 (`java.lang.Float.NaN`).                                                                        |
 | `double`         | `NaN`                                                                | As defined by IEEE 754 (`java.lang.Double.NaN`).                                                                       |
 | `long256`        | `0x8000000000000000800000000000000080000000000000008000000000000000` | The value equals four consecutive `long` null literals.                                                                |
@@ -56,8 +56,7 @@ Nullable types use a specific value to mark `NULL` values:
 | `symbol`         | `0x80000000`                                                         | Symbols are stored as `int` offsets in a lookup file.                                                                  |
 | `string`         | `0xffffffff`                                                         | Strings are length prefixed, the length is an `int` and `-1` marks it `NULL` (no further storage is used).             |
 | `binary`         | `0xffffffffffffffff`                                                 | Binary columns are also length prefixed, the length is a `long` and `-1` marks it `NULL` (no further storage is used). |
-| `ipv4`         | `null`                                                 | IPv4 addresses are stored as `int`. |
-
+| `ipv4`           | `null`                                                               | IPv4 addresses are stored as `int`.                                                                                    |
 
 To filter columns that contain, or don't contain, `NULL` values use a filter
 like:
@@ -74,9 +73,7 @@ SELECT * FROM <table> WHERE <column> IS NULL;
 SELECT * FROM <table> WHERE <column> IS NOT NULL;
 ```
 
-:::note
-`NULL` values still occupy disk space. 
-:::
+:::note `NULL` values still occupy disk space. :::
 
 ## The UUID type
 
@@ -96,9 +93,9 @@ INSERT INTO my_table VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11');
 SELECT * FROM my_table WHERE id = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
 ```
 
-If you use the [PGWire protocol](/docs/reference/api/postgres/) then you can use the `uuid` type in your queries.
-The JDBC API does not distinguish the UUID type, but the Postgres JDBC driver
-supports it in prepared statements:
+If you use the [PGWire protocol](/docs/reference/api/postgres/) then you can use
+the `uuid` type in your queries. The JDBC API does not distinguish the UUID
+type, but the Postgres JDBC driver supports it in prepared statements:
 
 ```java
 UUID uuid = UUID.randomUUID();
@@ -106,31 +103,32 @@ PreparedStatement ps = connection.prepareStatement("INSERT INTO my_table VALUES 
 ps.setObject(1, uuid);
 ```
 
-[QuestDB Client Libraries](https://questdb.io/docs/reference/clients/overview/) can
-send `UUIDs` as `strings` to be converted to UUIDs by the server.
+[QuestDB Client Libraries](https://questdb.io/docs/reference/clients/overview/)
+can send `UUIDs` as `strings` to be converted to UUIDs by the server.
 
 ## IPv4
 
-QuestDB supports the IPv4 data type. 
+QuestDB supports the IPv4 data type.
 
 The data type adds validity checks and type-specific functions.
 
 They are - as one would imagine - very useful when dealing with IP addresses.
 
-Within a column, all addresses are stored as a 32-bit `int`. 
+Within a column, all addresses are stored as a 32-bit `int`.
 
-When passed as an `IPv4` argument, they may not include a netmask. When passed as a `string` argument (in functions where this is explicitly allowed), they may include a netmask or a subnet with a netmask. 
+When passed as an `IPv4` argument, they may not include a netmask. When passed
+as a `string` argument (in functions where this is explicitly allowed), they may
+include a netmask or a subnet with a netmask.
 
+`IPv4` arguments may take the following form:
 
-`IPv4` arguments may take the following form: 
-
-* ip address without a netmask: `23.62.200.1`
+- ip address without a netmask: `23.62.200.1`
 
 `String` arguments may take the following forms:
 
-* ip address without a netmask: `23.62.200.1`
-* ip address with a netmask: `5.43.11.8/2` 
-* a subnet with a netmask: `2.232/16` 
+- ip address without a netmask: `23.62.200.1`
+- ip address with a netmask: `5.43.11.8/2`
+- a subnet with a netmask: `2.232/16`
 
 Columns may be created with the IPv4 data type like so:
 
@@ -139,16 +137,18 @@ Columns may be created with the IPv4 data type like so:
 CREATE TABLE traffic (ts timestamp, src ipv4, dst ipv4) timestamp(ts) PARTITION BY DAY;
 ```
 
-IPv4 addresses also support a wide range of existing SQL functions and contain their own operators:
+IPv4 addresses also support a wide range of existing SQL functions and contain
+their own operators:
 
-* For a table of supported SQL functions, see [IPv4 Supported SQL Functions](/docs/reference/function/ipv4).
+- For a table of supported SQL functions, see
+  [IPv4 Supported SQL Functions](/docs/reference/function/ipv4).
 
-* For a full list of operators, see [IPv4 Operators](/docs/reference/operators/ipv4/).
+- For a full list of operators, see
+  [IPv4 Operators](/docs/reference/operators/ipv4/).
 
 ### Limitations
 
-IPv4 column types cannot be created via ILP as the protocol lacks support for IPv4. 
-
-As a result, the server cannot distinguish between string and IPv4 data. 
-
-However, ILP can still insert string data into a pre-existing column of type ipv4.
+IPv4 column types cannot be created via InfluxDB Line Protocol as the protocol
+lacks support for IPv4. As a result, the server cannot distinguish between
+string and IPv4 data. However, InfluxDB Line Protocol can still insert string
+data into a pre-existing column of type IPv4.

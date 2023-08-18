@@ -13,7 +13,7 @@ slug: fuzz-testing-questdb
 import Banner from "@theme/Banner"
 import Screenshot from "@theme/Screenshot"
 
-> QuestDB is a time-series database that offers fast ingest speeds, ILP and PGWire support and SQL query syntax. Databases are placed under constant and demanding workloads, and building one teaches many hard lessons. We're happy to share them with you.
+> QuestDB is a time-series database that offers fast ingest speeds, InfluxDB Line Protocol and PGWire support and SQL query syntax. Databases are placed under constant and demanding workloads, and building one teaches many hard lessons. We're happy to share them with you.
 
 Almost two years ago, we were playing an endless game of whack-a-mole game with segfaults, data corruption, and various concurrency bugs. Our users were reporting them and, for each report, we had to reproduce the bug, analyze and - finally - fix it. Eventually, we decided to take a step back and come up with a deeper solution. This article details our pain, and the journey we took to get out of it. Maybe we can help you out of a similar bind.
 
@@ -72,9 +72,9 @@ With the basics covered, let's look at how fuzzing helped us make QuestDB better
 
 ## Our fuzzing story
 
-As we already mentioned, our first fuzz test was written almost two years ago. It tested the ILP protocol by sending semi-random, potentially invalid messages. The first test immediately revealed a number of critical issues, including a few segfaults.
+As we already mentioned, our first fuzz test was written almost two years ago. It tested InfluxDB Line Protocol protocol by sending semi-random, potentially invalid messages. The first test immediately revealed a number of critical issues, including a few segfaults.
 
-To give you an impression of that fuzzer, let's dive into our ILP protocol [implementation](https://questdb.io/docs/reference/api/ilp/overview/). Creating a single-row table with ILP is as simple as sending the following to `<questdb_host>:9009`:
+To give you an impression of that fuzzer, let's dive into our InfluxDB Line Protocol protocol [implementation](https://questdb.io/docs/reference/api/ilp/overview/). Creating a single-row table is as simple as sending the following to `<questdb_host>:9009`:
 
 ```shell
 weather,city=Sofia temperature=27.5 1692010877000000000\n
@@ -96,7 +96,7 @@ And with the below row:
 | :---- | :---------- | :-------------------------- |
 | Sofia | 27.5        | 2023-08-14T11:01:17.000000Z |
 
-Here we have a [partitioned](https://questdb.io/docs/concept/designated-timestamp/) table named `weather`. The table structure, column names and row values are fully defined in our ILP message. Now, let's send another message over TCP:
+Here we have a [partitioned](https://questdb.io/docs/concept/designated-timestamp/) table named `weather`. The table structure, column names and row values are fully defined in our InfluxDB Line Protocol message. Now, let's send another message over TCP:
 
 ```shell
 weather,city=Berlin temperature=28,humidity=0.42 1692011659000000000\n
@@ -125,18 +125,18 @@ Here, we've changed the order for the `humidity` and `temperature` columns, adde
 | Berlin | 28          | 0.42     | 2023-08-14T11:14:19.000000Z |         |
 | Paris  | 26          | 0.58     | 2023-08-14T11:26:10.000000Z | France  |
 
-Adding new columns, reordering columns, and changing column names are not the only things that we can potentially do over the ILP protocol. 
+Adding new columns, reordering columns, and changing column names are not the only things that we can potentially do over the InfluxDB Line Protocol protocol. 
 
 To give you an idea of what we can do, we can: 
 
 * include non-ASCII characters in table and column names, as well as column values
 * skip existing columns and the timestamp value in the messages
 * duplicate certain columns, so that the column name and its value is repeated multiple times in the same message 
-* continue with the list of mutations leading to valid and invalid ILP messages
+* continue with the list of mutations leading to valid and invalid messages
 
 Next, we can decide whether to apply or not to apply these mutations based on a RNG (Random Number Generator) and run the scenario over multiple connections. Once all messages are sent and received, we can compare the table's contents with the expected rows.
 
-The above description is basically what our first fuzz test was doing. While being simple, it revealed - as we say - a "can of worms", i.e. many issues, around our ILP code. Since the first fuzzer, we wrote 62 additional tests, most of which are aimed to stress our storage, protocol implementation, and concurrent code. Needless to say, the number keeps growing. 
+The above description is basically what our first fuzz test was doing. While being simple, it revealed - as we say - a "can of worms", i.e. many issues, around our InfluxDB Line Protocol code. Since the first fuzzer, we wrote 62 additional tests, most of which are aimed to stress our storage, protocol implementation, and concurrent code. Needless to say, the number keeps growing. 
 
 While 62 fuzzers doesn't sound like a huge number, each of these tests produces a great number of different test scenarios, all thanks to randomization. To increase our chances of finding bugs, our CI runs the fuzzers periodically. If you'd like to see what the tests look like, [take a look at the test](https://github.com/questdb/questdb/blob/e98177f8f74c35184019c008d2c332d242abddb2/core/src/test/java/io/questdb/test/griffin/wal/DedupInsertFuzzTest.java) that covers the new deduplication feature.
 

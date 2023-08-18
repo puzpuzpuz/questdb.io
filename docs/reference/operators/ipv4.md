@@ -208,7 +208,6 @@ ipv4 '92.11.8.40' - 5 -> 92.11.8.35
 ### - Difference between two IP addresses
     
 Takes two IPv4 arguments.
-
     
 Returns a long.
 
@@ -246,8 +245,4 @@ rnd_ipv4('22.43.200.9/16', 0)
 
 ## Limitations
 
-IPv4 column types cannot be created via ILP as the protocol lacks support for IPv4. 
-
-As a result, the server cannot distinguish between string and IPv4 data. 
-
-However, ILP can still insert string data into a pre-existing column of type ipv4.
+IPv4 column types cannot be created via InfluxDB Line Protocol as the protocol lacks support for IPv4. As a result, the server cannot distinguish between string and IPv4 data. However, InfluxDB Line Protocol can still insert string data into a pre-existing column of type IPv4.

@@ -98,7 +98,7 @@ ports:
 
 - 9000: QuestDB Web Console
 - 8812: QuestDB pg-wire
-- 9009: QuestDB ILP ingress line protocol
+- 9009: QuestDB InfluxDB Line Protocol ingress line protocol
 - 47334: MindsDB WebConsole
 - 47335: MindsDB mysql API
 - 47336: MindsDB mongodb API

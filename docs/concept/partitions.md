@@ -32,7 +32,7 @@ import Screenshot from "@theme/Screenshot"
 - Default behavior is`PARTITION BY NONE` when using
   [CREATE TABLE](/docs/reference/sql/create-table/).
 - Default behavior is `PARTITION BY DAY` via
-  [ILP ingestion](/docs/reference/api/ilp/overview/). This is set by
+  [InfluxDB Line Protocol ingestion](/docs/reference/api/ilp/overview/). This is set by
   `line.default.partition.by`.
 - Partitions are defined at table creation. For more information, refer to the
   [CREATE TABLE section](/docs/reference/sql/create-table/).

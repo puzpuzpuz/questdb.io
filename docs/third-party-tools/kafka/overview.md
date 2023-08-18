@@ -8,7 +8,8 @@ Ingesting data from Apache Kafka to QuestDB is a common use case. Possible
 strategies are as the following:
 
 1. [QuestDB Kafka connector](/docs/third-party-tools/kafka/questdb-kafka/): The
-   recommended strategy for connecting to Kafka using ILP and Kafka Connect.
+   recommended strategy for connecting to Kafka using InfluxDB Line Protocol and
+   Kafka Connect.
 2. [JDBC connector](/docs/third-party-tools/kafka/jdbc/): A generic connector
    using Kafka Connect.
 3. Write a dedicated program to read data from Kafka and write to QuestDB.
@@ -21,26 +22,27 @@ strategy and aims to guide advanced users.
 
 QuestDB has developed a QuestDB Kafka connector for Kafka. The connector is
 built on top of the Kafka Connect framework and uses the
-[Influx Line Protocol (ILP)](/docs/develop/insert-data/#influxdb-line-protocol/)
-for communication with QuestDB. Kafka Connect handles concerns such as fault
+[InfluxDB Line Protocol](/docs/develop/insert-data/#influxdb-line-protocol/) for
+communication with QuestDB. Kafka Connect handles concerns such as fault
 tolerance and serialization. It also provides facilities for message
-transformations, filtering, etc. ILP ensures operational simplicity and
-excellent performance: it can insert 100,000s rows per second.
+transformations, filtering, etc. InfluxDB Line Protocol ensures operational
+simplicity and excellent performance: it can insert 100,000s rows per second.
 
 **This is the recommended strategy for most users.**
 
 ## JDBC connector
 
 Similar to the QuestDB Kafka connector, the JDBC connector also uses the Kafka
-Connect framework. However, instead of using a dedicated ILP, it relies on a
-[generic JDBC binary](/docs/third-party-tools/kafka/jdbc/) and QuestDB
+Connect framework. However, instead of using a dedicated InfluxDB Line Protocol,
+it relies on a [generic JDBC binary](/docs/third-party-tools/kafka/jdbc/) and
+QuestDB
 [PostgreSQL protocol compatibility](/docs/develop/connect/#postgresql-wire-protocol).
 It requires objects in Kafka to have associated schema and overall it is more
 complex to set up and run. Compared to the QuestDB Kafka connector, the JDBC
 connector has significantly lower performance, but the following advantages:
 
 - JDBC insertion allows higher consistency guarantees than the fire-and-forget
-  ILP method used by the QuestDB Kafka connector.
+  InfluxDB Line Protocol method used by the QuestDB Kafka connector.
 - Various Kafka-as-a-Service providers often have the JDBC connector
   pre-packaged.
 

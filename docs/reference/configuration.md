@@ -478,7 +478,7 @@ line protocol.
 
 | Property                  | Default | Description                                                                                             |
 | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------- |
-| line.default.partition.by | DAY     | Table partition strategy to be used with tables that are created automatically by ILP. Possible values are: `HOUR`, `DAY`, `WEEK`, `MONTH`, and `YEAR`. |
+| line.default.partition.by | DAY     | Table partition strategy to be used with tables that are created automatically by InfluxDB Line Protocol. Possible values are: `HOUR`, `DAY`, `WEEK`, `MONTH`, and `YEAR`. |
 
 #### TCP specific settings
 
@@ -511,7 +511,7 @@ line protocol.
 :::note
 
 The UDP receiver is deprecated since QuestDB version 6.5.2. We recommend the
-[ILP TCP receiver](/docs/reference/api/ilp/overview/) instead.
+[InfluxDB Line Protocol TCP receiver](/docs/reference/api/ilp/overview/) instead.
 
 :::
 

@@ -28,7 +28,9 @@ The following keywords enable WAL tables:
 
 - WAL table creation via [`CREATE TABLE`](/docs/reference/sql/create-table/)
 
-- Converting an existing table to a WAL table or vice versa via [`SET TYPE`](/docs/reference/sql/alter-table-set-type/) following a database restart.
+- Converting an existing table to a WAL table or vice versa via
+  [`SET TYPE`](/docs/reference/sql/alter-table-set-type/) following a database
+  restart.
 
 - Server-wide configuration via `cairo.wal.enabled.default`
   - When `cairo.wal.enabled.default` is set to `true` (default), the
@@ -44,13 +46,13 @@ for more details.
 The following table highlights the main difference between a WAL and a non-WAL
 table:
 
-| WAL table                                                                                  | Non-WAL table                                                                                                        |
-| ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| Concurrent data ingestion via multiple interfaces                                          | ILP locks the table for ingestion; concurrent data ingestion via other interfaces is not allowed - `Table Busy`error |
-| Unconstrained concurrent DDLs and DMLs                                                     | Concurrent DDLs and DMLs for ILP interface only                                                                      |
-| Asynchronous operations - in rare situations there may be slight delays in data visibility | Synchronous operations - no-wait commits                                                                             |
-| Improved data freshness for `DROP` and `RENAME` of the table with a system-wide lock       | No change                                                                                                            |
-| Some [impacts](#limitations) on existing operations                                        | No change                                                                                                            |
+| WAL table                                                                                  | Non-WAL table                                                                                                                           |
+| ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Concurrent data ingestion via multiple interfaces                                          | InfluxDB Line Protocol locks the table for ingestion; concurrent data ingestion via other interfaces is not allowed - `Table Busy`error |
+| Unconstrained concurrent DDLs and DMLs                                                     | Concurrent DDLs and DMLs for InfluxDB Line Protocol interface only                                                                      |
+| Asynchronous operations - in rare situations there may be slight delays in data visibility | Synchronous operations - no-wait commits                                                                                                |
+| Improved data freshness for `DROP` and `RENAME` of the table with a system-wide lock       | No change                                                                                                                               |
+| Some [impacts](#limitations) on existing operations                                        | No change                                                                                                                               |
 
 ### Limitations
 

@@ -64,11 +64,11 @@ In QuestDB the write amplification is calculated by the
 When ingesting out-of-order data, a high disk write rate combined with high
 write amplification may slow down the performance.
 
-For data ingestion over PGWire, or as a further step for ILP ingestion, smaller
-table [partitions](/docs/concept/partitions/) maybe reduce the write
-amplification. This applies to tables with partition directories exceeding a few
-hundred MBs on disk. For example, partition by day can be reduced to by hour,
-partition by month to by day, and so on.
+For data ingestion over PGWire, or as a further step for InfluxDB Line Protocol
+ingestion, smaller table [partitions](/docs/concept/partitions/) maybe reduce
+the write amplification. This applies to tables with partition directories
+exceeding a few hundred MBs on disk. For example, partition by day can be
+reduced to by hour, partition by month to by day, and so on.
 
 #### Partition split
 
@@ -153,17 +153,17 @@ least 4 cores for basic workloads and 16 for advanced ones.
 #### 8 CPU cores or less
 
 QuestDB will configure a shared worker pool to handle everything except the
-InfluxDB line protocol (ILP) writer which gets a dedicated CPU core. The worker
-count is calculated as follows:
+InfluxDB line protocol writer which gets a dedicated CPU core. The worker count
+is calculated as follows:
 
 $(cpuAvailable) - (line.tcp.writer.worker.count)$ The minimal size of the shared
 worker pool is 2, even on a single-core machine.
 
 #### 16 CPU cores or less
 
-ILP I/O Worker pool is configured to use 2 CPU cores to speed up ingestion and
-the ILP Writer is using 1 core. The shared worker pool is handling everything
-else and is configured using this formula:
+InfluxDB Line Protocol I/O Worker pool is configured to use 2 CPU cores to speed
+up ingestion and the InfluxDB Line Protocol Writer is using 1 core. The shared
+worker pool is handling everything else and is configured using this formula:
 
 $(cpuAvailable) - 1 - (line.tcp.writer.worker.count) - (line.tcp.io.worker.count)$
 
@@ -173,9 +173,10 @@ $16-1-2-1$
 
 #### 17 CPU cores and more
 
-The ILP I/O Worker pool is configured to use 6 CPU cores to speed up ingestion
-and the ILP Writer is using 1 core. The shared worker pool is handling
-everything else and is configured using this formula:
+The InfluxDB Line Protocol I/O Worker pool is configured to use 6 CPU cores to
+speed up ingestion and the InfluxDB Line Protocol Writer is using 1 core. The
+shared worker pool is handling everything else and is configured using this
+formula:
 
 $(cpuAvailable) - 2 - (line.tcp.writer.worker.count) - (line.tcp.io.worker.count)$
 
@@ -198,7 +199,7 @@ cairo.writer.data.append.page.size=1M
 
 We have
 [a documentation page](/docs/reference/api/ilp/tcp-receiver/#capacity-planning)
-dedicated to capacity planning for ILP ingestion.
+dedicated to capacity planning for InfluxDB Line Protocol ingestion.
 
 ### InfluxDB over UDP
 
@@ -294,14 +295,14 @@ For reference on the defaults of the `http` and `pg` protocols, refer to the
 
 ### Pooled connection
 
-Connection pooling should be used for any production-ready use of PGWire or ILP
-over TCP.
+Connection pooling should be used for any production-ready use of PGWire or
+InfluxDB Line Protocol over TCP.
 
 The maximum number of pooled connections is configurable,
 (`pg.connection.pool.capacity` for PGWire and
-(`line.tcp.connection.pool.capacity` for ILP over TCP. The default number of
-connections for both interfaces is 64. Users should avoid using too many
-connections.
+(`line.tcp.connection.pool.capacity` for InfluxDB Line Protocol over TCP. The
+default number of connections for both interfaces is 64. Users should avoid
+using too many connections.
 
 ## OS configuration
 

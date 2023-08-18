@@ -1,5 +1,5 @@
 ---
-title: ILP UDP Receiver
+title: InfluxDB Line Protocol UDP Receiver
 sidebar_label: UDP Receiver
 description: InfluxDB line protocol UDP receiver reference documentation.
 ---

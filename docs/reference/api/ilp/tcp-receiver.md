@@ -1,5 +1,5 @@
 ---
-title: ILP TCP Receiver
+title: InfluxDB Line Protocol TCP Receiver
 sidebar_label: TCP Receiver
 description: InfluxDB line protocol TCP receiver reference documentation.
 ---
@@ -9,7 +9,7 @@ description: InfluxDB line protocol TCP receiver reference documentation.
 TCP receiver makes use of 3 logical thread pools:
 
 - I/O worker pool - `line.tcp.io.worker.count`, threads responsible for handling
-  incoming TCP connections and parsing received ILP messages
+  incoming TCP connections and parsing received InfluxDB Line Protocol messages
 - writer pool - `line.tcp.writer.worker.count`, threads responsible for table
   writes
 - shared pool - `shared.worker.count`, threads responsible for handling out-of-order data

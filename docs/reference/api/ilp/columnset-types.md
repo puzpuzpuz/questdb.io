@@ -1,14 +1,15 @@
 ---
-title: ILP Columnset Value Types
+title: InfluxDB Line Protocol Columnset Value Types
 sidebar_label: Columnset Value Types
-description: Describes all support value types in ILP columnset.
+description:
+  Describes all support value types in InfluxDB Line Protocol columnset.
 ---
 
-This page lists the supported ILP columnset value types and details about type
-casting.
+This page lists the supported InfluxDB Line Protocol columnset value types and
+details about type casting.
 
 If a target column does not exist, QuestDB will create a column using the same
-type that the ILP client sends.
+type that the InfluxDB Line Protocol client sends.
 
 Type casts that cause data loss will cause entire line to be rejected.
 
@@ -157,12 +158,13 @@ rejected.
 
 String value can be cast to `geohash` type when the destination column exists
 and is of a `GEOHASH` type already. Do make sure that column is created upfront.
-Otherwise, ILP will create `STRING` column regardless of the value.
+Otherwise, InfluxDB Line Protocol will create `STRING` column regardless of the
+value.
 
 Example:
 
 Upcasting is an attempt to store higher resolution `geohash` in a lower
-resolution column. Let's create table before sending ILP message. Our `geohash`
+resolution column. Let's create table before sending a message. Our `geohash`
 column has resolution of 4 bits.
 
 ```questdb-sql
@@ -203,10 +205,11 @@ higher resolution column, will cause the entire line to be rejected.
 
 ### Cast to SYMBOL
 
-The symbol values correspond to the QuestDB type [`symbol`](/docs/concept/symbol/).
-String values can be cast to the `symbol` type when the destination column
-exists and its type is `symbol`. This gives clients an option to populate
-`symbol` columns without knowing the type of the columns.
+The symbol values correspond to the QuestDB type
+[`symbol`](/docs/concept/symbol/). String values can be cast to the `symbol`
+type when the destination column exists and its type is `symbol`. This gives
+clients an option to populate `symbol` columns without knowing the type of the
+columns.
 
 ```questdb-sql
 CREATE TABLE trade (

@@ -103,18 +103,13 @@ Using the [`WITH` keyword](/docs/reference/sql/with/) to set up an alias for a
 WITH confirmed_id AS (
     SELECT * FROM unconfirmed_trades
     WHERE trade_id = '47219345234'
-    )
+)
 INSERT INTO confirmed_trades
 SELECT * FROM confirmed_id;
 ```
+
 ### Insert IPv4 addresses
 
-Applies if you are using the `ipv4` data type.
+Applies if you are using the IPv4 data type. Insert data via two methods: InfluxDB Line Protocol and/or INSERT SQL. Regardless of choice, IPv4 values must be provided as string.
 
-Insert data via two methods: ILP and/or INSERT SQL. 
-
-Regardless of choice, IPv4 values must be provided as string. 
-
-String arguments must be in dotted decimal notation: `23.62.200.1` 
-
-IPv4 addresses are stored as a 32-bit integer.
+String arguments must be in dotted decimal notation: `23.62.200.1`. IPv4 addresses are stored as a 32-bit integer.

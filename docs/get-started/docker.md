@@ -150,7 +150,7 @@ When QuestDB is running, you can start interacting with it:
   [REST documentation page](/docs/reference/api/rest/).
 - Port `8812` is used for Postgres. Check our
   [Postgres reference page](/docs/reference/api/postgres/).
-- Port `9009` is dedicated to ILP. Consult our
+- Port `9009` is dedicated to InfluxDB Line Protocol. Consult our
   [InfluxDB protocol page](/docs/reference/api/ilp/overview/).
 
 ## Data persistence

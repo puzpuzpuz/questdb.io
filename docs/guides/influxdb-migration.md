@@ -14,7 +14,7 @@ Data stored in InfluxDB needs to be exported in order to import it into QuestDB.
 There are two ways of exporting data from InfluxDB:
 
 - Run a SQL query using InfluxDB API and get results in JSON
-- Run the `inspect` command and get results in ILP
+- Run the `inspect` command and get results in InfluxDB Line Protocol
 
 The first approach is simpler and might suffice if you are migrating a small to
 moderate dataset. For larger datasets it is advised to use the second option.
@@ -45,13 +45,13 @@ curl --get http://localhost:8086/query --header "Authorization: Token zuotzwwBxb
 The resulting CSV can be then
 [imported into QuestDB](/docs/guides/importing-data-rest/).
 
-## The inspect command and ILP for importing datasets at scale
+## The inspect command and InfluxDB Line Protocol for importing datasets at scale
 
 To move data from InfluxDB into QuestDB at scale, it is best to use the
 `influxd inspect` command to export the data, as the
 [`export-lp`](https://docs.influxdata.com/influxdb/v2.6/reference/cli/influxd/inspect/export-lp/)
 subcommand allows exporting all time-structured merge tree (TSM) data in a
-bucket as ILP messages in a big text file.
+bucket as InfluxDB Line Protocol messages in a big text file.
 
 The text file can then be inserted into QuestDB. This assumes you are migrating
 from self-managed InfluxDB and have access to execute the `inspect` command.
@@ -100,8 +100,8 @@ technically needed as once you start streaming data, your table will be
 automatically created. However, this step is recommended because this allows
 fine tuning some parameters such as column types or partition.
 
-Since the data is already in ILP format, there is no need to use the official
-QuestDB client libraries for ingestion.
+Since the data is already in InfluxDB Line Protocol format, there is no need to
+use the official QuestDB client libraries for ingestion.
 
 You only need to connect via a socket to your instance and stream row by row.
 
@@ -131,10 +131,10 @@ if __name__ == '__main__':
 
 #### Transform data in QuestDB
 
-Since InfluxDB exports only one metric for each ILP line, this means that if you
-are storing more than one metric for the same series, one row will create
-multiple ILP lines with one valid metric value and the other metrics shown as
-NULL. Therefore, we recommend transforming your data in QuestDB.
+Since InfluxDB exports only one metric for each line, this means that if you are
+storing more than one metric for the same series, one row will create multiple
+InfluxDB Line Protocol lines with one valid metric value and the other metrics
+shown as `NULL`. Therefore, we recommend transforming your data in QuestDB.
 
 For example, if you query a table with several metrics:
 

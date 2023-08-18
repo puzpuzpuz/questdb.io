@@ -1,6 +1,6 @@
 ---
-title: Java ILP client
-description: Introducing QuestDB Java ILP Client
+title: Java InfluxDB Line Protocol client
+description: Introducing QuestDB Java InfluxDB Line Protocol Client
 ---
 
 <!-- prettier-ignore-start -->

@@ -9,8 +9,8 @@ description: SET PARAM SQL keyword reference documentation.
 :::note
 
 - Checking table metadata can be done via the `tables()` and `table_columns()`
-  functions, as described in the [meta functions](/docs/reference/function/meta/)
-  documentation page.
+  functions, as described in the
+  [meta functions](/docs/reference/function/meta/) documentation page.
 
 :::
 
@@ -56,9 +56,10 @@ For more details on retrieving table and column information, see the
 **Deprecated content**
 
 - For QuestDB 6.5.5 and earlier versions, the following keywords are useful for
-  configuring ILP data ingestion on a per-table basis. For more
-  information on more details and when to apply them, see the documentation for
-  [ILP commit strategy](/docs/reference/api/ilp/tcp-receiver/#commit-strategy).
+  configuring InfluxDB Line Protocol data ingestion on a per-table basis. For
+  more information on more details and when to apply them, see the documentation
+  for
+  [InfluxDB Line Protocol commit strategy](/docs/reference/api/ilp/tcp-receiver/#commit-strategy).
 
 - From QuestDB 6.6 onwards, the database adjusts relevant settings automatically
   and provides maximum ingestion speed.
@@ -70,7 +71,8 @@ For more details on retrieving table and column information, see the
 ![Flow chart showing the syntax of the ALTER TABLE keyword](/img/docs/diagrams/alterTable.svg)
 ![Flow chart showing the syntax of the ALTER TABLE SET PARA with commit lag keywords](/img/docs/diagrams/alterTableSetParamCommitLag.svg)
 
-For context on ILP, see [ILP commit strategy](/docs/reference/api/ilp/tcp-receiver/#commit-strategy).
+For context on InfluxDB Line Protocol, see the
+[Commit Strategy page](/docs/reference/api/ilp/tcp-receiver/#commit-strategy).
 
 `commitLag` allows for specifying the expected maximum _lag_ of late-arriving
 records when ingesting out-of-order data. The purpose of specifying a commit lag
@@ -93,5 +95,5 @@ value:
 To specify `commitLag` value to 20 seconds:
 
 ```questdb-sql
-ALTER TABLE my_table SET PARAM commitLag = 20s
+ALTER TABLE my_table SET PARAM commitLag = 20s;
 ```

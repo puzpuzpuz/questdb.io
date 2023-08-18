@@ -9,7 +9,7 @@ description:
 easy-to-use open-source data analysis and manipulation tool, built on top of the
 Python programming language. The
 [QuestDB Python client](https://py-questdb-client.readthedocs.io/en/latest/index.html)
-provides native support for ingesting Pandas dataframes via the InfluxDB Line Protocol (ILP).
+provides native support for ingesting Pandas dataframes via the InfluxDB Line Protocol.
 
 ## Prerequisites
 
@@ -24,7 +24,7 @@ provides native support for ingesting Pandas dataframes via the InfluxDB Line Pr
 
 ## Overview
 
-The QuestDB Python client implements the `dataframe()` method to transform Pandas DataFrames into QuestDB-flavored ILP messages.
+The QuestDB Python client implements the `dataframe()` method to transform Pandas DataFrames into QuestDB-flavored InfluxDB Line Protocol messages.
 
 
 The following example shows how to insert data from a Pandas DataFrame to the `trades` table:

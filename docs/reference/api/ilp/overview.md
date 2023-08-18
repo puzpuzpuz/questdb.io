@@ -1,5 +1,5 @@
 ---
-title: ILP Overview
+title: InfluxDB Line Protocol Overview
 sidebar_label: Overview
 description: InfluxDB line protocol reference documentation.
 ---
@@ -16,7 +16,8 @@ yourself.
 :::tip
 
 For general QuestDB users, client libraries are available for a number of
-languages: [ILP client libraries](/docs/reference/clients/overview/).
+languages:
+[InfluxDB Line Protocol client libraries](/docs/reference/clients/overview/).
 
 :::
 
@@ -46,7 +47,7 @@ Although the original protocol does not support it, we have added authentication
 over TCP. This works by using an
 [elliptic curve P-256](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography)
 JSON Web Token (JWT) to sign a server challenge. Details of authentication over
-ILP can be found in the
+InfluxDB Line Protocol can be found in the
 [authentication documentation](/docs/reference/api/ilp/authenticate/).
 
 ## Configuration reference
@@ -58,10 +59,11 @@ address and port, load balancing, etc.
 
 ## Usage
 
-This section provides usage information and details for data ingestion via ILP.
+This section provides usage information and details for data ingestion via
+InfluxDB Line Protocol.
 
 We provide examples in a number of programming languages. See our
-[ILP Insert Data](/docs/develop/insert-data/#influxdb-line-protocol) for code
+[Insert Data page](/docs/develop/insert-data/#influxdb-line-protocol) for code
 snippets.
 
 ### Syntax
@@ -82,7 +84,7 @@ table.
 
 :::note
 
-Each ILP message has to end with a new line `\n` character.
+Each InfluxDB Line Protocol message has to end with a new line `\n` character.
 
 :::
 
@@ -100,10 +102,10 @@ Each ILP message has to end with a new line `\n` character.
 
 ### Difference from InfluxDB
 
-QuestDB TCP Receiver uses ILP as both serialization and the transport format.
-InfluxDB on other hand uses HTTP as the transport and ILP as serialization
-format. For this reason the existing InfluxDB client libraries will not work
-with QuestDB.
+QuestDB TCP Receiver uses InfluxDB Line Protocol as both serialization and the
+transport format. InfluxDB on other hand uses HTTP as the transport and InfluxDB
+Line Protocol as serialization format. For this reason the existing InfluxDB
+client libraries will not work with QuestDB.
 
 ### Generic example
 
@@ -139,10 +141,10 @@ CREATE TABLE readings (
 
 ### Timestamps
 
-Designated timestamp is the trailing value of an ILP message. It is optional,
-and when present, is a timestamp in Epoch nanoseconds. When the timestamp is
-omitted, the server will insert each message using the system clock as the row
-timestamp. See `cairo.timestamp.locale` and `line.tcp.timestamp`
+Designated timestamp is the trailing value of an InfluxDB Line Protocol message.
+It is optional, and when present, is a timestamp in Epoch nanoseconds. When the
+timestamp is omitted, the server will insert each message using the system clock
+as the row timestamp. See `cairo.timestamp.locale` and `line.tcp.timestamp`
 [configuration options](/docs/reference/configuration/).
 
 :::caution
@@ -158,11 +160,11 @@ timestamp. See `cairo.timestamp.locale` and `line.tcp.timestamp`
 
 :::
 
-```shell title="Example of ILP message with desginated timestamp value"
+```shell title="Example of InfluxDB Line Protocol message with desginated timestamp value"
 tracking,loc=north val=200i 1000000000\n
 ```
 
-```shell title="Example of ILP message sans timestamp"
+```shell title="Example of InfluxDB Line Protocol message sans timestamp"
 tracking,loc=north val=200i\n
 ```
 
@@ -284,7 +286,7 @@ to [duplicate rules](#duplicate-column-names) and
 
 `columnset` supports several values types, which are used to either derive type
 of new column or mapping strategy when column already exists. These types are
-limited by existing Influx Line Protocol specification. Wider QuestDB type
+limited by existing InfluxDB Line Protocol specification. Wider QuestDB type
 system is available by creating table via SQL upfront. The following are
 supported value types:
 [Integer](/docs/reference/api/ilp/columnset-types/#integer),
@@ -311,14 +313,14 @@ Will insert as:
 | 10.5   | _NULL_ | 2022-03-15T15:21:28.714369Z |
 | _NULL_ | 1.25   | 2022-03-15T15:21:38.714369Z |
 
-### ILP Datatypes and Casts
+### InfluxDB Line Protocol Datatypes and Casts
 
 #### Strings vs Symbols
 
 Strings may be recorded as either the `STRING` type or the `SYMBOL` type.
 
-Inspecting a sample ILP we can see how a space `' '` separator splits `SYMBOL`
-columns to the left from the rest of the columns.
+Inspecting a sample message we can see how a space `' '` separator splits
+`SYMBOL` columns to the left from the rest of the columns.
 
 ```text
 table_name,col1=symbol_val1,col2=symbol_val2 col3="string val",col4=10.5
@@ -338,13 +340,13 @@ For one-off strings use `STRING` columns which aren't interned.
 
 #### Casts
 
-QuestDB types are a superset of those supported by ILP. This means that when
-sending data you should be aware of the performed conversions.
+QuestDB types are a superset of those supported by InfluxDB Line Protocol. This
+means that when sending data you should be aware of the performed conversions.
 
 See:
 
 - [QuestDB Types in SQL](/docs/reference/sql/datatypes/)
-- [ILP types and cast conversion tables](/docs/reference/api/ilp/columnset-types/)
+- [InfluxDB Line Protocol types and cast conversion tables](/docs/reference/api/ilp/columnset-types/)
 
 ### Constructing well-formed messages
 
@@ -371,7 +373,7 @@ follow these guidelines:
 
 ### Error handling
 
-QuestDB will always log any ILP errors in its
+QuestDB will always log any InfluxDB Line Protocol errors in its
 [server logs](/docs/concept/root-directory-structure/#log-directory).
 
 It is recommended that sending applications reuse TCP connections. If QuestDB
@@ -431,5 +433,5 @@ If you don't see your inserted data, this is usually down to one of two things:
   cairo.max.uncommitted.rows=1
   ```
   Refer to
-  [ILP's commit strategy](/docs/reference/api/ilp/tcp-receiver/#commit-strategy)
+  [InfluxDB Line Protocol's commit strategy](/docs/reference/api/ilp/tcp-receiver/#commit-strategy)
   documentation for more on these configuration settings.

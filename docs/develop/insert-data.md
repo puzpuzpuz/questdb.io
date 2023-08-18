@@ -14,13 +14,15 @@ QuestDB supports the following data ingestion methods:
 
 - [InfluxDB Line Protocol](#influxdb-line-protocol-ilp): the recommended primary
   ingestion method in QuestDB for high-performance applications.
-  - Dedicated ILP [client libraries](/docs/reference/clients/overview/) available
+  - Dedicated InfluxDB Line Protocol
+    [client libraries](/docs/reference/clients/overview/) available
 - [PostgreSQL wire protocol](#postgresql-wire-protocol): interoperability with
   the PostgreSQL ecosystem.
 
   - SQL `INSERT` and `COPY` statements, including parameterized queries.
   - `psql` on the command line
   - Support for most PostgreSQL keywords and functions
+
 - [HTTP REST API](#http-rest-api): compatibility with a wide range of libraries
   and tools.
   - SQL `INSERT` for ad-hoc SQL queries
@@ -28,25 +30,24 @@ QuestDB supports the following data ingestion methods:
   - Accessing QuestDB via the [Web Console](#web-console):
     - Code editor for SQL `INSERT` queries
     - SQL `COPY` for one-off [database migration](/docs/guides/importing-data/)
-    - [CSV file upload](#uploading-csv-file) for uploading batches of
-    CSV files
+    - [CSV file upload](#uploading-csv-file) for uploading batches of CSV files
 
 ### Recommended insert method
 
 The table below outlines the general recommendation for data ingestion based on
 the shape of the data and different scenarios:
 
-| Date shape                | One-ff data import                | Periodical batch ingestion        | Real-time ingestion |
-| :------------------------ | :-------------------------------- | :-------------------------------- | :------------------ |
-| Sorted data               | - Web Console/REST API CSV upload | - ILP                             | ILP                 |
-|                           | - Web Console SQL COPY            | - PosgreSQL                       |                     |
-|                           |                                   | - Web Console/REST API CSV upload |                     |
-| Lightly out of order data | Web Console/REST API CSV upload   | - ILP                             | ILP                 |
-|                           |                                   | - PosgreSQL                       |                     |
-|                           |                                   | - Web Console/REST API CSV upload |                     |
-| Heavily out of order data | Web Console SQL COPY              | - ILP                             | ILP                 |
-|                           |                                   | - PosgreSQL                       |                     |
-|                           |                                   | - Web Console/REST API CSV upload |                     |
+| Date shape                | One-off data import               | Periodical batch ingestion        | Real-time ingestion    |
+| :------------------------ | :-------------------------------- | :-------------------------------- | :--------------------- |
+| Sorted data               | - Web Console/REST API CSV upload | - InfluxDB Line Protocol          | InfluxDB Line Protocol |
+|                           | - Web Console SQL COPY            | - PosgreSQL                       |                        |
+|                           |                                   | - Web Console/REST API CSV upload |                        |
+| Lightly out of order data | Web Console/REST API CSV upload   | - InfluxDB Line Protocol          | InfluxDB Line Protocol |
+|                           |                                   | - PosgreSQL                       |                        |
+|                           |                                   | - Web Console/REST API CSV upload |                        |
+| Heavily out of order data | Web Console SQL COPY              | - InfluxDB Line Protocol          | InfluxDB Line Protocol |
+|                           |                                   | - PosgreSQL                       |                        |
+|                           |                                   | - Web Console/REST API CSV upload |                        |
 
 Lightly out of order data refers to data with the following traits:
 
@@ -57,11 +58,12 @@ Lightly out of order data refers to data with the following traits:
 Heavily out of order data refers to data with the following traits:
 
 - The data is mostly unsorted.
-- The data belongs to different parts of different partitions in an arbitrary manner.
+- The data belongs to different parts of different partitions in an arbitrary
+  manner.
 
 ## InfluxDB Line Protocol (ILP)
 
-The InfluxDB Line Protocol (ILP) is a text protocol over TCP on port `9009`.
+The InfluxDB Line Protocol is a text protocol over TCP on port `9009`.
 
 It is a one-way protocol to insert data, focusing on simplicity and performance.
 
@@ -79,12 +81,12 @@ find additional details on the message format, ports and authentication.
 ### Client libraries
 
 The [Client Libraries](/docs/reference/clients/overview/) provide user-friendly
-ILP clients for a growing number of languages.
+InfluxDB Line Protocol clients for a growing number of languages.
 
 ### Authentication
 
-By default, Open Source ILP Server is unauthenticated. To configure
-authentication on the server, follow our
+By default, Open Source InfluxDB Line Protocol Server is unauthenticated. To
+configure authentication on the server, follow our
 [server configuration guide](/docs/reference/api/ilp/authenticate/#server-configuration).
 To configure authentication on the client, follow the relevant documentation
 section in the [Client Libraries overview](/docs/reference/clients/overview/).
@@ -110,7 +112,6 @@ raw TCP socket connections, when a client library is not available.
   { label: "Ruby", value: "ruby" },
   { label: "PHP", value: "php" },
 ]}>
-
 
 <TabItem value="python">
   <RemoteRepoExample name="ilp" lang="python" />
@@ -146,7 +147,6 @@ raw TCP socket connections, when a client library is not available.
 
 <TabItem value="ruby">
 
-
 ```ruby
 require 'socket'
 HOST = 'localhost'
@@ -174,9 +174,7 @@ end
 
 </TabItem>
 
-
 <TabItem value="php">
-
 
 ```php
 <?php
@@ -219,14 +217,13 @@ socket_close($socket);
 
 </TabItem>
 
-
 </Tabs>
-
 
 ### Telegraf
 
 The [Telegraf guide](/docs/third-party-tools/telegraf/) helps you configure a
-Telegraf agent to collect and send metrics to QuestDB via ILP.
+Telegraf agent to collect and send metrics to QuestDB via InfluxDB Line
+Protocol.
 
 ## PostgreSQL wire protocol
 
@@ -260,9 +257,7 @@ Here are a few examples demonstrating SQL `INSERT` queries:
   { label: "Rust", value: "rust" },
 ]}>
 
-
 <TabItem value="psql">
-
 
 :::note
 
@@ -305,9 +300,7 @@ docker run -it --rm --network=host -e PGPASSWORD=quest \
 
 </TabItem>
 
-
 <TabItem value="python">
-
 
 This example uses the [psychopg3](https://www.psycopg.org/psycopg3/docs/)
 adapter.
@@ -373,9 +366,7 @@ with pg.connect(conn_str, autocommit=True) as connection:
 
 </TabItem>
 
-
 <TabItem value="java">
-
 
 ```java
 package com.myco;
@@ -418,9 +409,7 @@ class App {
 
 </TabItem>
 
-
 <TabItem value="nodejs">
-
 
 This example uses the [`pg` package](https://www.npmjs.com/package/pg) which
 allows for quickly building queries using Postgres wire protocol. Details on the
@@ -488,9 +477,7 @@ start()
 
 </TabItem>
 
-
 <TabItem value="go">
-
 
 This example uses the [pgx](https://github.com/jackc/pgx) driver and toolkit for
 PostgreSQL in Go. More details on the use of this toolkit can be found on the
@@ -575,9 +562,7 @@ func main() {
 
 </TabItem>
 
-
 <TabItem value="rust">
-
 
 The following example shows how to use parameterized queries and prepared
 statements using the [rust-postgres](https://docs.rs/postgres/0.19.0/postgres/)
@@ -624,9 +609,7 @@ fn main() -> Result<(), Error> {
 
 </TabItem>
 
-
 </Tabs>
-
 
 ## Web Console
 
@@ -700,9 +683,7 @@ Let's assume you want to upload the following data via the `/imp` entrypoint:
   { label: "Table", value: "table" },
 ]}>
 
-
 <TabItem value="csv">
-
 
 ```csv title=data.csv
 col1,col2,col3
@@ -713,9 +694,7 @@ c,,True
 
 </TabItem>
 
-
 <TabItem value="table">
-
 
 | col1 | col2   | col3    |
 | :--- | :----- | :------ |
@@ -725,9 +704,7 @@ c,,True
 
 </TabItem>
 
-
 </Tabs>
-
 
 You can do so via the command line using `cURL` or programmatically via HTTP
 APIs in your scripts and applications.
@@ -743,9 +720,7 @@ explicitly. See the second example in Python for these features.
   { label: "Go", value: "go" },
 ]}>
 
-
 <TabItem value="curl">
-
 
 This example imports a CSV file with automatic schema detection.
 
@@ -766,9 +741,7 @@ curl \
 
 </TabItem>
 
-
 <TabItem value="python">
-
 
 This first example shows uploading the `data.csv` file with automatic schema
 detection.
@@ -839,9 +812,7 @@ if __name__ == '__main__':
 
 </TabItem>
 
-
 <TabItem value="nodejs">
-
 
 ```javascript
 const fetch = require("node-fetch")
@@ -876,9 +847,7 @@ run()
 
 </TabItem>
 
-
 <TabItem value="go">
-
 
 ```go
 package main
@@ -938,9 +907,7 @@ func checkErr(err error) {
 
 </TabItem>
 
-
 </Tabs>
-
 
 ### `/exec`: SQL `INSERT` Query
 
@@ -954,7 +921,8 @@ parameterized queries that are necessary to avoid SQL injection issues.
 Prefer the [PostgreSQL interface](#postgresql-wire-protocol) if you are
 generating sql programmatically.
 
-Prefer [ILP](#influxdb-line-protocol) if you need high-performance inserts.
+Prefer [InfluxDB Line Protocol](#influxdb-line-protocol) if you need
+high-performance inserts.
 
 :::
 
@@ -965,9 +933,7 @@ Prefer [ILP](#influxdb-line-protocol) if you need high-performance inserts.
   { label: "Go", value: "go" },
 ]}>
 
-
 <TabItem value="curl">
-
 
 ```shell
 # Create Table
@@ -983,9 +949,7 @@ curl -G \
 
 </TabItem>
 
-
 <TabItem value="python">
-
 
 ```python
 import sys
@@ -1011,9 +975,7 @@ run_query("INSERT INTO trades VALUES('abc', 123456)")
 
 </TabItem>
 
-
 <TabItem value="nodejs">
-
 
 The `node-fetch` package can be installed using `npm i node-fetch`.
 
@@ -1057,9 +1019,7 @@ createTable().then(insertData)
 
 </TabItem>
 
-
 <TabItem value="go">
-
 
 ```go
 package main
@@ -1111,6 +1071,4 @@ func checkErr(err error) {
 
 </TabItem>
 
-
 </Tabs>
-

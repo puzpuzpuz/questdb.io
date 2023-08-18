@@ -89,7 +89,7 @@ utilities for collecting metrics and visualizing data:
 - [Kafka](/docs/third-party-tools/kafka/overview/) guide for ingesting data from
   Kafka topics into QuestDB
 - [Pandas](/docs/third-party-tools/pandas/) for ingesting Pandas dataframes via
-  ILP
+  InfluxDB Line Protocol
 - [Prometheus](/docs/third-party-tools/prometheus/) monitoring and alerting
 - [Redpanda](/docs/third-party-tools/redpanda/) instructions for a Kafka
   compatible data streaming tool
@@ -147,10 +147,10 @@ when starting services:
 The [configuration](/docs/reference/configuration/) page shows all the
 properties that can be used to customize QuestDB.
 
-### ILP Client Libraries
+### InfluxDB Line Protocol Client Libraries
 
 - [Client Libraries overview](/docs/reference/clients/overview/)
-- [Java ILP client](/docs/reference/clients/java_ilp/)
+- [Java InfluxDB Line Protocol client](/docs/reference/clients/java_ilp/)
 
 ### Data Types
 
