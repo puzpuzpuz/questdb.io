@@ -180,8 +180,8 @@ the Kafka Connect connector.
 The connector supports the following configuration options:
 
 | Name                              | Type      | Example                                                     | Default            | Meaning                                                    |
-| --------------------------------- | --------- | ----------------------------------------------------------- | ------------------ | ---------------------------------------------------------- |
-| topics                            | `string`  | orders                                                      | N/A                | Topics to read from                                        |
+|-----------------------------------|-----------|-------------------------------------------------------------|--------------------|------------------------------------------------------------|
+| topics                            | `string`  | orders,audit                                                | N/A                | Topics to read from                                        |
 | key.converter                     | `string`  | <sub>org.apache.kafka.connect.storage.StringConverter</sub> | N/A                | Converter for keys stored in Kafka                         |
 | value.converter                   | `string`  | <sub>org.apache.kafka.connect.json.JsonConverter</sub>      | N/A                | Converter for values stored in Kafka                       |
 | host                              | `string`  | localhost:9009                                              | N/A                | Host and port where QuestDB server is running              |
@@ -191,6 +191,9 @@ The connector supports the following configuration options:
 | <sub>skip.unsupported.types</sub> | `boolean` | false                                                       | false              | Skip unsupported types                                     |
 | <sub>timestamp.field.name</sub>   | `string`  | pickup_time                                                 | N/A                | Designated timestamp field name                            |
 | timestamp.units                   | `string`  | micros                                                      | auto               | Designated timestamp field units                           |
+| <sub>timestamp.kafka.native</sub> | `boolean` | true                                                        | false              | Use Kafka timestamps as designated timestamps              |
+| <sub>timestamp.string.fields</sub>| `string`  | creation_time,pickup_time                                   | N/A                | String fields with textual timestamps                      |
+| <sub>timestamp.string.format</sub>| `string`  | yyyy-MM-dd HH:mm:ss.SSSUUU z                                | N/A                | Timestamp format, used when parsing timestamp string fields|
 | include.key                       | `boolean` | false                                                       | true               | Include message key in target table                        |
 | symbols                           | `string`  | instrument,stock                                            | N/A                | Comma separated list of columns that should be symbol type |
 | doubles                           | `string`  | volume,price                                                | N/A                | Comma separated list of columns that should be double type |
@@ -237,21 +240,58 @@ using `key.converter` and `value.converter` options, both are included in the
 ### Designated timestamps
 
 The connector supports
-[designated timestamps](https://questdb.io/docs/concept/designated-timestamp/).
-If the message contains a timestamp field, the connector can use it as a
-timestamp for the row. The field name must be configured using the
-`timestamp.field.name` option. The field must either be an integer or a
-timestamp. When the field is set to an integer, the connector will autodetect
-its units. This works for timestamps after 04/26/1970, 5:46:40 PM. The units can
-also be configured explicitly using the `timestamp.units` configuration, which
-supports the following values:
+[designated timestamps](https://questdb.io/docs/concept/designated-timestamp/). 
+
+There are three distinct strategies for designated timestamp handling:
+
+1. QuestDB server assigns a timestamp when it receives data from the connector. (Default)
+1. The connector extracts the timestamp from the Kafka message payload.
+1. The connector extracts timestamps from [Kafka message metadata.](https://cwiki.apache.org/confluence/display/KAFKA/KIP-32+-+Add+timestamps+to+Kafka+message)
+
+Kafka messages carry various metadata, one of which is a timestamp. 
+To use the Kafka message metadata timestamp as a QuestDB designated timestamp, 
+set `timestamp.kafka.native` to `true`.
+
+If a message payload contains a timestamp field, the connector can utilize it
+as a designated timestamp. The field's name should be configured using the
+`timestamp.field.name` option. This field should either be an integer or a timestamp.
+
+When the field is defined as an integer, the connector will automatically detect its units. This is applicable for timestamps after `04/26/1970, 5:46:40 PM`. 
+
+The units can also be configured explicitly using the `timestamp.units` option, which supports the following values:
 
 - `nanos`
 - `micros`
 - `millis`
 - `auto` (default)
 
-### Symbol
+Note: These 3 strategies are mutually exclusive. Cannot set both `timestamp.kafka.native=true` and `timestamp.field.name`.
+
+### Textual timestamps parsing
+Kafka messages often contain timestamps in a textual format. The connector can parse these and use them as timestamps. Configure field names as a string with the `timestamp.string.fields` option. Set the timestamp format with the `timestamp.string.format` option, which adheres to the QuestDB timestamp format. 
+
+See the [QuestDB timestamp](/docs/reference/function/date-time/#date-and-timestamp-format) documentation for more details. 
+
+#### Example
+Consider the following Kafka message:
+```json
+{
+  "firstname": "John",
+  "lastname": "Doe",
+  "born": "1982-01-07 05:42:11.123456 UTC",
+  "died": "2031-05-01 09:11:42.456123 UTC"
+}
+```
+To use the `born` field as a designated timestamp and `died` as a regular timestamp
+set the following properties in your QuestDB connector configuration:
+1. `timestamp.field.name=born` - the field `born` is a designated timestamp.
+1. `timestamp.string.fields=died` - set the field name `died` as a textual timestamp. 
+  Notice this option does not contain the field `born`. This field is already set as
+  a designated timestamp so the connector will attempt to parse it as a timestamp automatically.
+1. `timestamp.string.format=yyyy-MM-dd HH:mm:ss.SSSUUU z` - set the timestamp format. Please note the correct format for microseconds is `SSSUUU` (3 digits for milliseconds and 3 digits for microseconds).
+
+
+### Symbol type
 
 QuestDB supports a special type called
 [symbol](https://questdb.io/docs/concept/symbol/). Use the `symbols`
