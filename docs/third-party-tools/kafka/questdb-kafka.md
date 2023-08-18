@@ -7,8 +7,10 @@ description:
 
 QuestDB ships a
 [QuestDB Kafka connector](https://github.com/questdb/kafka-questdb-connector)
-for fast ingestion from Kafka into QuestDB. This is useful for processing
+for fast ingestion from Kafka into QuestDB. This is also useful for processing
 [change data capture](/glossary/change-data-capture/) for the dataflow.
+The connector is based on the [Kafka Connect framework](https://kafka.apache.org/documentation/#connect)
+and acts as a sink for Kafka topics.
 
 This page has the following main sections:
 
