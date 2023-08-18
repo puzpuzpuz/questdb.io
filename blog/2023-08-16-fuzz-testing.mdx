@@ -13,7 +13,16 @@ slug: fuzz-testing-questdb
 import Banner from "@theme/Banner"
 import Screenshot from "@theme/Screenshot"
 
+<Screenshot
+  alt="A banner with a fuzzy background, and logos for QuestDB, SQLancer and Java."
+  height={366}
+  src="/img/blog/2023-08-16/fuzzy-banner.webp"
+  width={650}
+/>
+
 > QuestDB is a time-series database that offers fast ingest speeds, InfluxDB Line Protocol and PGWire support and SQL query syntax. Databases are placed under constant and demanding workloads, and building one teaches many hard lessons. We're happy to share them with you.
+
+## So, maybe you need fuzz testing?
 
 Almost two years ago, we were playing an endless game of whack-a-mole game with segfaults, data corruption, and various concurrency bugs. Our users were reporting them and, for each report, we had to reproduce the bug, analyze and - finally - fix it. Eventually, we decided to take a step back and come up with a deeper solution. This article details our pain, and the journey we took to get out of it. Maybe we can help you out of a similar bind.
 

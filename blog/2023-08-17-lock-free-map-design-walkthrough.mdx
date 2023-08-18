@@ -1,6 +1,7 @@
 ---
 title: "Concurrent Data-structure Design Walk-Through"
 author: Jaromir Hamala
+author_title: QuestDB Team
 author_url: https://twitter.com/jerrinot
 author_image_url: https://avatars.githubusercontent.com/u/158619?v=4
 description:
@@ -13,7 +14,16 @@ slug: concurrent-lockfree-datastructure-design-walkthrough
 
 import Screenshot from "@theme/Screenshot"
 
+<Screenshot
+  alt="Release highlight"
+  height={366}
+  src="/img/blog/2023-08-17/lockfree-banner.png"
+  width={650}
+/>
+
 > QuestDB is a time-series database that offers fast ingest speeds, InfluxDB Line Protocol and PGWire support and SQL query syntax. QuestDB is composed mostly in Java, and we've learned a lot of difficult and interesting lessons. We're happy to share them with you.
+
+## Investigating data structures
 
 Concurrent data structure design is hard. This blog offers a guided tour on
 constructing a special-purpose concurrent map that heavily favors readers. The
@@ -29,7 +39,7 @@ with memory allocations. Let's get started!
 
 _This article assumes basics in Java or a Java-like programming language._
 
-## The Problem
+## The problem
 
 I need a concurrent map where keys are strings and values are fixed-size blobs
 (public cryptographic keys). This could sound like a
@@ -191,7 +201,7 @@ explicitly notify that they are no longer using the pointer.
 Let’s explore how to
 design map internals!
 
-## Designing a map for Lock-Free readers
+## Designing a map for lock-free readers
 
 I consider myself an experienced generalist. I know bits and bobs about
 concurrent programming, distributed systems and all kinds of other areas, but

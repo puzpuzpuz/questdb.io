@@ -20,6 +20,10 @@ import Screenshot from "@theme/Screenshot"
   width={650}
 />
 
+> QuestDB is a time-series database that offers fast ingest speeds, InfluxDB Line Protocol and PGWire support and SQL query syntax. [QuestDB Cloud](/cloud) provisions deployments for you, and building it keeps teaches us many valuable lessons. We're happy to share them with you.
+
+## Building a Custom Kubernetes Operator
+
 Kubernetes operators seem to be everywhere these days. There are hundreds of them available to install in your cluster. Operators manage everything from X.509 certificates to enterprise-y database deployments, service meshes, and monitoring stacks. But why add even more complexity to a system that many say is already convoluted? With an operator controlling cluster resources, if you have a bug, you now have two problems: figuring out which of the myriad of Kubernetes primitives is causing the issue, as well as understanding how that dang operator is contributing to the problem!
 
 So when I proposed the idea of introducing a custom-built operator into our Cloud infrastructure stack, I knew that I had to really sell it as a true benefit to the company, so people wouldn't think that I was spending my time on a piece of RDD vaporware. After the go-ahead to begin the project, I spent my days learning about Kubernetes internals, scouring the internet far and wide to find content about operator development, and writing (and rewriting) the base of what was to become our QuestDB Cloud operator.
