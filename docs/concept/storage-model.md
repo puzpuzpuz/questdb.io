@@ -83,6 +83,8 @@ cairo.commit.mode=sync
   width={745}
 />
 
+It is important to note that, as a result of the increase of `msync()` and `fsync()` calls, CPU usage will increase especially with the frequent commit pattern.
+
 ## Summary
 
 The QuestDB storage model uses memory-mapped files and cross-process atomic
