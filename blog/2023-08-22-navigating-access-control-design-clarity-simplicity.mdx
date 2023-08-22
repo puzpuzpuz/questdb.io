@@ -1,0 +1,263 @@
+---
+title: "Navigating Access Control Design: Pursuing Clarity and Simplicity"
+author: Imre Aranyosi
+author_title: QuestDB Team
+author_url: https://github.com/glasstiger
+author_image_url: https://avatars.githubusercontent.com/glasstiger
+description:
+  Many consider access control lists a solved problem. But there still room for
+  innovation. Read the article to found out where.
+tags: [engineering, questdb, enterprise, rbac, acl]
+image: /img/blog/2023-08-21/life-of-an-admin.webp
+slug: navigating-access-control-design-clarity-simplicity
+buttonText: "See the ACL on QuestDB Cloud"
+---
+
+import Banner from "@theme/Banner"
+import Screenshot from "@theme/Screenshot"
+
+<Banner alt="LEGO minifigures in a wide variety of costumes waiting in line in front of an office desk." src="/img/blog/2023-08-21/life-of-an-admin.webp" />
+
+> QuestDB is a time-series database that offers fast ingest speeds and SQL
+> analytics. We recently shipped role-based access control (RBAC) in
+> [QuestDB Enterprise](/enterprise/), and wanted to share the lessons we
+> learned. Enjoy!
+
+## Innovating Access Control
+
+When delving into access control system design, one might assume that it is a
+solved problem and that all the important decisions have already been made.
+After all, many successful applications already exist, and each of them has
+solved its own access control challenge. While there is no need to re-invent the
+wheel, there are many places where innovation can still occur.
+
+To start, let's put access control in simple terms. When a user authenticates
+themselves, the system reads their permissions and then determines the
+operations that they are allowed to perform. To help with this, users are often
+categorized into groups or assigned specific roles, and thus synchronize their
+permissions with a wider bucket.
+
+While this appears straightforward, nuanced details can significantly impact the
+overall functionality of an otherwise solid RBAC pattern. In crafting QuestDB's
+access control solution, we encountered pivotal decisions that shaped our
+approach.
+
+## Groups or Roles?
+
+Our first dilemma lies in naming the entity that we use to organize users into
+collectives. Role seems like a good choice. A role implies that functionality is
+bundled and then granted to relevant users who fit the role's description. Roles
+are created, assigned to users, and their tasks are defined. In a perfect world,
+it's neat and tidy.
+
+<Screenshot
+  alt="2 people with 3 simple roles. Jay is an Admin. Bob is a Developer. Both of them are analysts. Easy-peasy!"
+  title="Roles, in Utopia"
+  src="/img/blog/2023-08-21/roles-utopia.webp"
+/>
+
+However, here's the catch — unfortunately, reality falls short of perfection!
+
+The initial simplicity soon crumbles as applications evolve, giving rise to a
+tangled and overlapping assortment of roles. These roles may then stray from
+their original purpose and lose their authentic alignment with their intended
+functionalities. Instead, they morph into a jumble of permissions for diverse
+users.
+
+An analyst might be part developer. One developer may need a single permission
+that would be destructive in the hands of other another developer. And then you
+need another admin, but they're only half an admin. It starts clean, but
+complexity soon catches up. The challenge lies in maintaining clean roles amid
+this complexity.
+
+<Screenshot
+  alt="Already things are wild. Only 5 uses, but 6 roles, a few are shared, some are special. Reality is much messier than Utopia."
+  title="Roles, in reality"
+  src="/img/blog/2023-08-21/roles-reality.webp"
+/>
+
+While roles appear attractive at first, the term groups tends to offer more
+flexibility and thus, in theory, greater clarity. Consequently, the integration
+of both groups and roles often leads to even bigger confusion when inheritance
+is involved.
+
+## Exploring Inheritance
+
+Undoubtedly, groups are essential for efficient access control. Organized groups
+simplify the process of permission distribution. Access can be granted to a
+group of users in a single statement. Adding users into that group to then
+inherit those permissions makes intuitive sense.
+
+However, the necessity of nested group hierarchies warrants a second look. The
+question is whether to construct an intricate group hierarchy or be content with
+a singular level of inheritance.
+
+The risk of an intricate hierarchy is that it has the potential to escalate into
+an unmanageable tree-like structure, or even a complex graph, if the system
+allows it. These configurations will soon perplex even the most skilled
+administrators.
+
+Just take a quick look at the example below:
+
+<Screenshot
+  alt="Groups, roles, 6 users now. But...8 groups!? Multiple permissions per group. Overlapping permissions. Ack! Help!"
+  title="Inheritance Hell caused by group hierarchy"
+  src="/img/blog/2023-08-21/inheritance-hell.webp"
+/>
+
+Learning from experience, it became evident that multi-level inheritance results
+in confusion and mismanagement, thus making it a challenge to trace the origins
+and implications of permissions. Opting for a single-level inheritance approach
+groups users well, but without nesting. This promotes transparency and
+predictability.
+
+## Considering Service Accounts
+
+Beyond an administrator's organizational preferences, the application using the
+database will present its own critical questions that one must consider. For
+example, should a clear distinction exist between individual and application
+accounts?
+
+The database logic alone might not necessitate any distinction. But the
+application accounts may benefit from strict limitations to prevent inadvertent
+misuse. A common trap is when an application inherits an overly-permissive
+capability by accident. Depending on how your groups or roles are arranged, it
+can be easy to do. We need something to help ensure that we do not make this
+mistake
+
+The creation of service accounts serves this purpose. Service accounts mirror
+standard users, differing only in their exclusion from group affiliations. Their
+access is explicitly defined, which prevents unintentional overreach and
+mis-assignment.
+
+Here is a sample arrangement that shows groups, users, and service accounts:
+
+<Screenshot
+  alt="Demonstrates service accounts. Separating human usage from system usage. It's busy, but still organized and rational. Nothing like inheritance hell! "
+  title="Service Accounts"
+  src="/img/blog/2023-08-21/service-accounts.webp"
+/>
+
+And the diagram below illustrates how the above users and service accounts could
+be used to establish connections with the database:
+
+<Screenshot
+  alt="Showing groups and service accounts accessing a DB. Some people use PG Wire, some a REST API, and others ILP. Their permissions are organized and it's refreshing. Also nothing like inheritance hell."
+  title="Users and Service Accounts connecting to the DB"
+  src="/img/blog/2023-08-21/users-and-service-accounts-connecting.webp"
+/>
+
+## Enabling Real-time Changes
+
+Even with service accounts in place, there are still scenarios where
+applications may inadvertently impact the database. At times, there is a need
+for prompt user access revocation. In these difficult scenarios, real-time
+enforcement of access control changes becomes crucial.
+
+True security must be instantaneous. From a development perspective, it would be
+convenient to delay or wait until a user reconnects to enforce new permissions.
+Instead, as a preferred alternative, we will apply a copy-on-write solution.
+This approach avoids synchronization during permission checks, while changes are
+safely applied in real time without hindering performance.
+
+By creating a new copy of the access control list when changes are needed, you
+can ensure that ongoing permission checks proceed without blocking, even during
+the modification process. Once the changes are ready, the new access control
+list can be swapped in using an atomic operation, maintaining data consistency
+and minimizing the impact on performance.
+
+The following code snippets illustrate how copy-on-write can be used to update
+access lists. First, let's look at the AccessListStore class which holds the
+access lists, and provides an API for modifications:
+
+```java
+class AccessListStore {
+    // the map contains users with their access lists.
+    // an access list is a set of permissions granted to a user.
+    // access lists are versioned: 0, 1, 2, 3...
+    // they also have a flag which indicates if they are still valid or not,
+    // only the access list with the latest version number can be valid
+    ConcurrentMap<User, AccessList> accessLists;
+
+    // returns the latest version of the user's access list
+    AccessList getAccessList(User user) {
+        return accessLists.get(user);
+    }
+
+    // granting a new permission to a user
+    void grant(User user, Permission permission) {
+        boolean successful = false;
+        while (!successful) {
+            // lookup the user's access list
+            AccessList current = getAccessList(user);
+            // current: { version = 0, valid = true, permissions=[] }
+
+            // create a copy of the current access list, only the version is bumped
+            AccessList next = current.rollVersion();
+            // next: { version = 1, valid = true, permissions=[] }
+
+            // add the new permission to the cloned access list
+            next.add(permission);
+            // next: { version = 1, valid = true, permissions=[permission] }
+
+            // publish the updated access list.
+            // replace is an atomic operation,
+            // it is successful only if current is still in the map.
+            // if current is not in the map anymore, another thread was faster,
+            // and next is based on a stale, invalid access list.
+            // we have to re-try using the latest version as our new current
+            // until we are successful (see the condition of the while loop above).
+            successful = accessLists.replace(user, current, next);
+
+            // if the access list is successfully updated,
+            // we should invalidate the old version.
+            // anyone using current will see that their version is stale now,
+            // and they should get the updated access list from the map.
+            if (successful) {
+                current.invalidate();
+            }
+        }
+    }
+}
+```
+
+Then we can look at the SecurityContext class, which belongs to a specific user
+and can be used to authorize the operations to be executed by the user:
+
+```java
+class SecurityContext {
+    User user;
+    AccessListStore accessListStore;
+
+    // access list holding the user's permissions
+    AccessList accessList;
+
+    void authorize(Permission permission) {
+        // refresh access list if it is stale,
+        // check should be executed always on the latest version
+        if (!accessList.isValid())
+            accessList = accessListStore.getAccessList(user);
+        }
+
+        // check for the permission,
+        // throw an exception if access is not granted
+        if (!accessList.hasPermission(permission)) {
+            throw new SecurityException("Access denied");
+        }
+    }
+}
+```
+
+## Conclusion
+
+Innovation consistently finds its space, adapting on top of established
+solutions, even in thoroughly explored domains such as access control.
+
+These nuanced adjustments can be the differentiating factor that determines
+whether users of one application either struggle with frustration or feel
+seamless satisfaction — or, at the very least, experience no added
+database-related woes!
+
+_Want to an easy-to-follow tutorial for Quest DB access control? Checkout our
+article:_
+[QuestDB Enterprise: Role-based Access Control Walkthrough](/blog/enterprise-rbac-access-control-list-tutorial).
