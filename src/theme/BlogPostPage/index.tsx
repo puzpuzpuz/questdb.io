@@ -1,20 +1,20 @@
 import React from "react"
 import Layout from "@theme/Layout"
 import { Section } from "../../components/Section"
-import { ActionFooter } from "../../components/ActionFooter"
 import Link from "@docusaurus/Link"
 import { usePluralForm } from "@docusaurus/theme-common"
 import { translate } from "@docusaurus/Translate"
 import { MDXProvider } from "@mdx-js/react"
-import type { Props, Metadata } from "@theme/BlogPostPage"
+import type { Props, Metadata, FrontMatter } from "@theme/BlogPostPage"
 import MDXComponents from "@theme/MDXComponents"
 import Seo from "@theme/Seo"
-import EditThisPage from "@theme/EditThisPage"
-import customFields from "../../config/customFields"
 import { ensureTrailingSlash } from "../../utils"
 import { StructuredData } from "../../components/StructuredData"
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
 import styles from "./styles.module.css"
+import { BlogCTA } from "../../components/BlogCTA"
+import EditThisPage from "@theme/EditThisPage"
+import customFields from "../../config/customFields"
 
 function useReadingTimePlural() {
   const { selectMessage } = usePluralForm()
@@ -34,6 +34,7 @@ function useReadingTimePlural() {
 }
 
 type MetadataWithSource = Metadata & { source: string }
+type FrontMatterWithButtonText = FrontMatter & { buttonText: string }
 
 function BlogPostPage(props: Props): JSX.Element {
   const { content: BlogPostContents } = props
@@ -47,11 +48,16 @@ function BlogPostPage(props: Props): JSX.Element {
     formattedDate,
     permalink,
     tags,
-    readingTime,
     source,
     editUrl,
+    readingTime,
   } = metadata as MetadataWithSource
-  const { author, image, keywords } = frontMatter
+  const {
+    author,
+    image,
+    keywords,
+    buttonText,
+  } = frontMatter as FrontMatterWithButtonText
   const authorURL = frontMatter.author_url ?? frontMatter.authorURL
   const authorTitle = frontMatter.author_title ?? frontMatter.authorTitle
   const authorImageURL =
@@ -140,15 +146,6 @@ function BlogPostPage(props: Props): JSX.Element {
               </>
             )}
           </div>
-        </header>
-
-        <article className={styles.markdown}>
-          <MDXProvider components={MDXComponents}>
-            <BlogPostContents />
-          </MDXProvider>
-        </article>
-
-        <footer className={styles.footer}>
           {tags.length > 0 && (
             <div className={styles.tags}>
               Tags:
@@ -168,13 +165,17 @@ function BlogPostPage(props: Props): JSX.Element {
               </ul>
             </div>
           )}
+        </header>
 
+        <article className={styles.markdown}>
+          <MDXProvider components={MDXComponents}>
+            <BlogPostContents />
+          </MDXProvider>
           <EditThisPage editUrl={contributeUrl} />
-        </footer>
-
-        <Section>
-          <ActionFooter />
-        </Section>
+          <Section>
+            <BlogCTA buttonText={buttonText ?? customFields.defaultCta} />
+          </Section>
+        </article>
       </Layout>
     </>
   )

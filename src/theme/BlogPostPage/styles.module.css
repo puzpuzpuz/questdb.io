@@ -8,6 +8,7 @@
 
 .title {
   font-size: 2rem;
+  line-height: 1.25;
 }
 
 .title a {
@@ -31,7 +32,8 @@
 }
 
 .avatar {
-  margin: 1rem 0;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
   display: grid;
   grid-template-columns: 45px auto;
   grid-template-rows: 1fr 1fr;
@@ -66,18 +68,21 @@
 
 .markdown h4 {
   font-size: 1.8rem;
+  font-weight: 700;
 }
 
 .markdown h5 {
   font-size: 1.6rem;
+  font-weight: 700;
 }
 
 .markdown h6 {
   font-size: 1.4rem;
+  font-weight: 700;
 }
 
 .markdown {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
 }
 
 .footer {
@@ -88,7 +93,7 @@
 .tags {
   display: flex;
   gap: 0.5rem;
-  padding-top: 4rem;
+  margin-bottom: 0.4rem;
 }
 
 .tagsList {

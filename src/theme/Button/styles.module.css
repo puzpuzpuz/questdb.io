@@ -26,7 +26,8 @@
 
 .button--primary {
   background-color: var(--theme-button-primary-background-color);
-  color: var(--theme-button-primary-text-color); }
+  color: var(--theme-button-primary-text-color); 
+}
 
 .button--primary:hover {
   background-color: var(--theme-button-primary-hover-background-color);

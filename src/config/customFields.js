@@ -5,6 +5,7 @@ module.exports = {
   artifactHubUrl: "https://artifacthub.io/packages/helm/questdb/questdb",
   copyright: `Copyright © ${new Date().getFullYear()} QuestDB`,
   crunchbaseUrl: "https://www.crunchbase.com/organization/quest-db",
+  defaultCta: "Start building now",
   demoUrl: `https://demo.${domain}`,
   description:
     "QuestDB is an open source time-series database. The database is column-oriented and optimized for high-speed ingest and blazingly fast SQL analytics.",

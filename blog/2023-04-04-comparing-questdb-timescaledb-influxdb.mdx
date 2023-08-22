@@ -10,6 +10,7 @@ description:
 tags: [benchmark, influxdb, timescaledb, questdb, time-series]
 image: /img/blog/shared/og-influxdb-timescaledb.webp
 slug: comparing-influxdb-timescaledb-questdb-time-series-databases
+buttonText: "Compare for yourself on QuestDB Cloud"
 ---
 
 import Banner from "@theme/Banner"
@@ -237,8 +238,4 @@ model, and use case. InfluxDB works well if your data fits the Tagset model with
 readily available. However, performance degrades with high cardinality data, and Flux is a new language to be learned. TimescaleDB is a natural fit for existing PostgreSQL users, but it is a row-oriented database, thus less optimized for time-series and analytical workloads.  Finally, if performance is the primary concern, QuestDB is a
 popular and developer-friendly database growing rapidly, although less mature than InfluxDB and TimescaleDB.
 
---- 
 
-> The best way to determine the best fit is to make it real with your own data. [QuestDB Cloud](https://questdb.io/cloud) offers $200 in free credit. Or, if you would rather play around with sample data first, checkout our [live Web Console](https://demo.questdb.io).
-
----
