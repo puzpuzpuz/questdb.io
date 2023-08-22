@@ -16,7 +16,7 @@ export const BlogCTA = ({ buttonText }: BlogCTAProps) => {
       <div className={ctaCss.ctaSection}>
         <div className={ctaCss.ctaButtonContainer}>
           <Button
-            className="plausible-event-blog=CTA=Click+Button"
+            className="plausible-event-name=Click+Button+Blog"
             to={cloudUrl}
             newTab={false}
           >
