@@ -4,12 +4,18 @@ author: Adam Cimarosti
 author_url: https://github.com/amunra
 author_image_url: https://avatars.githubusercontent.com/u/1499096?s=96&v=4
 description: A guide to adding Rust to a Java codebase with JNI and the rust-maven-plugin.
-tags: [engineering, rust, java, jni, rust-maven-plugin, performance, zero-gc]
-image: /img/blog/2023-08-25/questdb_loves_java_and_rust_splash.jpg
+tags: [engineering, rust, java, rust-maven-plugin, performance, zero-gc]
+image: /img/blog/2023-08-25/banner.webp
 slug: leveraging-rust-in-our-high-performance-java-database
 ---
 
-# Overview
+import Banner from "@theme/Banner"
+import Screenshot from "@theme/Screenshot"
+
+<Banner
+  alt="Rust and QuestDB! Rustaceans are welcome here."
+  src="/img/blog/2023-08-25/banner.webp"
+/>
 
 We build a high-performance time-series database.
 
@@ -41,7 +47,11 @@ the Java heap by calling the `malloc` and `free` functions via JNI.
 Our code aims to avoid garbage collection, as much as possible, and is always free of garbage
 collection on any performance-critical paths (such as when ingesting data).
 
-![Please don't litter help keep your Java garbage collection clean](/img/blog/2023-08-25/please_dont_litter_java_garbage_collection_clean.jpg)
+<Screenshot
+  alt="A do not litter sign in front of some foliage. It is a play on garbage collection in Java."
+  title="Please don't litter - help keep your Java garbage collection clean"
+  src="/img/blog/2023-08-25/please_dont_litter_java_garbage_collection_clean.webp"
+/>
 
 Our Java code is not idiomatic: We seldom use the `new` keyword and objects are designed to be
 pooled and reused. Many of our types implement the `Closable` interface to manage the lifetime
@@ -257,7 +267,11 @@ represents the loaded Java runtime and there's one per process. It doesn't allow
 introspect objects, however. That job is delegated to `JNIEnv` objects that are associated with
 individual threads.
 
-![JavaVM and JNIEnv](/img/blog/2023-08-25/javavm_and_jnienv.svg)
+<Screenshot
+  alt="Shows relationship between JavaVM and JNI"
+  title="JavaVM and JNIEnv"
+  src="/img/blog/2023-08-25/javavm_and_jnienv.webp"
+/>
 
 Each time any code is invoked from Java, JNI provides access to the thread's `JNIEnv` object for
 our use through the JNI call. With this, we can read and create Java strings or call other Java
@@ -277,7 +291,11 @@ they last the duration of the thread unless they are dropped explicitly.
 Local references can be converted to global references. This extends their lifetime until the
 global reference is dropped and also allows the Java object to be passed to other threads.
 
-![Global and local refs in Java JNI](/img/blog/2023-08-25/global_and_local_refs.svg)
+<Screenshot
+  alt="Indicating the relationship between references"
+  title="Global and local refs in Java JNI"
+  src="/img/blog/2023-08-25/global_and_local_refs.webp"
+/>
 
 In the next section, we'll see some of these concepts in use, integrating Java and Rust code.
 
@@ -449,7 +467,6 @@ fn get_formatted_msg<'a>(
         msg.as_str()
     })
 }
-
 ```
 
 The `call_state.with_log` method performs a hashmap lookup returning a cached Java `Log` object
@@ -601,7 +618,11 @@ There's also a config file for IntelliJ that just tells the IDE what to do. Its 
 Once set up, this integration can be seen in the Ant tool window (View → Tool Windows → Ant) in
 IntelliJ.
 
-![](https://slabstatic.com/prod/uploads/0tkl9ybv/posts/images/PE6n8ASM9WTAZbl8vRy5zKOb.png)
+<Screenshot
+  alt="The Ant editor"
+  title="Meet Ant"
+  src="/img/blog/2023-08-25/ant.webp"
+/>
 
 Now each time IntelliJ builds the Java code, it will also build the Rust code. The Ant tool window
 also allows switching over to building the release binaries instead (Right-click → Execute on →
@@ -704,7 +725,11 @@ Replication will work by electing a single "primary" database that uploads a cop
 WAL files onto a remote object store so these can be downloaded and applied (at a later time or
 continuously) by zero or more separate "replica" QuestDB instances.
 
-![Replication Architecture](/img/blog/2023-08-25/replication.svg)
+<Screenshot
+  alt="Explained in text above."
+  title="Replication Architecture"
+  src="/img/blog/2023-08-25/replication.webp"
+/>
 
 We are using Rust to compress, upload, download, and recreate the WAL data. We are currently using
 the `aws-sdk-s3` crate directly, but are in the process of transitioning over to the `opendal`
@@ -720,7 +745,11 @@ These remotely stored Parquet partitions will not only remain queriable within Q
 fetch them just-in-time dynamically) but also be accessible from big-data tools like Apache Spark,
 Impala, etc.
 
-![Cold Storage Architecture](/img/blog/2023-08-25/cold_storage.svg)
+<Screenshot
+  alt="Explained in text above."
+  title="Cold Storage Architecture"
+  src="/img/blog/2023-08-25/cold_storage.webp"
+/>
 
 Even discounting the ability to use external tools, cold storage will allow using cheaper, slower
 storage for less frequently accessed data.
@@ -762,4 +791,8 @@ open-source features!
 
 For us, Rust is here to stay.
 
-![QuestDB loves Java and Rust](/img/blog/2023-08-25/questdb_loves_java_and_rust_splash.svg)
+<Screenshot
+  alt="QuestDB, Java, and Rust -- their logos getting along famously"
+  title="QuestDB loves Java and Rust"
+  src="/img/blog/2023-08-25/banner.webp"
+/>
