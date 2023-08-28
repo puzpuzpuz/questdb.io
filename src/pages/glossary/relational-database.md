@@ -1,6 +1,7 @@
 ---
 index_title: Relational Database
 title: What Is a Relational Database?
+description: "Relational databases are popular. When should you use one? What is it for? Visit our glossary page to learn more and deepen your technical knowledge."
 wrapperClassName: career
 ---
 

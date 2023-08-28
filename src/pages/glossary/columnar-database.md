@@ -1,6 +1,7 @@
 ---
 index_title: Columnar Database
 title: What Is a Columnar Database?
+description: "What is a columnar database? How is it different than a relational database? Read our glossary and deepen your technical knowledge."
 wrapperClassName: career
 ---
 

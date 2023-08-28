@@ -1,6 +1,7 @@
 ---
 index_title: Change Data Capture (CDC)
 title: What Is Change Data Capture (CDC)?
+description: "Want to learn about Change Data Capture (CDC)? Read our glossary on this popular data integration technique and deepen your technical knowledge."
 wrapperClassName: career
 ---
 
@@ -62,8 +63,8 @@ ability to track changes and sync data in real-time unlocks several use cases:
 
 ## CDC methods
 
-Underneath the hood, CDC systems implement different strategies
-to track and capture changes:
+Underneath the hood, CDC systems implement different strategies to track and
+capture changes:
 
 - **Audit-column-based**: CDC system can monitor an audit column (usually a
   timestamped field such as `Last Updated Time` or `Modified Timestamp`) to
@@ -85,29 +86,31 @@ to track and capture changes:
   the logs. However, decoding the transaction log may be complex and requires
   additional system components outside the database.
 
-    <Screenshot
+
+  <Screenshot
     alt="Log-based CDC system: Diagram of how data manipulation is captured to a log and then used to update the table"
     height={342}
     src="/img/glossary/change-data-capture/log-based.webp"
     width={770}
     title="Log-based CDC is the most popular CDC method"
-    />
+  />
 
 ## Popular tools for CDC
 
-There are many change data capture solutions, ranging from open source to commercial services:
+There are many change data capture solutions, ranging from open source to
+commercial services:
 
 - Open-source:
-    - [Debezium](https://github.com/debezium)
-    - [Apache Nifi](https://github.com/apache/nifi)
+  - [Debezium](https://github.com/debezium)
+  - [Apache Nifi](https://github.com/apache/nifi)
 - Open-source with managed offerings:
-    - [Estuary Flow](https://github.com/estuary/flow)
-    - [Confluent Cloud](https://www.confluent.io/confluent-cloud/)
-    - [Materialized](https://github.com/MaterializeInc/materialize)
+  - [Estuary Flow](https://github.com/estuary/flow)
+  - [Confluent Cloud](https://www.confluent.io/confluent-cloud/)
+  - [Materialized](https://github.com/MaterializeInc/materialize)
 - Commercial:
-    - [Striim](https://www.striim.com)
-    - [StreamKap](https://streamkap.com)
-    - [StreamSets](https://streamsets.com)
+  - [Striim](https://www.striim.com)
+  - [StreamKap](https://streamkap.com)
+  - [StreamSets](https://streamsets.com)
 
 ## Additional resources
 

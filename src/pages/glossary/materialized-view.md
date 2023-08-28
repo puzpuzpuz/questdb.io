@@ -1,6 +1,7 @@
 ---
 index_title: Materialized View
 title: What Is a Materialized View?
+description: "What is a materialized view? When should you use a materialized view? Visit our glossary page to learn more and deepen your technical knowledge."
 wrapperClassName: career
 ---
 

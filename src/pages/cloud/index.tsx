@@ -73,7 +73,12 @@ const CloudPage = () => {
           <Section.Title center>Ready to get started?</Section.Title>
 
           <Section noGap center>
-            <Button variant="primary" to={cloudUrl} newTab={false}>
+            <Button
+              className="plausible-event-name=Click+Button+Cloud+Bottom"
+              variant="primary"
+              to={cloudUrl}
+              newTab={false}
+            >
               Start building now
             </Button>
           </Section>

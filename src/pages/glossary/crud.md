@@ -1,6 +1,7 @@
 ---
 index_title: CRUD
 title: What Is CRUD?
+description: "What does CRUD stand for? Learn more about the four basic persistent storage operations in our glossary and deepen your technical knowledge."
 wrapperClassName: career
 ---
 

@@ -95,7 +95,7 @@ that necessary [backup](/docs/operations/backup/) is completed.
 :::
 
 Once the latest QuestDB version is published on
-[Homebrew](https://github.com/homebrew/homebrew-core/blob/master/Formula/questdb.rb),
+[Homebrew](https://github.com/Homebrew/homebrew-core/blob/master/Formula/q/questdb.rb),
 the command to upgrade QuestDB version is:
 
 ```shell

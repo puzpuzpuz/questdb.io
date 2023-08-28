@@ -1,6 +1,7 @@
 ---
 index_title: Non-relational Database
 title: What Is a Non-relational Database?
+description: "You know relational databases. But what is a non-relational database? Visit our glossary page to learn more and deepen your technical knowledge."
 wrapperClassName: career
 ---
 

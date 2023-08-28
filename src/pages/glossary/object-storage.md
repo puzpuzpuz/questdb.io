@@ -1,6 +1,7 @@
 ---
 index_title: Object Storage
 title: What Is Object Storage?
+description: "Do you want to store an object? What do you need consider? Visit our glossary page to learn more and deepen your technical knowledge."
 wrapperClassName: career
 ---
 
@@ -41,15 +42,15 @@ random reads) or standard file systems are required.
 ### Block storage
 
 From a user's perspective, block storage systems look and behave like a locally
-mounted disk drive. However, behind the scenes, block storage systems break files
-into discrete chunks called blocks and store them separately. Each chunk of data
-is assigned a unique identifier, which is used to retrieve and assemble into the
-full file when needed. Block storage is best suited for transactional workloads
-or use cases that require consistent performance or lowest latency as block
-storage is treated as a local disk . In general, block storage is often cheaper
-than file storage systems, but has lower availability as only a single device
-can attach to it. There are some cloud offerings that allow multiple devices to
-attach, but they are limited to read-only operations.
+mounted disk drive. However, behind the scenes, block storage systems break
+files into discrete chunks called blocks and store them separately. Each chunk
+of data is assigned a unique identifier, which is used to retrieve and assemble
+into the full file when needed. Block storage is best suited for transactional
+workloads or use cases that require consistent performance or lowest latency as
+block storage is treated as a local disk . In general, block storage is often
+cheaper than file storage systems, but has lower availability as only a single
+device can attach to it. There are some cloud offerings that allow multiple
+devices to attach, but they are limited to read-only operations.
 
 ### Object storage
 

@@ -1,4 +1,5 @@
 import React from "react"
+import clsx from "clsx"
 import Button from "@theme/Button"
 import { Section } from "../../components/Section"
 import styles from "./styles.module.css"
@@ -21,7 +22,11 @@ export const Header = () => {
         </Section.Subtitle>
 
         <div className={styles.mainCTA}>
-          <Button to={cloudUrl} newTab={false}>
+          <Button
+            className={clsx("plausible-event-name=Click+Button+Main+Fold")}
+            to={cloudUrl}
+            newTab={false}
+          >
             Start building now
           </Button>
           <span>$200 in free credits</span>

@@ -1,6 +1,7 @@
 ---
 index_title: High Cardinality
 title: What Is High Cardinality?
+description: "What does high cardinality mean? What is special about high cardinality data? Visit our glossary page to learn more and deepen your technical knowledge."
 wrapperClassName: career
 ---
 

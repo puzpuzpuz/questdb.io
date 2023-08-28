@@ -120,7 +120,11 @@ function Navbar(): JSX.Element {
           </div>
           {!location.pathname.startsWith("/enterprise") && (
             <Button
-              className={clsx(styles.ctaButton, styles.getQuestdb)}
+              className={clsx(
+                styles.ctaButton,
+                styles.getQuestdb,
+                "plausible-event-name=Click+Button+Primary",
+              )}
               size="xsmall"
               variant="secondary"
               to="/cloud/"

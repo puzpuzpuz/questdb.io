@@ -1,6 +1,7 @@
 ---
 index_title: Database Partitioning
 title: What Is Database Partitioning?
+description: "Curious about database partitioning? Visit our glossary page to learn from those who build a database and deepen your technical knowledge."
 wrapperClassName: career
 ---
 
@@ -107,14 +108,14 @@ to a partition based on some criteria, which include:
   the function, adding or removing a new partition may require an expensive
   migration process.
 
-- **Composite partitioning**: any of the aforementioned methods can be combined. For
-  example, a time-series workload may first be partitioned by time and further
-  split based on another column field.
+- **Composite partitioning**: any of the aforementioned methods can be combined.
+  For example, a time-series workload may first be partitioned by time and
+  further split based on another column field.
 
 One thing to note with horizontal partitioning is that the performance depends
-heavily on how evenly distributed the data is across the partitions. If the
-data distribution is skewed, the partition with the most records will become
-the bottleneck.
+heavily on how evenly distributed the data is across the partitions. If the data
+distribution is skewed, the partition with the most records will become the
+bottleneck.
 
 Also, most analytical databases employ horizontal partitioning strategies over
 vertical partitioning. Some popular file formats such as
@@ -124,10 +125,10 @@ partitioning natively, making it ideal for big data processing.
 ## Partitioning in QuestDB
 
 QuestDB supports
-[data partitioning](https://questdb.io/docs/concept/partitions/) by intervals
-of time, including hour, day, week, month, and year. Tables that are partitioned
-by time perform better for timestamp interval searches, as QuestDB’s SQL
-optimizer leverages partitioning to reduce disk I/O.
+[data partitioning](https://questdb.io/docs/concept/partitions/) by intervals of
+time, including hour, day, week, month, and year. Tables that are partitioned by
+time perform better for timestamp interval searches, as QuestDB’s SQL optimizer
+leverages partitioning to reduce disk I/O.
 
 QuestDB also supports
 [attaching](/docs/reference/sql/alter-table-attach-partition/) or

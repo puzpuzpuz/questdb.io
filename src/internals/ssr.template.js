@@ -42,7 +42,7 @@ module.exports = ({ customFields, favicon, organizationName, url }) => `
       <script type="text/javascript" src="<%= it.baseUrl %><%= script %>" defer></script>
     <% }); %>
     <%~ it.postBodyTags %>
-    <script defer data-domain="questdb.io" src="https://plausible.io/js/script.tagged-events.js"></script>
+    <script defer data-domain="questdb.io" src="https://plausible.io/js/script.tagged-events.outbound-links.pageview-props.js"></script>
   </body>
 </html>
 `

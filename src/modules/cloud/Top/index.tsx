@@ -58,7 +58,10 @@ export const Top = () => {
         />
         <Button
           variant="primary"
-          className={styles.startBuildingButton}
+          className={clsx(
+            styles.startBuildingButton,
+            "plausible-event-name=Click+Button+Cloud+Top",
+          )}
           to={cloudUrl}
           newTab={false}
         >

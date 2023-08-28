@@ -1,6 +1,7 @@
 ---
 index_title: Time-Series Database
 title: What Is a Time-Series Database?
+description: "What is a time-series database? When should you use one? Visit our glossary page to learn from the experts and deepen your technical knowledge."
 wrapperClassName: career
 ---
 

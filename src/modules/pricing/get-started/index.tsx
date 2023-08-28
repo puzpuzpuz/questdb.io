@@ -7,7 +7,11 @@ import styles from "./styles.module.css"
 
 export const GetStarted = () => (
   <Section center fullWidth noGap className={styles.root}>
-    <Button size="small" to={customFields.cloudUrl}>
+    <Button
+      className="plausible-event-name=Click+Button+Pricing"
+      size="small"
+      to={customFields.cloudUrl}
+    >
       Start building now
     </Button>
     Have questions?

@@ -119,6 +119,8 @@ const config = {
             appId: process.env.ALGOLIA_APP_ID,
             apiKey: process.env.ALGOLIA_API_KEY,
             indexName: "questdb",
+            // Disable /search page
+            searchPagePath: false,
           },
         }
       : {}),
