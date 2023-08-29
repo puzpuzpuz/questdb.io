@@ -5,8 +5,9 @@ author_url: https://github.com/amunra
 author_image_url: https://avatars.githubusercontent.com/u/1499096?s=96&v=4
 description: A guide to adding Rust to a Java codebase with JNI and the rust-maven-plugin.
 tags: [engineering, rust, java, rust-maven-plugin, performance, zero-gc]
-image: /img/blog/2023-08-25/banner.webp
+image: /img/blog/2023-08-29/banner.webp
 slug: leveraging-rust-in-our-high-performance-java-database
+buttonText: "Trial QuestDB"
 ---
 
 import Banner from "@theme/Banner"
@@ -14,10 +15,10 @@ import Screenshot from "@theme/Screenshot"
 
 <Banner
   alt="Rust and QuestDB! Rustaceans are welcome here."
-  src="/img/blog/2023-08-25/banner.webp"
+  src="/img/blog/2023-08-29/banner.webp"
 />
 
-We build a high-performance time-series database.
+> QuestDB is a high-performance time-series database built in Java and C++, with no dependencies and zero garbage collection. And increasingly: Rust! Check us out if you have time series data and are looking for high throughput ingestion and fast SQL queries. 
 
 In this article, I will summarize how and why we've started using Rust in our Java code base.
 Specifically, I'll cover:
@@ -50,7 +51,7 @@ collection on any performance-critical paths (such as when ingesting data).
 <Screenshot
   alt="A do not litter sign in front of some foliage. It is a play on garbage collection in Java."
   title="Please don't litter - help keep your Java garbage collection clean"
-  src="/img/blog/2023-08-25/please_dont_litter_java_garbage_collection_clean.webp"
+  src="/img/blog/2023-08-29/please_dont_litter_java_garbage_collection_clean.webp"
 />
 
 Our Java code is not idiomatic: We seldom use the `new` keyword and objects are designed to be
@@ -270,7 +271,7 @@ individual threads.
 <Screenshot
   alt="Shows relationship between JavaVM and JNI"
   title="JavaVM and JNIEnv"
-  src="/img/blog/2023-08-25/javavm_and_jnienv.webp"
+  src="/img/blog/2023-08-29/javavm_and_jnienv.webp"
 />
 
 Each time any code is invoked from Java, JNI provides access to the thread's `JNIEnv` object for
@@ -294,7 +295,7 @@ global reference is dropped and also allows the Java object to be passed to othe
 <Screenshot
   alt="Indicating the relationship between references"
   title="Global and local refs in Java JNI"
-  src="/img/blog/2023-08-25/global_and_local_refs.webp"
+  src="/img/blog/2023-08-29/global_and_local_refs.webp"
 />
 
 In the next section, we'll see some of these concepts in use, integrating Java and Rust code.
@@ -621,7 +622,7 @@ IntelliJ.
 <Screenshot
   alt="The Ant editor"
   title="Meet Ant"
-  src="/img/blog/2023-08-25/ant.webp"
+  src="/img/blog/2023-08-29/ant.webp"
 />
 
 Now each time IntelliJ builds the Java code, it will also build the Rust code. The Ant tool window
@@ -728,7 +729,7 @@ continuously) by zero or more separate "replica" QuestDB instances.
 <Screenshot
   alt="Explained in text above."
   title="Replication Architecture"
-  src="/img/blog/2023-08-25/replication.webp"
+  src="/img/blog/2023-08-29/replication.webp"
 />
 
 We are using Rust to compress, upload, download, and recreate the WAL data. We are currently using
@@ -748,7 +749,7 @@ Impala, etc.
 <Screenshot
   alt="Explained in text above."
   title="Cold Storage Architecture"
-  src="/img/blog/2023-08-25/cold_storage.webp"
+  src="/img/blog/2023-08-29/cold_storage.webp"
 />
 
 Even discounting the ability to use external tools, cold storage will allow using cheaper, slower
@@ -794,5 +795,5 @@ For us, Rust is here to stay.
 <Screenshot
   alt="QuestDB, Java, and Rust -- their logos getting along famously"
   title="QuestDB loves Java and Rust"
-  src="/img/blog/2023-08-25/banner.webp"
+  src="/img/blog/2023-08-29/banner.webp"
 />
