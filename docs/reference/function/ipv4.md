@@ -6,7 +6,7 @@ description: A list of SQL functions supported by the IPv4 data type.
 
 The IPv4 datatype supports many functions.
 
-For IPv4 operators, see the [IPv4 Operators page](/docs/reference/operators/ipv4/).
+For the full list of IPv4 Operators and more detailed syntax, see the [IPv4 Operators page](/docs/reference/operators/ipv4/).
 
 ## Supported SQL Functions
 

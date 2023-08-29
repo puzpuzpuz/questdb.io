@@ -114,21 +114,9 @@ The data type adds validity checks and type-specific functions.
 
 They are - as one would imagine - very useful when dealing with IP addresses.
 
-Within a column, all addresses are stored as a 32-bit `int`.
+IPv4 addresses exist within the range of `0.0.0.1` - `255.255.255.255`.
 
-When passed as an `IPv4` argument, they may not include a netmask. When passed
-as a `string` argument (in functions where this is explicitly allowed), they may
-include a netmask or a subnet with a netmask.
-
-`IPv4` arguments may take the following form:
-
-- ip address without a netmask: `23.62.200.1`
-
-`String` arguments may take the following forms:
-
-- ip address without a netmask: `23.62.200.1`
-- ip address with a netmask: `5.43.11.8/2`
-- a subnet with a netmask: `2.232/16`
+A full-zero address - `0.0.0.0` is interpreted as null.
 
 Columns may be created with the IPv4 data type like so:
 

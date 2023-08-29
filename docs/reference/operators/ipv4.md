@@ -6,15 +6,20 @@ description: Operator examples with IPv4 type data.
 
 This document outlines the IPv4 data type operators.
 
-IPv4 addresses are **passed** as `string`, but are **stored** as `int`.
+They are useful when dealing with IP addresses. 
 
-When applied as IPv4, they are presented between the range `0.0.0.1 - 255.255.255.255`.
+The  IP addresses can be in the range of `0.0.0.1` - `255.255.255.255`. 
 
-When passed as a `string`, they may contain a subnet mask: `35.24.65.2/16`
+The address: `0.0.0.0` is interpreted as null.
 
-Addresses when passed may contain trailing and leading dots: `...1.1.1.1...`.
+The following operators support `string` type arguments to permit the passing of netmasks:
 
-See [IPv4 SQL functions](/docs/reference/function/ipv4/) for more context about IPv4 beyond operators.
+* [<< Strict IP address contained by](/docs/reference/operators/ipv4/#-strict-ip-address-contained-by)
+* [<<=  IP address contained by or equal](/docs/reference/operators/ipv4/#--ip-address-contained-by-or-equal)
+* [rnd_ipv4(string, int)](/docs/reference/operators/ipv4/#random-address-range-generator---rnd_ipv4string-int) 
+* [netmask()](/docs/reference/operators/ipv4/#return-netmask---netmask)
+
+See [IPv4 SQL functions](/docs/reference/function/ipv4/) for more guidance around IPv4 beyond operators.
 
 ## Operators
 
@@ -102,7 +107,7 @@ Use case: testing to see if one IP address is not equal to another.
 ipv4 '44.8.9.10' != ipv4 '6.2.90.1' -> T
 ```
 
-### << Strict IP address contained by 
+### << Strict IP address contained by
 
 Takes one IPv4 argument and one string argument.
 
@@ -208,7 +213,7 @@ ipv4 '92.11.8.40' - 5 -> 92.11.8.35
 ### - Difference between two IP addresses
     
 Takes two IPv4 arguments.
-    
+
 Returns a long.
 
 #### Example
@@ -218,6 +223,25 @@ Use case: calculating the range of unique addresses between two ip addresses
 ```sql
 ipv4 '92.11.8.40' - ipv4 '92.11.8.0' -> 40
 ```
+
+### Return netmask - netmask(string)
+
+Takes a `string` IPv4 argument as either:
+
+* ipv4 address with a netmask `22.59.138.9/8`
+* subnet with netmask: `2.2/16`
+
+Returns an IPv4 addresses' netmask (`255.0.0.0`) in IPv4 format.
+
+#### Example
+
+Use case: Obtaining the broadcast bitmask for an ip address via performing bitwise NOT on the netmask. 
+
+Apply a bitwise OR to this result to obtain the broadcast address of an ip address.
+
+```sql
+~ netmask('68.11.9.2/8')) | ipv4 '68.11.9.2' -> 68.255.255.255 
+```
     
 ### Random address generator - rnd_ipv4()
 
@@ -226,6 +250,14 @@ Random address generator for a single address.
 Returns a single IPv4 address.
 
 Useful for testing.
+
+#### Example
+
+```sql
+rnd_ipv4()
+/* Return address between 0.0.0.1 - 255.255.255.255 */
+97.29.14.22
+```
 
 ### Random address range generator - rnd_ipv4(string, int) 
 
