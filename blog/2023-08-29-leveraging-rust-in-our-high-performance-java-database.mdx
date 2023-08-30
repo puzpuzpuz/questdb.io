@@ -308,7 +308,7 @@ rust `log` crate to send all Rust logging to Java.
 Integrating logging is valuable: It not only allows us to sprinkle `info!` and `error!` logs
 throughout our code, but also gives us an insight into other dependencies we might be working with.
 QuestDB, for example, uses Rust to read and write data to AWS S3. Having our database log messages
-interspersed with those of the `aws_sdk_s3` simplifies debugging.
+interspersed with those of the `aws_sdk_s3` crate simplifies debugging.
 
 Showing how we bound our logging layer would be too lengthy. Instead here I'll simplify things
 while still demonstrating the approach. You'll see examples of calling Rust from Java, Java from
@@ -414,7 +414,6 @@ impl Log for TrampolineLogger {
         if !self.enabled(record.metadata()) {
             return;
         }
-        let msg = get_formatted_msg(record.line(), record.args());
         let mut env = crate::JAVA_VM
             .expect("JavaVM init").
             .attach_current_thread_permanently()
