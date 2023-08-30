@@ -6,6 +6,7 @@ import { renderRoutes } from "react-router-config"
 import { MDXProvider } from "@mdx-js/react"
 import customFields from "../../config/customFields"
 import { StructuredData } from "../../components/StructuredData"
+import EditLink from "../../components/EditLink"
 
 import type { Props } from "@theme/DocPage"
 import DocSidebar from "@theme/DocSidebar"
@@ -185,6 +186,8 @@ const DocPage = ({
             <MDXProvider components={MDXComponents}>
               {renderRoutes(docRoutes)}
             </MDXProvider>
+            <hr />
+            <EditLink />
           </div>
         </main>
       </Layout>

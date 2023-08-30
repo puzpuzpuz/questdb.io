@@ -11,6 +11,7 @@ module.exports = {
     "QuestDB is an open source time-series database. The database is column-oriented and optimized for high-speed ingest and blazingly fast SQL analytics.",
   dockerUrl: "https://hub.docker.com/r/questdb/questdb",
   domain,
+  docIssueTemplate: `${githubOrgUrl}/questdb/issues/new/choose`,
   githubOrgUrl,
   githubUrl: `${githubOrgUrl}/questdb`,
   websiteGithubUrl: `${githubOrgUrl}/questdb.io`,
