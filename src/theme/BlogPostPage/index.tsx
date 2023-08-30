@@ -13,7 +13,6 @@ import { StructuredData } from "../../components/StructuredData"
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
 import styles from "./styles.module.css"
 import { BlogCTA } from "../../components/BlogCTA"
-import EditThisPage from "@theme/EditThisPage"
 import customFields from "../../config/customFields"
 
 function useReadingTimePlural() {
@@ -48,8 +47,6 @@ function BlogPostPage(props: Props): JSX.Element {
     formattedDate,
     permalink,
     tags,
-    source,
-    editUrl,
     readingTime,
   } = metadata as MetadataWithSource
   const {
@@ -62,13 +59,6 @@ function BlogPostPage(props: Props): JSX.Element {
   const authorTitle = frontMatter.author_title ?? frontMatter.authorTitle
   const authorImageURL =
     frontMatter.author_image_url ?? frontMatter.authorImageURL
-
-  const contributeUrl =
-    editUrl ??
-    `${customFields.websiteGithubUrl}/edit/master/${source.replace(
-      "@site",
-      "",
-    )}`
 
   return (
     <>
@@ -171,7 +161,6 @@ function BlogPostPage(props: Props): JSX.Element {
           <MDXProvider components={MDXComponents}>
             <BlogPostContents />
           </MDXProvider>
-          <EditThisPage editUrl={contributeUrl} />
           <Section>
             <BlogCTA buttonText={buttonText ?? customFields.defaultCta} />
           </Section>

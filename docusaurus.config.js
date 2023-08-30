@@ -330,8 +330,6 @@ const config = {
         docs: {
           ...markdownPlugins,
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: ({ docPath }) =>
-            `${customFields.websiteGithubUrl}/edit/master/docs/${docPath}`,
         },
 
         sitemap: {
