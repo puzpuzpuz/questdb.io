@@ -73,7 +73,13 @@ html[data-theme="light"] .column {
   border: 1px #3D3F4D solid;
 }
 
-.ctaWrapper.transparent {
+html[data-theme="light"] .ctaWrapper {
+  background: var(--theme-card-bg-color);
+  border-color: var(--palette-pale-blue);
+}
+
+.ctaWrapper.transparent,
+html[data-theme="light"] .ctaWrapper.transparent {
   background: transparent;
   border-color: transparent;
 }
