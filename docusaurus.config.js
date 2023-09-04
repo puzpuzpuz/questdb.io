@@ -143,7 +143,7 @@ const config = {
             },
             {
               label: "QuestDB Open Source",
-              to: "/get-questdb/",
+              to: "/download/",
             },
             {
               label: "QuestDB Enterprise",
@@ -222,7 +222,7 @@ const config = {
             },
             {
               label: "Open Source",
-              to: "/get-questdb/",
+              to: "/download/",
             },
             {
               label: "Enterprise",

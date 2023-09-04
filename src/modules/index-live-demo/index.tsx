@@ -31,7 +31,7 @@ const LiveDemo = () => {
   return (
     <Section fullWidth odd center>
       <Section.Title center size="small">
-        See live demo
+        Try the live demo
       </Section.Title>
       <Section.Subtitle>
         Query three large datasets and more than 2 billion rows in milliseconds
@@ -67,7 +67,7 @@ const LiveDemo = () => {
             : customFields.demoUrl
         }
       >
-        Load results&nbsp;&nbsp;&gt;
+        See query results&nbsp;&nbsp;&gt;
       </Button>
     </Section>
   )

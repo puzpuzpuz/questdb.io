@@ -13,7 +13,6 @@ import styles from "./styles.module.css"
 import NavbarItem from "@theme/NavbarItem"
 
 import { useThemeConfig } from "@docusaurus/theme-common"
-import { useLocation } from "@docusaurus/router"
 import useThemeContext from "@theme/hooks/useThemeContext"
 
 const DefaultNavItemPosition = "right"
@@ -61,7 +60,6 @@ function Navbar(): JSX.Element {
       },
     },
   } = useDocusaurusContext()
-  const location = useLocation()
   const [sidebarShown, setSidebarShown] = useState(false)
   const [isSearchBarExpanded, setIsSearchBarExpanded] = useState(false)
 
@@ -118,20 +116,18 @@ function Navbar(): JSX.Element {
               isSearchBarExpanded={isSearchBarExpanded}
             />
           </div>
-          {!location.pathname.startsWith("/enterprise") && (
-            <Button
-              className={clsx(
-                styles.ctaButton,
-                styles.getQuestdb,
-                "plausible-event-name=Click+Button+Primary",
-              )}
-              size="xsmall"
-              variant="secondary"
-              to="/cloud/"
-            >
-              Get QuestDB
-            </Button>
-          )}
+          <Button
+            className={clsx(
+              styles.ctaButton,
+              styles.getQuestdb,
+              "plausible-event-name=Click+Button+Primary",
+            )}
+            size="xsmall"
+            variant="secondary"
+            to="/get-questdb/"
+          >
+            Get QuestDB
+          </Button>
 
           <div
             aria-label="Navigation bar toggle"
