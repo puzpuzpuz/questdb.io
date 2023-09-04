@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    name: "Deploy preview "
+    name: "build on Netlify"
     runs-on: ubuntu-latest
 
     steps:
@@ -16,21 +16,18 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      # Preview link if successful
-      - name: Generate preview
-        uses: Sibz/github-status-action@v1.1.6
-        with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: Netlify preview
-          state: success
-          target_url: ${{ env.NETLIFY_PREVIEW_URL }}
-
-      - name: Comment PR
+      # Comment PR if preview was successful and NETLIFY_PREVIEW_URL is set
+      - name: "Update PR"
+        if: ${{ env.NETLIFY_PREVIEW_URL }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            :rocket: Success! 
+            :rocket: **Build success!** 
 
-            Preview available at: ${{ env.NETLIFY_PREVIEW_URL }}
+            Latest successful preview: ${{ env.NETLIFY_PREVIEW_URL }}
+
+            Commit SHA: ${{ github.event.pull_request.head.sha }} 
+
+            > :package: Build generates a preview & updates link on each commit.
 
           comment_tag: execution
