@@ -14,6 +14,8 @@ import NavbarItem from "@theme/NavbarItem"
 
 import { useThemeConfig } from "@docusaurus/theme-common"
 import useThemeContext from "@theme/hooks/useThemeContext"
+import { usePluginData } from "@docusaurus/useGlobalData"
+import { Release } from "../../utils"
 
 const DefaultNavItemPosition = "right"
 
@@ -84,6 +86,10 @@ function Navbar(): JSX.Element {
 
   const { leftItems, rightItems } = splitNavItemsByPosition(items)
 
+  const { release } = usePluginData<{ release: Release }>(
+    "fetch-latest-release",
+  )
+
   return (
     <header
       className={clsx("navbar", styles.navbar, "navbar--light", {
@@ -103,6 +109,13 @@ function Navbar(): JSX.Element {
           {rightItems.map((item, i) => (
             <NavbarItem {...item} key={i} />
           ))}
+          <a
+            href="https://github.com/questdb/questdb"
+            aria-label="GitHub repository"
+            className="navbar__item navbar__link header-github-link"
+          >
+            {release.name}
+          </a>
           {!colorModeToggle.disabled && (
             <Toggle
               className={styles.themeToggleInHeading}

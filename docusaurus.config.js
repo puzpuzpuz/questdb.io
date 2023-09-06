@@ -202,13 +202,6 @@ const config = {
           to: "/pricing/",
           position: "left",
         },
-        {
-          label: "Star us",
-          href: "https://github.com/questdb/questdb",
-          position: "right",
-          className: "header-github-link",
-          "aria-label": "GitHub repository",
-        },
       ],
     },
     footer: {
