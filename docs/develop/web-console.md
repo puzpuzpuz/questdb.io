@@ -29,7 +29,7 @@ running locally, this will be `http://localhost:9000`.
   alt="Preview of the different sections in the Web Console"
   height={375}
   small
-  src="/img/docs/console/layout.png"
+  src="/img/docs/console/layout.webp"
   width={800}
 />
 
@@ -180,31 +180,32 @@ displayed:
 #### Table schema
 
 To update the schema of an existing table, select `Overwrite` write mode to
-replace the rows and the partition unit with the CSV file. 
+replace the rows and the partition unit with the CSV file.
 
 For an existing table, changing the table name allows importing it as a new
 separate table.
 
-The following setting is available for configuration for both existing and new table import:
+The following setting is available for configuration for both existing and new
+table import:
 
-| Setting              | Description                                                                             |
-| -------------------- | --------------------------------------------------------------------------------------- |
-| Partition            | Change the partition setting of the table.                                              |
-| Designated timestamp | Electing a Designated timestamp. This is mandatory if the partition unit is not `NONE`. |
+| Setting              | Description                                                                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Partition            | Change the partition setting of the table.                                                                                                      |
+| Designated timestamp | Electing a Designated timestamp. This is mandatory if the partition unit is not `NONE`.                                                         |
 | Data type            | Define the data type. For timestamp, the timestamp format is mandatory and there is the option to elect the column as the designated timestamp. |
 
 To update the schema of a new table, in addition to the above, the following
 settings are also available for configuration:
 
-| Setting       | Description                                                                                                                                     |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Delete column | Click `x` to delete the column from the table.                                                                                                  |
-| Add column    | At the end of the column list, select “Add column” to insert a new column into the table.                                                       |
+| Setting       | Description                                                                               |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| Delete column | Click `x` to delete the column from the table.                                            |
+| Add column    | At the end of the column list, select “Add column” to insert a new column into the table. |
 
 The following table schema details are imported based on the csv file:
 
-- The column order 
-- The column name 
+- The column order
+- The column name
 
 #### Import settings
 
@@ -243,6 +244,29 @@ The details such as header forced, table name, and rejected rows are related to
 the defined import settings. For example, setting Atomicity in Settings to Skip
 row will result in skipped rows being reported in Rejected rows after the
 import.
+
+## Create table
+
+The "Create" tab on the top of the page allows table creation using interactive
+UI:
+
+<Screenshot
+  alt="Screenshot of the create table tab"
+  small
+  src="/img/docs/console/create-table-tab.webp"
+  width={300}
+/>
+
+Use the create table panel to define table partition, WAL setting, and add
+column to a new table:
+
+<Screenshot
+  alt="Screenshot of the create table panel"
+  height={375}
+  small
+  src="/img/docs/console/create-table.webp"
+  width={400}
+/>
 
 ## Providing an asset path
 
