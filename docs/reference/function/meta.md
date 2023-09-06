@@ -77,6 +77,9 @@ Returns a `table` including the following information:
 - `name` - table name
 - `suspended` - suspended status flag
 - `writerTxn` - the last committed transaction in TableWriter
+- `writerLagTxnCount` - the number of transactions that are kept invisible when
+  writing to the table; these transactions will be eventually moved to the table
+  data and become visible for readers
 - `sequencerTxn` - the last committed transaction in the sequencer
 
 **Examples:**
@@ -85,11 +88,11 @@ Returns a `table` including the following information:
 wal_tables();
 ```
 
-| name        | suspended | writerTxn | sequencerTxn |
-| ----------- | --------- | --------- | ------------ |
-| sensor_wal  | false     | 2         | 4            |
-| weather_wal | false     | 3         | 3            |
-| test_wal    | true      | 7         | 9            |
+| name        | suspended | writerTxn | writerLagTxnCount | sequencerTxn |
+| ----------- | --------- | --------- | ----------------- | ------------ |
+| sensor_wal  | false     | 2         | 1                 | 4            |
+| weather_wal | false     | 3         | 0                 | 3            |
+| test_wal    | true      | 7         | 1                 | 9            |
 
 ## table_columns
 
@@ -113,7 +116,8 @@ Returns a `table` with the following columns:
   expected to have
 - `designated` - if this is set as the designated timestamp column for this
   table
-- `upsertKey` - if this column is a part of UPSERT KEYS list for table [deduplication](/docs/concept/deduplication)
+- `upsertKey` - if this column is a part of UPSERT KEYS list for table
+  [deduplication](/docs/concept/deduplication)
 
 For more details on the meaning and use of these values, see the
 [CREATE TABLE](/docs/reference/sql/create-table/) documentation.
@@ -232,7 +236,8 @@ SELECT * FROM table_partitions('my_table') WHERE active = true
 
 ## version/pg_catalog.version
 
-`version()` or `pg_catalog.version()` returns the supported version of the PostgreSQL Wire Protocol.
+`version()` or `pg_catalog.version()` returns the supported version of the
+PostgreSQL Wire Protocol.
 
 **Arguments:**
 
