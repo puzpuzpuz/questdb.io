@@ -98,4 +98,4 @@ The current implementation of the JIT SQL compiler has a number of limitations:
   filter: `+`, `-`, `*`, `/`.
 - Only filters with fixed-size columns are supported: BOOLEAN, BYTE, GEOBYTE,
   SHORT, GEOSHORT, CHAR, INT, GEOINT, SYMBOL, FLOAT, LONG, GEOLONG, DATE,
-  TIMESTAMP, DOUBLE.
+  TIMESTAMP, DOUBLE, UUID.
