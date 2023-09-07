@@ -10,10 +10,11 @@ find the answers to your question, please join our
 
 ## Where do I find the log and how do I filter the log messages?
 
-Log files are stored in the `log` folder under the [root_directory](/docs/concept/root-directory-structure/).
-The log has the following levels to assist filtering:
+Log files are stored in the `log` folder under the
+[root_directory](/docs/concept/root-directory-structure/). The log has the
+following levels to assist filtering:
 
- Check the [log](/docs/troubleshooting/log/) page for the available log levels.
+Check the [log](/docs/troubleshooting/log/) page for the available log levels.
 
 ## How do I delete a row?
 
@@ -88,6 +89,15 @@ to
 [capacity planning](/docs/deployment/capacity-planning/#max-virtual-memory-areas-limit)
 page for more details.
 
+## Why do I see `async command/event queue buffer overflow` messages when dropping partitions?
+
+It could be the case that there are a lot of partitions to be dropped by the
+DROP PARTITION [statement](/docs/reference/sql/alter-table-drop-partition)
+you're trying to run, so the internal queue used by the server cannot fit them.
+Try to increase the `cairo.writer.command.queue.slot.size` value on your server.
+Its default value is `2K`, i.e. 2KB, so you may need to set it to a larger
+value, e.g. `32K`.
+
 ## How do I avoid duplicate rows with identical fields?
 
 We have an open
@@ -109,5 +119,7 @@ inclusively from Jan 1 2000 for 365 days. The original timestamp,
 repeated every day for 365 times:
 
 ```questdb-sql
-SELECT timestamp, col1 FROM 'table1' WHERE timestamp IN `2000-01-01T09:15;405m;1d;365';
+SELECT timestamp, col1
+FROM 'table1'
+WHERE timestamp IN '2000-01-01T09:15;405m;1d;365';
 ```
