@@ -7,8 +7,8 @@ export const Top = () => (
   <Section center className={styles.root}>
     <Section.Title level={1}>Get QuestDB</Section.Title>
     <Section.Subtitle center className={styles.subtitle}>
-      The fastest open source time-series database. Open source, self-hosted
-      Enterprise or fully managed.
+      The fastest open source time-series database. <br />
+      Open source, self-hosted Enterprise or fully managed.
     </Section.Subtitle>
   </Section>
 )

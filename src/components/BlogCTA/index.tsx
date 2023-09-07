@@ -1,22 +1,23 @@
 import ctaCss from "./styles.module.css"
 import React from "react"
 import Button from "@theme/Button"
-import { useCloudUrl } from "../../utils/cloud-url"
+import { getCloudUrl } from "../../utils/cloud-url"
+import { toPlausibleClassname } from "../../utils/plausible"
 
 type BlogCTAProps = {
   buttonText: string
 }
 
 export const BlogCTA = ({ buttonText }: BlogCTAProps) => {
-  const cloudUrl = useCloudUrl()
+  const cloudUrl = getCloudUrl("Website", "Blog", "Signup")
   const flavourText =
-    "Blasting fast ingest. SQL analytics. No CC + $200 in free credit."
+    "Blasting fast ingest. SQL analytics. $200 in free credit."
   return (
     <div className={ctaCss.ctaContainer}>
       <div className={ctaCss.ctaSection}>
         <div className={ctaCss.ctaButtonContainer}>
           <Button
-            className="plausible-event-name=Click+Button+Blog"
+            className={toPlausibleClassname("Click Secondary Blog Signup")}
             to={cloudUrl}
             newTab={false}
           >

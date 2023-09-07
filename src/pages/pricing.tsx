@@ -5,7 +5,6 @@ import { Products } from "../modules/pricing/products"
 import { HighPerformer } from "../modules/pricing/high-performer"
 import { Quotes } from "../modules/pricing/quotes"
 import { PlanCalculator } from "../modules/pricing/pricing-calculator"
-import { GetStarted } from "../modules/pricing/get-started"
 
 const CloudPage = () => (
   <Layout
@@ -35,8 +34,6 @@ const CloudPage = () => (
     <Section id="pricing-options">
       <PlanCalculator />
     </Section>
-
-    <GetStarted />
   </Layout>
 )
 

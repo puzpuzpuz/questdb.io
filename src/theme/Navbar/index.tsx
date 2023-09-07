@@ -1,10 +1,11 @@
 import clsx from "clsx"
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
 import React, { ComponentProps, useCallback, useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 
 import Toggle from "@theme/Toggle"
+import { MainCTA } from "../../components/MainCTA"
 
-import Button from "@theme/Button"
 import SearchBar from "@theme/SearchBar"
 import useLockBodyScroll from "@theme/hooks/useLockBodyScroll"
 import useWindowSize, { windowSizes } from "@theme/hooks/useWindowSize"
@@ -85,6 +86,7 @@ function Navbar(): JSX.Element {
   }, [windowSize])
 
   const { leftItems, rightItems } = splitNavItemsByPosition(items)
+  const location = useLocation()
 
   const { release } = usePluginData<{ release: Release }>(
     "fetch-latest-release",
@@ -129,19 +131,7 @@ function Navbar(): JSX.Element {
               isSearchBarExpanded={isSearchBarExpanded}
             />
           </div>
-          <Button
-            className={clsx(
-              styles.ctaButton,
-              styles.getQuestdb,
-              "plausible-event-name=Click+Button+Primary",
-            )}
-            size="xsmall"
-            variant="secondary"
-            to="/get-questdb/"
-          >
-            Get QuestDB
-          </Button>
-
+          {!location.pathname.startsWith("/get-questdb") && <MainCTA />}
           <div
             aria-label="Navigation bar toggle"
             className="navbar__toggle"

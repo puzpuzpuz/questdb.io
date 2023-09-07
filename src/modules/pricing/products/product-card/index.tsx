@@ -66,6 +66,7 @@ export const ProductCard = (product: ProductInfo) => (
           buttonStyle.button,
           buttonStyle["button--primary"],
           buttonStyle["button--uppercase"],
+          product.eventLink,
         )}
       >
         {product.ctaLabel}

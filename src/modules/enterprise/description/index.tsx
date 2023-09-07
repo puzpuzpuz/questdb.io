@@ -19,7 +19,7 @@ const cards: Card[] = [
   {
     title: "Secure self-hosted environment",
     description:
-      "QuestDB Enterprise is self-hosted on your infrastructure and aligns with your security requirements.",
+      "Robust security features to secure your bring-your-own-Cloud or self-hosted infrastructure.",
     icon: {
       component: <Shield width="48" height="48" />,
       alt: "Shield icon",
@@ -27,9 +27,9 @@ const cards: Card[] = [
   },
 
   {
-    title: "Works at any scale",
+    title: "Horizontal scalability",
     description:
-      "Handles petabytes of data reliably with horizontal scaling and a native cold storage integration.",
+      "High-performance data replication and clustering to safeguard your data and scale queries horizontally.",
     icon: {
       component: <HddStack width="48" height="48" />,
       alt: "Disk drive stack icon",
@@ -37,9 +37,9 @@ const cards: Card[] = [
   },
 
   {
-    title: "Storage costs under control",
+    title: "Access control",
     description:
-      "Data compression and multiple storage tiers help you meet your storage needs and lower infrastructure costs.",
+      "Assign roles and control data access via an enterprise-grade fine-grained permission model.",
     icon: {
       component: <LineGraph width="48" height="48" />,
       alt: "Line graph icon",

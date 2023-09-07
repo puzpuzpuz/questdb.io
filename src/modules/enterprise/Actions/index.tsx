@@ -4,20 +4,27 @@ import Button from "@theme/Button"
 import Link from "@docusaurus/Link"
 
 import styles from "./styles.module.css"
+import { toPlausibleClassname } from "../../../utils/plausible"
 
 export const Actions = () => (
   <Section className={styles.root}>
-    <Section.Subtitle center>
-      Get in touch with us to discuss your needs
-    </Section.Subtitle>
-
     <div className={styles.actionButtons}>
       <Link to="/enterprise/contact">
-        <Button variant="primary">Contact us</Button>
+        <Button
+          className={toPlausibleClassname("Click Secondary Enterprise Contact")}
+          variant="primary"
+        >
+          Contact us
+        </Button>
       </Link>{" "}
       or{" "}
       <Link to="/enterprise/book-a-demo">
-        <Button variant="secondary">Book a demo</Button>
+        <Button
+          className={toPlausibleClassname("Click Secondary Enteprise Demo")}
+          variant="secondary"
+        >
+          Book a demo
+        </Button>
       </Link>
     </div>
   </Section>

@@ -245,13 +245,11 @@ brew install questdb`}
           <Section.Title level={1}>Download QuestDB</Section.Title>
 
           <Section.Subtitle center>
-            Find links below to download the latest version of QuestDB{" "}
-            {release.name}
+            High performance time-series database with SQL Analytics.{" "}
           </Section.Subtitle>
 
           <Section.Subtitle center>
-            Or check <Link to="/cloud/">QuestDB Cloud</Link> for a managed
-            solution.
+            <a href={customFields.githubUrl}>Open source</a> under Apache 2.0.
           </Section.Subtitle>
 
           <img

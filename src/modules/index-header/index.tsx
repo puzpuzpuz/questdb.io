@@ -1,13 +1,10 @@
 import React from "react"
-import clsx from "clsx"
 import Button from "@theme/Button"
 import { Section } from "../../components/Section"
 import styles from "./styles.module.css"
-import { useCloudUrl } from "../../utils/cloud-url"
+import { toPlausibleClassname } from "../../utils/plausible"
 
 export const Header = () => {
-  const cloudUrl = useCloudUrl()
-
   return (
     <Section fullWidth center>
       <div className={styles.titles}>
@@ -16,20 +13,20 @@ export const Header = () => {
         </Section.Title>
 
         <Section.Subtitle className={styles.subheader} center>
-          Columnar time-series database with high performance ingestion and SQL
-          analytics you know and love from QuestDB open source, now on the
-          cloud.
+          Columnar open source time-series database with high performance
+          ingestion and blazingly fast SQL analytics. Self-hosted or fully
+          managed.
         </Section.Subtitle>
 
         <div className={styles.mainCTA}>
           <Button
-            className={clsx("plausible-event-name=Click+Button+Main+Fold")}
-            to={cloudUrl}
+            className={toPlausibleClassname("Click Secondary Main Get")}
+            to="/get-questdb"
             newTab={false}
           >
-            Start building now
+            Get QuestDB
           </Button>
-          <span>$200 in free credits</span>
+          <span>Choose the right product</span>
         </div>
       </div>
     </Section>

@@ -1,13 +1,13 @@
 import React from "react"
 import Layout from "../../theme/Layout"
 import { Section } from "../../components/Section"
-import { ActionFooter } from "../../components/ActionFooter"
 import { CompareFeatures } from "../../modules/cloud/CompareFeatures"
 import { Top } from "../../modules/cloud/Top"
 import Button from "@theme/Button"
-import { useCloudUrl } from "../../utils/cloud-url"
+import { getCloudUrl } from "../../utils/cloud-url"
 import { StructuredData } from "../../components/StructuredData"
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
+import { toPlausibleClassname } from "../../utils/plausible"
 
 const meta = {
   name: "Cloud",
@@ -18,7 +18,6 @@ const meta = {
 
 const CloudPage = () => {
   const { siteConfig } = useDocusaurusContext()
-  const cloudUrl = useCloudUrl()
   return (
     <>
       <StructuredData>
@@ -74,17 +73,14 @@ const CloudPage = () => {
 
           <Section noGap center>
             <Button
-              className="plausible-event-name=Click+Button+Cloud+Bottom"
+              className={toPlausibleClassname("Click Secondary Cloud Signup")}
               variant="primary"
-              to={cloudUrl}
+              to={getCloudUrl("Website", "Cloud", "Signup")}
               newTab={false}
             >
-              Start building now
+              Signup, claim credits
             </Button>
           </Section>
-        </Section>
-        <Section>
-          <ActionFooter />
         </Section>
       </Layout>
     </>

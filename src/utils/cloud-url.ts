@@ -1,17 +1,25 @@
-import customFields from "../config/customFields"
+import { cloudUrl } from "../config/customFields"
 
-export const useCloudUrl = (
-  utmSource?: string,
-  utmContent?: string,
-  utmCampaign?: string,
+export const getCloudUrl = (
+  utmSource: string,
+  utmContent: string,
+  utmCampaign: string,
 ) => {
-  const baseUrl = customFields.cloudUrl
-  const utmParams = [
-    utmSource ? `utm_source=${utmSource}` : "",
-    utmContent ? `utm_content=${utmContent}` : "",
-    utmCampaign ? `utm_campaign=${utmCampaign}` : "",
-  ]
-    .filter(Boolean)
+  const params = {
+    utm_source: utmSource,
+    utm_content: utmContent,
+    utm_campaign: utmCampaign,
+  }
+
+  // Join k=v pairs of params
+  // but only if v is defined
+  const joined = Object.entries(params)
+    .reduce<string[]>(
+      (acc, [key, value]) =>
+        value !== undefined ? acc.concat(`${key}=${value}`) : acc,
+      [],
+    )
     .join("&")
-  return `${baseUrl}${utmParams ? `?${utmParams}` : ""}`
+
+  return `${cloudUrl}?${joined}`
 }

@@ -10,11 +10,15 @@
   text-align: center;
 }
 
+.subtitle {
+  max-width: 400px; /* nicer text wrapping, prevents long line */
+}
+
 .list {
   padding: 0;
-  margin-top: 2rem;
   list-style-type: none;
   align-items: center;
+  padding-top: 2rem;
 }
 
 .bullet {
@@ -38,54 +42,27 @@
   background-color: transparent;
 }
 
-.startBuildingRoot {
-  display: grid;
-  grid-auto-flow: row;
-  gap: 2rem;
-  grid-template-areas:
-    "start-building-button"
-    "actions"
-    "credits"
-    "instance-details-image"
-    "instance-metrics-image";
+.illustrations {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding-bottom: 2rem;
 }
 
-.startBuildingImage {
+.illustrations img {
   width: 100%;
   max-width: 510px;
   height: auto;
   margin: auto;
   border-radius: 8px;
-  box-shadow: 0 20px 50px 0 rgb(91 95 121 / 37%);
+  box-shadow: 0 20px 30px 0 rgb(91 95 121 / 37%);
   border: 1px solid #3e3e37;
 }
 
-:global(html[data-theme="light"]) .startBuildingImage {
-  box-shadow: 0 20px 50px 10px rgba(0, 0, 0, 0.1);
+:global(html[data-theme="light"]) .illustrations img {
+  box-shadow: 0 20px 30px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid #eaeaea;
   filter: brightness(1.3) contrast(0.9);
-}
-
-.instanceDetailsImage {
-  grid-area: instance-details-image;
-}
-
-.instanceMetricsImage {
-  grid-area: instance-metrics-image;
-}
-
-.startBuildingButton {
-  justify-self: center;
-  grid-area: start-building-button;
-}
-
-.startBuildingCredits {
-  justify-self: center;
-  grid-area: credits;
-}
-
-.actions {
-  grid-area: actions;
 }
 
 @media (min-width: 730px) {
@@ -98,14 +75,5 @@
   .textColumn {
     align-items: flex-start;
     text-align: left;
-  }
-
-  .startBuildingRoot {
-    grid-template-areas:
-      "instance-details-image"
-      "instance-metrics-image"
-      "start-building-button"
-      "actions"
-      "credits";
   }
 }

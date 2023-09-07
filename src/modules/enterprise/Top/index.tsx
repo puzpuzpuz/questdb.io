@@ -1,19 +1,16 @@
 import React from "react"
 import { Section } from "../../../components/Section"
-import Button from "@theme/Button"
 
 import styles from "./styles.module.css"
 
 export const Top = () => (
-  <Section center className={styles.root}>
-    <Section.Title level={1}>QuestDB Enterprise</Section.Title>
+  <Section center noGap className={styles.root}>
+    <Section.Title className={styles.title} level={1}>
+      QuestDB Enterprise
+    </Section.Title>
     <Section.Subtitle center className={styles.subtitle}>
-      QuestDB Enterprise is deployed on your infrastructure and includes
-      closed-source features to run QuestDB at any scale.
+      Self hosted. Everything from open source, plus premium features to secure,
+      organize and scale your QuestDB deployments.
     </Section.Subtitle>
-
-    <Button variant="primary" to="/enterprise/contact" className={styles.cta}>
-      Get started
-    </Button>
   </Section>
 )

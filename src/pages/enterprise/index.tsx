@@ -16,11 +16,11 @@ const description =
 const Enterprise = () => (
   <Layout canonical="/enterprise" description={description} title={title}>
     <Top />
+    <Actions />
     <Description />
     <CompareFeatures />
     <Providers />
     <CaseStudies />
-    <Actions />
   </Layout>
 )
 

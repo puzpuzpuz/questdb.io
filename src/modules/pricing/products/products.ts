@@ -1,6 +1,9 @@
-import customFields from "../../../config/customFields"
+import { toPlausibleClassname } from "../../../utils/plausible"
+import { getCloudUrl } from "../../../utils/cloud-url"
 
 type Label = string | { text: string; emphasized: true }
+
+const cloudUrl = getCloudUrl("Website", "Pricing", "Signup")
 
 export type ProductInfo = {
   type: "open-source" | "cloud" | "enterprise"
@@ -12,6 +15,7 @@ export type ProductInfo = {
   specs: Array<{ label: string; href: string } | string>
   url: string
   ctaLabel: string
+  eventLink?: string
 }
 
 export const products: ProductInfo[] = [
@@ -24,11 +28,12 @@ export const products: ProductInfo[] = [
     specs: [
       "Fast ingest, dynamic schema",
       "Sub-second SQL queries",
-      "Performant with high-cardinality data",
+      "Excels with high-cardinality data",
       "Time-series SQL extensions",
     ],
-    url: "/get-questdb/",
-    ctaLabel: "Get QuestDB",
+    url: "/download/",
+    ctaLabel: "Download",
+    eventLink: toPlausibleClassname("Click Secondary Pricing Download"),
   },
 
   {
@@ -67,8 +72,9 @@ export const products: ProductInfo[] = [
         href: "#pricing-options",
       },
     ],
-    url: customFields.cloudUrl,
-    ctaLabel: "Start building now",
+    url: cloudUrl,
+    ctaLabel: "Signup",
+    eventLink: toPlausibleClassname("Click Secondary Pricing Signup"),
   },
 
   {
@@ -80,13 +86,11 @@ export const products: ProductInfo[] = [
     specs: [
       "Security and permissions",
       "High availability",
+      "Kubernetes operator",
       "Enterprise SLAs",
-      {
-        label: "Learn More",
-        href: "/enterprise/",
-      },
     ],
-    url: "/enterprise/contact",
-    ctaLabel: "Contact us",
+    url: "/enterprise/",
+    ctaLabel: "Explore",
+    eventLink: toPlausibleClassname("Click Secondary Pricing Contact"),
   },
 ]

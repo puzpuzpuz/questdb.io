@@ -4,11 +4,13 @@ import { Section } from "../../../components/Section"
 import styles from "./styles.module.css"
 import Link from "@docusaurus/Link"
 import clsx from "clsx"
-import MailIcon from "../../../assets/icons/mail.svg"
+import Shield from "../../../../static/img/icons/shield.svg"
 import UserCheckIcon from "../../../assets/icons/user-check.svg"
 import DownloadIcon from "../../../assets/icons/download.svg"
 import { usePluginData } from "@docusaurus/useGlobalData"
 import { Release } from "../../../utils"
+import { getCloudUrl } from "../../../utils/cloud-url"
+import { toPlausibleClassname } from "../../../utils/plausible"
 
 export const Products = () => {
   const { release } = usePluginData<{ release: Release }>(
@@ -40,12 +42,17 @@ export const Products = () => {
         </p>
       ),
       cta: (
-        <Button to="/download/" icon={<DownloadIcon width="18" height="18" />}>
+        <Button
+          to="/download/"
+          icon={<DownloadIcon width="18" height="18" />}
+          className={toPlausibleClassname("Click Secondary Get Download")}
+        >
           Download
         </Button>
       ),
       linkText: "Live demo",
       linkHref: "https://demo.questdb.io",
+      linkEvent: toPlausibleClassname("Click Secondary Get Demo"),
     },
     {
       key: "questdb-enterprise",
@@ -67,14 +74,16 @@ export const Products = () => {
       ),
       cta: (
         <Button
-          to="/enterprise/contact/"
-          icon={<MailIcon width="18" height="18" />}
+          to="/enterprise/"
+          icon={<Shield width="18" height="18" />}
+          className={toPlausibleClassname("Click Secondary Get Enterprise")}
         >
-          Contact us
+          Features
         </Button>
       ),
-      linkText: "Features",
-      linkHref: "/enterprise/",
+      linkText: "Contact us",
+      linkHref: "/enterprise/contact/",
+      linkEvent: toPlausibleClassname("Click Secondary Get Contact"),
     },
     {
       key: "questdb-cloud",
@@ -90,16 +99,17 @@ export const Products = () => {
         <p className={styles.description}>
           Fully hosted solution
           <br />
-          Replication and Point-in-time recovery
+          Replication & point-in-time recovery
           <br />
           Up to 80% compression ratio
         </p>
       ),
       cta: (
         <Button
-          href="https://cloud.questdb.com"
+          href={getCloudUrl("Website", "Get", "Signup")}
           newTab={false}
           icon={<UserCheckIcon width="18" height="18" />}
+          className={toPlausibleClassname("Click Secondary Get Signup")}
         >
           Sign up
         </Button>
@@ -107,6 +117,7 @@ export const Products = () => {
       ctaHelperText: "No card required",
       linkText: "Features",
       linkHref: "/cloud/",
+      linkEvent: toPlausibleClassname("Click Secondary Get Cloud"),
     },
   ]
 
@@ -121,7 +132,7 @@ export const Products = () => {
             <div className={styles.beforeTitle}>{item.beforeTitle}</div>
             {item.title}
             {item.description}
-            <Link to={item.linkHref} className={styles.link}>
+            <Link to={item.linkHref} className={(styles.link, item.linkEvent)}>
               {item.linkText} &gt;
             </Link>
             <span

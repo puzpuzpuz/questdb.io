@@ -13,6 +13,7 @@ import { Link } from "@docusaurus/router"
 import clsx from "clsx"
 import { GetAccess } from "../../../modules/cloud/get-access"
 import Button from "@theme/Button"
+import { toPlausibleClassname } from "../../../utils/plausible"
 
 type RegionSelectProps = {
   value: RegionKey
@@ -143,7 +144,14 @@ export const PlanCalculator = () => {
           ) : (
             <hgroup>
               <h3>
-                <Link to="/enterprise/contact">Contact us</Link>
+                <Link
+                  className={toPlausibleClassname(
+                    "Click Secondary Calculator Contact",
+                  )}
+                  to="/enterprise/contact"
+                >
+                  Contact us
+                </Link>
               </h3>
               <p>for custom pricing</p>
             </hgroup>
@@ -170,7 +178,19 @@ export const PlanCalculator = () => {
           ) : (
             "."
           )}{" "}
-          <GetAccess trigger={<Button variant="plain">Need more?</Button>} />
+          Need more?{" "}
+          <GetAccess
+            trigger={
+              <Button
+                className={toPlausibleClassname(
+                  "Click Secondary CalcFlavour Contact",
+                )}
+                variant="plain"
+              >
+                Contact us.
+              </Button>
+            }
+          />
         </div>
       </article>
     </>
