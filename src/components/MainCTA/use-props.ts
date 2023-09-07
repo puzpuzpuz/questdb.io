@@ -38,7 +38,7 @@ export const useProps = (): Props => {
     default:
       return {
         ctaLabel: "Get QuestDB",
-        source: origin === "" ? "Homepage" : hyphenToPascalCase(origin),
+        source: origin === "" ? "Main" : hyphenToPascalCase(origin),
         destination: "Get",
         url: "/get-questdb/",
       }
