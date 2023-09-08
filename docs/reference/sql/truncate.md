@@ -9,7 +9,7 @@ deleting the table itself.
 
 ## Syntax
 
-![Flow chart showing the syntax of the TRUNCATE TABLE keyword](/img/docs/diagrams/truncate-table.svg)
+![Flow chart showing the syntax of the TRUNCATE TABLE keyword](/img/docs/diagrams/truncateTable.svg)
 
 ## Notes
 

@@ -208,7 +208,7 @@ duplicates.
 
 #### Syntax
 
-![Flow chart showing the syntax of the UNION, EXCEPT & INTERSECT keyword](/img/docs/diagrams/union-except-intersect.svg)
+![Flow chart showing the syntax of the UNION, EXCEPT & INTERSECT keyword](/img/docs/diagrams/unionExceptIntersect.svg)
 
 For more information, please refer to the
 [UNION, EXCEPT & INTERSECT reference](/docs/reference/sql/union-except-intersect/)
