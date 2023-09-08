@@ -288,7 +288,7 @@ brew install questdb`}
             </a>
             <a
               className={chCss.changelog__link}
-              href={`${customFields.githubUrl}/tags`}
+              href={`${customFields.githubUrl}/releases`}
               rel="noopener noreferrer"
               target="_blank"
             >
