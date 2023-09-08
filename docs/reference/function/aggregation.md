@@ -43,12 +43,12 @@ SELECT payment_type, avg(amount) FROM transactions;
 ## count
 
 - `count()` or `count(*)` - counts the number of rows irrespective of underlying data.
-- `count(column_name)` - counts the number of non-null values in a given column. 
+- `count(column_name)` - counts the number of non-null values in a given column.
 
 ### Arguments
 
 - `count()` does not require arguments.
-- `count(column_name)` - supports the following data types: 
+- `count(column_name)` - supports the following data types:
   - `double`
   -  `float`
   -  `integer`
@@ -93,17 +93,17 @@ SELECT payment_type, count() FROM transactions;
 
 Count non-null transaction amounts:
 
-```questdb-sql 
+```questdb-sql
 SELECT count(amount) FROM transactions;
 ```
 
 | count |
 |:------|
 | 95    |
-               
+
 Count non-null transaction amounts by `payment_type`:
 
-```questdb-sql 
+```questdb-sql
 SELECT payment_type, count(amount) FROM transactions;
 ```
 
@@ -166,8 +166,8 @@ SELECT payment_type, count_distinct(counterparty) FROM transactions;
 - `first(column_name)` - returns the first value of a column.
 - `last(column_name)` - returns the last value of a column.
 
-Supported column datatype: `double`, `float`, `integer`, `character`, `short`,
-`byte`, `timestamp`, `date`, `long`, `geohash`.
+Supported column datatype: `double`, `float`, `integer`, `IPv4`, `character`, `short`,
+`byte`, `timestamp`, `date`, `long`, `geohash`, `symbol`, `uuid`.
 
 If a table has a [designated timestamp](/docs/concept/designated-timestamp/),
 then the first row is always the row with the lowest timestamp (oldest) and the
@@ -458,7 +458,7 @@ Return value type is `uuid`.
 ### Examples
 
 ```questdb-sql
-SELECT to_uuid(2, 1) 
+SELECT to_uuid(2, 1)
 AS uuid FROM long_sequence(1);
 ```
 
