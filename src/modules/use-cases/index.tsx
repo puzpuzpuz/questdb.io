@@ -7,7 +7,7 @@ const useCases = [
     title: "Performance",
     uses: [
       "Ingest 2M rows/s per node",
-      "5-10x faster vs Timescale & Influx",
+      "Up to 10x faster writes vs InfluxDB",
       "Don’t worry about cardinality",
       "Columnar storage",
       "Data partitioned by time",
