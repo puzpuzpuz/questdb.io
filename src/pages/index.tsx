@@ -65,8 +65,16 @@ const Cards = () => (
 
           {
             header: "Network traffic analysis",
-            content:
-              "Ingest Flow or other network traffic metadata leveraging QuestDB's native IPv4 type. Detect anomalies in real-time from blasts of networking data.",
+            content: (
+              <>
+                Ingest Flow or other network traffic metadata leveraging
+                QuestDB's{" "}
+                <Link to="/docs/reference/sql/datatypes/#ipv4">
+                  native IPv4 type
+                </Link>
+                . Detect anomalies in real-time from blasts of networking data.
+              </>
+            ),
           },
 
           {

@@ -11,12 +11,41 @@ import { Highlights } from "../modules/highlights"
 import liCss from "../css/use-cases/list.module.css"
 import ucCss from "../css/use-cases/use-case.module.css"
 import prCss from "../css/property.module.css"
+import Link from "@docusaurus/Link"
+
+const highCardinalityLink = (
+  <>
+    Store <Link to="/glossary/high-cardinality/">high-cardinality</Link> sensor
+    data with continuous data ingestion
+  </>
+)
+
+const pythonClientLink = (
+  <>
+    Financial data modelling: fast ingest & retrieval of{" "}
+    <Link to="/docs/third-party-tools/pandas/">pandas data frames</Link>
+  </>
+)
+
+const asofJoinsLink = (
+  <>
+    Match and correlate multiple feeds with fuzzy timestamp{" "}
+    <Link to="/docs/reference/sql/join/#asof-join">JOINs</Link>
+  </>
+)
+
+const ipv4TypeLink = (
+  <>
+    Network traffic flow analysis with the native{" "}
+    <Link to="/docs/reference/sql/datatypes/#ipv4">IPv4 data type</Link>
+  </>
+)
 
 const List = ({
   items,
   itemClassName,
 }: {
-  items: string[]
+  items: React.ReactNode[]
   itemClassName: string
 }) => (
   <ul className={clsx(liCss.list, ucCss.list)}>
@@ -32,19 +61,19 @@ const Heading = () => (
   <Section center>
     <Section.Title level={1}>Use cases and industries</Section.Title>
     <Section.Subtitle center style={{ maxWidth: "800px" }}>
-      QuestDB offers high throughput ingestion and real-time SQL queries for
-      applications in a wide range of use cases and industries
+      QuestDB solves ingestion speed bottlenecks, combining performance with
+      simplicity through SQL and native time-series extensions.
     </Section.Subtitle>
   </Section>
 )
 
 const monitoringCustomers: Customer[] = [
   {
-    key: "liveaction",
+    key: "syndica",
     quote:
-      "QuestDB is used by LiveAction as a time series database for storing flow and encrypted traffic metadata analyzed by their real-time threat detection engine.",
-    caseStudyLink: "/case-study/liveaction/",
-    logoWidth: 120,
+      "See how Syndica builds Web3 with QuestDB for real-time analytics and intensive time-series dashboards.",
+    caseStudyLink: "/case-study/syndica/",
+    logoWidth: 100,
   },
   {
     key: "yahoo",
@@ -54,15 +83,22 @@ const monitoringCustomers: Customer[] = [
     logoWidth: 100,
   },
   {
-    key: "syndica",
+    key: "airtel",
     logoWidth: 100,
+  },
+  {
+    key: "liveaction",
+    quote:
+      "QuestDB is used by LiveAction as a time series database for storing flow and encrypted traffic metadata analyzed by their real-time threat detection engine.",
+    caseStudyLink: "/case-study/liveaction/",
+    logoWidth: 120,
   },
   {
     key: "netapp",
     logoWidth: 100,
   },
   {
-    key: "apacheNifi",
+    key: "motion",
     logoWidth: 110,
     logoHeight: 35,
   },
@@ -70,11 +106,7 @@ const monitoringCustomers: Customer[] = [
     key: "central-group",
   },
   {
-    key: "prediko",
-    logoWidth: 80,
-  },
-  {
-    key: "synology",
+    key: "cloudera",
     logoWidth: 100,
   },
 ]
@@ -90,11 +122,11 @@ const Monitoring = () => (
         <List
           itemClassName={clsx(liCss.item, ucCss.listItem)}
           items={[
-            "On the fly aggregations and downsampling for real-time dashboards",
-            "DevOps monitoring and alerting",
-            "Network traffic flow analysis and machine learning based threat detection",
-            "In-product application analytics",
-            "Real-time SQL queries computed on data streams",
+            "API usage data real-time monitoring",
+            ipv4TypeLink,
+            "Track Ad Impressions, Clicks, and Conversions ",
+            "In-app behavioural data and product application analytics",
+            "Build real-time dashboards with on-the-fly aggregations and down-sampling",
           ]}
         />
       </div>
@@ -113,11 +145,11 @@ const Monitoring = () => (
         <List
           itemClassName={clsx(prCss.property, ucCss["use-case__property"])}
           items={[
-            "DevOps/Networks",
-            "Blockchain / Web 3",
-            "SaaS applications",
+            "Network Traffic Analysis",
             "E-commerce",
-            "Cyber security",
+            "Ad-Tech",
+            "Blockchain / Web 3",
+            "Telecommunication Traffic",
           ]}
         />
       </div>
@@ -136,16 +168,16 @@ const marketDataCustomers: Customer[] = [
     caseStudyLink: "/case-study/aquis/",
   },
   {
-    key: "kepler",
-    logoWidth: 120,
-  },
-  {
-    key: "coinbase",
+    key: "norlys-energy-trading",
     logoWidth: 120,
   },
   {
     key: "okx",
     logoWidth: 60,
+  },
+  {
+    key: "coinbase",
+    logoWidth: 120,
   },
 ]
 
@@ -166,11 +198,12 @@ const MarketData = () => (
         <List
           itemClassName={clsx(liCss.item, ucCss.listItem)}
           items={[
-            "Real-time market data with dashboard integrations",
+            "Trade monitoring: long-term market data storage and real-time analysis for orders and trades",
+            "Historical market data analysis and ad-hoc analytics",
             "Fast aggregations for OHLC and candlestick charts",
-            "Drill down large historical datasets to analyze the market",
-            "Financial modelling with python and machine learning libraries",
-            "Match and correlate multiple feeds with fuzzy timestamp JOINs",
+            pythonClientLink,
+            "Infrastructure and business metrics: latency reports, PnL, log orders and trades",
+            asofJoinsLink,
           ]}
         />
       </div>
@@ -182,9 +215,11 @@ const MarketData = () => (
         <List
           itemClassName={clsx(prCss.property, ucCss["use-case__property"])}
           items={[
-            "Crypto (Exchanges, Intelligence, Funds)",
-            "FinTech (Asset/Wealth Management, AI predictions)",
-            "Trading (FX, Equity, Commodity)",
+            "Banks",
+            "Hedge funds",
+            "Exchanges",
+            "Energy trading firms",
+            "Financial data platforms",
           ]}
         />
       </div>
@@ -203,10 +238,7 @@ const industrialTelemetryCustomers: Customer[] = [
     logoWidth: 120,
   },
   {
-    key: "tqs-integration",
-    quote:
-      "See how TQS, a Cognizant company, uses QuestDB to store manufacturing plants metrics for real-time data visualization and anomaly detection",
-    caseStudyLink: "/case-study/tqs-integration/",
+    key: "weidmann",
     logoWidth: 120,
   },
   {
@@ -214,7 +246,7 @@ const industrialTelemetryCustomers: Customer[] = [
     logoWidth: 120,
   },
   {
-    key: "turk-telekom",
+    key: "electric_era",
     logoWidth: 120,
   },
 ]
@@ -224,17 +256,18 @@ const IndustrialTelemetry = () => (
     <div className={clsx(seCss["section--inner"])}>
       <div className={ucCss["use-case__half"]}>
         <h2 className={clsx(seCss.section__title, ucCss["use-case__title"])}>
-          Industrial analytics
+          Industrial IoT
         </h2>
 
         <List
           itemClassName={clsx(liCss.item, ucCss.listItem)}
           items={[
-            "Store high frequency sensor data with continuous data ingestion",
-            "Process metrics in the manufacturing process: vibrations, pressure, temperatures, pH levels",
-            "Monitor electricity readings for usage insights",
-            "Track fleets of autonomous cars, aircrafts or cargo ships with native geospatial features",
-            "React to industrial anomalies in real-time",
+            highCardinalityLink,
+            "Process metrics in the manufacturing process, such as vibration, pressure and temperature",
+            "Telemetry data from space launch vehicles such as rockets or satellites",
+            "Batteries consumption data directly from the physical batteries on-site",
+            "React to industrial anomalies in real time with our Grafana dashboard integration",
+            "Track fleets and trajectories of aircraft, cargo ships or satellites with native geospatial features",
           ]}
         />
       </div>
@@ -259,11 +292,11 @@ const IndustrialTelemetry = () => (
         <List
           itemClassName={clsx(prCss.property, ucCss["use-case__property"])}
           items={[
-            "Energy (Power plants, Renewables, Oil & Gas, Utilities)",
-            "Space & Defence (Rockets, Satellites, Maritime, Aerospace)",
-            "Transportation and Mobility (Autonomous cars, Freight transport, Drones, Logistics)",
-            "Manufacturing & Automation (Semiconductors, Digital factories, pre-processing plants, Robotics)",
-            "Telco (Network base stations)",
+            "Energy and Renewables ",
+            "Space and Defence",
+            "Transportation and Mobility",
+            "Manufacturing and Automation ",
+            "Telco Network base stations",
           ]}
         />
       </div>
@@ -279,9 +312,9 @@ const UseCasesPage = () => (
   <Layout canonical="/use-cases" description={description} title={title}>
     <Heading />
     <Highlights />
-    <Monitoring />
     <MarketData />
     <IndustrialTelemetry />
+    <Monitoring />
   </Layout>
 )
 
