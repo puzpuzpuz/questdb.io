@@ -14,21 +14,21 @@ const useCaseHighlights: Highlight[] = [
     key: "financial-market-data",
     title: "Financial market data",
     description:
-      "Long-term storage and real-time analysis for financial tick data",
+      "Long-term storage and real-time analysis for constantly flowing financial tick data",
     image: "/img/pages/use-cases/financial-market-data.svg",
   },
   {
     key: "industrial-analytics",
-    title: "Industrial analytics",
+    title: "Industrial IoT",
     description:
-      "Collect high cardinality metrics at scale from batteries, plants, space launch vehicles or any type of IIoT sensor \n",
+      "Collect high cardinality data from vast industrial plant sensors to space vehicles \n",
     image: "/img/pages/use-cases/industrial-telemetry.svg",
   },
   {
     key: "monitoring-and-real-time-analytics",
     title: "Monitoring & analytics",
     description:
-      "Analytics and monitoring for time series data generated from software applications and infrastructure",
+      "Observability of time series data from applications and infrastructure",
     image: "/img/pages/use-cases/real-time-analytics.svg",
   },
 ]

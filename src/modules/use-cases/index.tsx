@@ -6,8 +6,8 @@ const useCases = [
   {
     title: "Performance",
     uses: [
-      "2M rows/s per node",
-      "5-10x faster vs Timescale & InfluxDB",
+      "Ingest 2M rows/s per node",
+      "5-10x faster vs Timescale & Influx",
       "Don’t worry about cardinality",
       "Columnar storage",
       "Data partitioned by time",
@@ -22,7 +22,7 @@ const useCases = [
     title: "Developer experience",
     uses: [
       "SQL time series extensions",
-      "Built-in SQL optimizer and REST API",
+      "Built-in SQL optimizer & REST API",
       "PostgreSQL driver compatibility",
       "InfluxDB Line Protocol API",
       "SQL and time-series joins",
@@ -34,19 +34,19 @@ const useCases = [
     },
   },
   {
-    title: "Operational simplicity",
+    title: "Enterprise ready",
     uses: [
-      "Fully managed hosted cloud",
-      "Role-based access control",
       "TLS for all protocols",
-      "Online snapshot based backups",
-      "Monitoring dashboards",
-      "SSO authentication",
+      "Hot & cold read replicas",
+      "Role-based access control",
+      "Multiple availability zones",
+      "Data compression",
+      "Enterprise support SLA",
     ],
 
     cta: {
-      label: "See Cloud",
-      url: "/cloud/",
+      label: "See Enterprise",
+      url: "/enterprise/",
     },
   },
 ]

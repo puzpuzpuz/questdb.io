@@ -114,9 +114,15 @@ const monitoringCustomers: Customer[] = [
 const Monitoring = () => (
   <section className={seCss.section} id="monitoring-and-real-time-analytics">
     <div className={clsx(seCss["section--inner"], ucCss.section)}>
+      <img
+        src="/img/pages/use-cases/real-time-analytics-jumbo.svg"
+        alt="An illustration of real-time analytics and monitoring"
+        width="630"
+        className={ucCss["use-case__image--monitoring"]}
+      />
       <div className={ucCss["use-case__half"]}>
         <h2 className={clsx(seCss.section__title, ucCss["use-case__title"])}>
-          Monitoring and Real-time analytics
+          Monitoring and analytics
         </h2>
 
         <List
@@ -130,13 +136,6 @@ const Monitoring = () => (
           ]}
         />
       </div>
-
-      <img
-        src="/img/pages/use-cases/real-time-analytics-jumbo.svg"
-        alt="An illustration of real-time analytics and monitoring"
-        width="630"
-        className={ucCss["use-case__image"]}
-      />
     </div>
 
     <div className={clsx(seCss["section--inner"], ucCss.section)}>

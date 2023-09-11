@@ -76,11 +76,11 @@ const securityFeaturesRows: Row[] = [
 const highAvailabilityFeaturesRows: Row[] = [
   {
     title: "Cloud-native replication",
-    values: ["coming-soon", "coming-soon"],
+    values: ["unavailable", "coming-soon"],
   },
   {
     title: "High-availability reads",
-    values: ["coming-soon", "coming-soon"],
+    values: ["unavailable", "coming-soon"],
   },
   {
     title: "High-availability writes",
