@@ -11,6 +11,16 @@
     ]
 
 [[redirects]]
+  from = "/js/watch-script.js"
+  to = "https://plausible.io/js/script.tagged-events.js"
+  status = 200
+
+[[redirects]]
+  from = "/api/event"
+  to = "https://plausible.io/api/event"
+  status = 200
+
+[[redirects]]
   from = "/getstarted"
   to = "/get-questdb/"
 
