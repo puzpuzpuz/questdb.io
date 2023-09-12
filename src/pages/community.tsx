@@ -62,8 +62,8 @@ const Community = () => (
 
       <div>
         <h2 className={paCss.section__title}>
-          We’re super proud of the QuestDB community and everything our
-          contributors do
+          We’re proud of the QuestDB community and everything our contributors
+          do
         </h2>
 
         <p className={clsx(seCss.section__subtitle, paCss.section__subtitle)}>
