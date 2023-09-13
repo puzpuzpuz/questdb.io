@@ -17,13 +17,13 @@ export const Dropdown = <T,>({
 }: Props<T>) => (
   <div className={clsx(style.root, className)}>
     <select
-      defaultValue={(value as unknown) as string}
-      onChange={({ target: { value } }) => onChange((value as unknown) as T)}
+      defaultValue={value as unknown as string}
+      onChange={({ target: { value } }) => onChange(value as unknown as T)}
     >
       {values.map(({ label, value, disabled }) => (
         <option
-          key={(value as unknown) as string}
-          value={(value as unknown) as string}
+          key={value as unknown as string}
+          value={value as unknown as string}
           disabled={disabled}
         >
           {label}

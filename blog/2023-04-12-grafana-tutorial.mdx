@@ -236,7 +236,7 @@ the
 Finally, we use alias such as `SELECT pickup_datetime AS time` in all the
 queries. This is because the PostgreSQL Grafana plugin expects a column named
 "time" for any time-series chart. We use an alias to do so here, and you can
-also use the special \$\_\_time() macro, as in:
+also use the special `$__time()` macro, as in:
 
 ```sql
 SELECT

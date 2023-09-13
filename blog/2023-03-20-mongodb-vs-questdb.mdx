@@ -311,11 +311,11 @@ SAMPLE BY 1h FILL(LINEAR) ALIGN TO CALENDAR;
 ```
 
 MongoDB provides two aggregation operators,
-[\$densify](https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/densify/)
+[`$densify`](https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/densify/)
 and
-[\$fill](https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/fill/),
+[`$fill`](https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/fill/),
 to complete similar tasks. However, they are not as straightforward as using
-SAMPLE BY. The operator `\$densify` identifies missing data and fills it in, but
+`SAMPLE BY`. The operator `$densify` identifies missing data and fills it in, but
 it does not resample the dataset.
 
 If you want to fill gaps and values, you would need to use a densify and then a

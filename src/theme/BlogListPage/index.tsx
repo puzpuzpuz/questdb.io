@@ -91,8 +91,8 @@ function BlogListPage(props: Props): JSX.Element {
   const { blogDescription, blogTitle, permalink } = metadata
   const isBlogOnlyMode = permalink === "/blog"
   const isTagsPage =
-    typeof ((metadata as unknown) as Tag).allTagsPath !== "undefined"
-  const currentTagName = isTagsPage ? ((metadata as unknown) as Tag).name : ""
+    typeof (metadata as unknown as Tag).allTagsPath !== "undefined"
+  const currentTagName = isTagsPage ? (metadata as unknown as Tag).name : ""
   const isTutorialsPage = currentTagName === "tutorial"
 
   const tagsPageDescription = `Articles tagged with ${currentTagName}`
@@ -203,12 +203,12 @@ function BlogListPage(props: Props): JSX.Element {
             {/* BlogListPage component is used for `blog/` and also for `blog/tags/*`.
             When rendered for `blog/tags/*, then `metadata` includes tag, instead of blog data */}
             <Categories
-              activeCategory={((metadata as unknown) as Tag).permalink}
+              activeCategory={(metadata as unknown as Tag).permalink}
               categories={categories}
             />
 
             <Chips
-              activeChip={((metadata as unknown) as Tag).permalink}
+              activeChip={(metadata as unknown as Tag).permalink}
               items={prioritizedTags}
             />
           </div>

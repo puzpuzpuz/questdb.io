@@ -42,19 +42,10 @@ function BlogPostPage(props: Props): JSX.Element {
 
   const readingTimePlural = useReadingTimePlural()
   const { siteConfig } = useDocusaurusContext()
-  const {
-    date,
-    formattedDate,
-    permalink,
-    tags,
-    readingTime,
-  } = metadata as MetadataWithSource
-  const {
-    author,
-    image,
-    keywords,
-    buttonText,
-  } = frontMatter as FrontMatterWithButtonText
+  const { date, formattedDate, permalink, tags, readingTime } =
+    metadata as MetadataWithSource
+  const { author, image, keywords, buttonText } =
+    frontMatter as FrontMatterWithButtonText
   const authorURL = frontMatter.author_url ?? frontMatter.authorURL
   const authorTitle = frontMatter.author_title ?? frontMatter.authorTitle
   const authorImageURL =

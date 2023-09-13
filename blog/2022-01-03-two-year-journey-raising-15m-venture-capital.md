@@ -22,10 +22,10 @@ import Banner from "@theme/Banner"
   width={650}
 />
 
-Since founding QuestDB, we've raised over \$15 million in venture capital to
-fund the development of the fastest open source time series database. This blog
-post describes the two-year journey to raise our Series A, what we learned along
-the way and the pitch deck we used for the raise.
+Since founding QuestDB, we've raised over $15 million in venture capital to fund
+the development of the fastest open source time series database. This blog post
+describes the two-year journey to raise our Series A, what we learned along the
+way and the pitch deck we used for the raise.
 
 <!--truncate-->
 
@@ -47,7 +47,7 @@ for an open-source product that wasn't generating revenue at the time.
 
 ## Preparing for a seed round
 
-In the spring of 2020 we were asking for \$2m to hire a few talented engineers
+In the spring of 2020 we were asking for $2m to hire a few talented engineers
 and work on the product. We eventually met a few VCs who saw the potential from
 a technological standpoint but wanted to see revenue even though we incorporated
 the company a few weeks before. We then met a believer, Paul at the VC firm
@@ -55,7 +55,7 @@ Episode 1, who had lived in the bay area for decades. He understood the
 potential of open source and community building to fuel developer adoption. We
 eventually convinced several other European funds with a growing interest in
 open source startups such as Seedcamp to invest as well. In March 2020, we
-raised \$2m overall, which kicked things off.
+raised $2m overall, which kicked things off.
 
 We launched an open source version of QuestDB and we wanted to let developers
 know about it to gather feedback. We had just implemented SIMD instructions to
@@ -124,7 +124,7 @@ companies investments such as Redis, Datastax, Netdata, Hazelcast, Armory, dYdX,
 SpringSource, Gradle etc.
 
 Another piece of advice was to be thoughtful about the amount raised and overall
-round dilution; hence we decided to raise \$12.5m at a valuation which grew by
+round dilution; hence we decided to raise $12.5m at a valuation which grew by
 10x versus the seed round a year prior to that.
 
 ## Our pitch deck for Series A

@@ -37,7 +37,7 @@ const DocPage = ({
 }: Props) => {
   const { siteConfig, isClient } = useDocusaurusContext()
   const { permalinkToSidebar, docsSidebars } = versionMetadata ?? {}
-  const docRoutes = (routes as unknown) as Routes[]
+  const docRoutes = routes as unknown as Routes[]
   const currentDocRoute = routes.find((docRoute) =>
     matchPath(location.pathname, docRoute),
   )

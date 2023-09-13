@@ -7,10 +7,8 @@ import customFields from "../../config/customFields"
 import styles from "./styles.module.css"
 
 const AnnouncementBar = () => {
-  const {
-    isAnnouncementBarClosed,
-    closeAnnouncementBar,
-  } = useUserPreferencesContext()
+  const { isAnnouncementBarClosed, closeAnnouncementBar } =
+    useUserPreferencesContext()
 
   if (isAnnouncementBarClosed) {
     return null
