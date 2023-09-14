@@ -11,60 +11,68 @@ import juCss from "../../css/case-study/jumbotron.module.css"
 import ouCss from "../../css/case-study/outcome.module.css"
 import seCss from "../../css/section.module.css"
 
+const contentAnalyticsQuery = `
+create table IF NOT EXISTS content_analytics_ (
+  ts TIMESTAMP,
+  ua TIMESTAMP,
+  ca TIMESTAMP,
+  ContentId SYMBOL CAPACITY 50000 CACHE,
+  StreamingPartnerId SYMBOL CAPACITY 500 CACHE,
+  TotalRequestIds long,
+  TotalUserIds long,
+  SegmentCount long,
+  TotalFileSize long
+) timestamp(ts) PARTITION BY DAY;
+`.trim()
+
+const deviceAnalyticsQuery = `
+SELECT
+  Upper(userdevice) AS UserDevice,
+  Upper(userdevicebrand) AS UserDeviceBrand,
+  Upper(useros) AS UserOS,
+  Sum(totalrequestids) AS RequestId,
+  Sum(totaluserids) AS UserId,
+  Sum(segmentcount) AS SegmentCount,
+  Sum(totalfilesize) AS TotalFileSize
+FROM
+  'device_analytics_'
+`.trim()
+
+const values = [
+  {
+    description: "Use case: Application metrics, analytics, dashboards",
+    icon: {
+      alt: "Breafcase icon",
+      src: "/img/pages/case-study/icons/briefcase.svg",
+    },
+  },
+  {
+    description: 'Industry: "Over the Top" streaming media',
+    icon: {
+      alt: "Globe icon",
+      src: "/img/pages/case-study/icons/globe.svg",
+    },
+  },
+  {
+    description: "Deployment: self-hosted QuestDB",
+    icon: {
+      alt: "Flag icon",
+      src: "/img/pages/case-study/icons/flag.svg",
+    },
+  },
+]
+
 const XStreamPlay = () => {
   const title = "Airtel XStream Play"
   const description =
     "QuestDB is used by Airtel XStream Play streaming media service to store and analyze their user engagement metrics in real-time."
 
-  const contentAnalyticsQuery = `
-create table IF NOT EXISTS content_analytics_  (ts TIMESTAMP, ua TIMESTAMP, ca TIMESTAMP,
-  ContentId SYMBOL CAPACITY 50000 CACHE,
-  StreamingPartnerId SYMBOL CAPACITY 500 CACHE,
-  TotalRequestIds long, TotalUserIds long,
-  SegmentCount long, TotalFileSize long) timestamp(ts) PARTITION BY DAY;
-`
-
-  const deviceAnalyticsQuery = `
-  SELECT   Upper(userdevice)      AS UserDevice,
-         Upper(userdevicebrand) AS UserDeviceBrand,
-         Upper(useros)          AS UserOS,
-         Sum(totalrequestids)   AS RequestId,
-         Sum(totaluserids)      AS UserId,
-         Sum(segmentcount)      AS SegmentCount,
-         Sum(totalfilesize)     AS TotalFileSize
-  FROM   ‘device_analytics_‘  
-`
-
-  const values = [
-    {
-      description: "Use case: Application metrics, analytics, dashboards",
-      icon: {
-        alt: "Breafcase icon",
-        src: "/img/pages/case-study/icons/briefcase.svg",
-      },
-    },
-    {
-      description: 'Industry: "Over the Top" streaming media',
-      icon: {
-        alt: "Globe icon",
-        src: "/img/pages/case-study/icons/globe.svg",
-      },
-    },
-    {
-      description: "Deployment: self-hosted QuestDB",
-      icon: {
-        alt: "Flag icon",
-        src: "/img/pages/case-study/icons/flag.svg",
-      },
-    },
-  ]
-
   return (
     <Layout
-      canonical="/case-study/xstream-play"
+      canonical="/case-study/airtel-xstream-play"
       description={description}
       title={title}
-      image="/img/pages/customers/logos/airtel.svg"
+      image="/img/pages/case-study/airtel-xstream-play/banner.webp"
     >
       <section
         className={clsx(
@@ -104,9 +112,9 @@ create table IF NOT EXISTS content_analytics_  (ts TIMESTAMP, ua TIMESTAMP, ca T
         <div className={juCss.jumbotron__banner}>
           <Image
             alt="Logo of Airtel"
-            height={475}
+            height={380}
             src="/img/pages/case-study/airtel-xstream-play/airtel-xstream-play.webp"
-            width={800}
+            width={640}
           />
         </div>
       </section>
@@ -254,8 +262,9 @@ create table IF NOT EXISTS content_analytics_  (ts TIMESTAMP, ua TIMESTAMP, ca T
             and provides aggregate sums:
           </p>
 
+          <CodeBlock>{deviceAnalyticsQuery}</CodeBlock>
+
           <p className="font-size--large">
-            <CodeBlock>{deviceAnalyticsQuery.trim()}</CodeBlock>
             Note that the example query contains no <code>WHERE</code>{" "}
             condition. It scans the entire table and returns all rows. This is a
             testament to QuestDB's performance capabilities within large
@@ -277,9 +286,8 @@ create table IF NOT EXISTS content_analytics_  (ts TIMESTAMP, ua TIMESTAMP, ca T
             made for the content, and the number of unique users who accessed
             the content.
           </p>
-          <p className="font-size--large">
-            <CodeBlock>{contentAnalyticsQuery.trim()}</CodeBlock>
-          </p>
+
+          <CodeBlock>{contentAnalyticsQuery}</CodeBlock>
 
           <p className="font-size--large">
             The query provides fast delivery of the rich data needed to
@@ -320,9 +328,14 @@ create table IF NOT EXISTS content_analytics_  (ts TIMESTAMP, ua TIMESTAMP, ca T
             <a href="/docs/concept/deduplication/">Data deduplication</a>, which
             is live as of QuestDB 7.3.
           </p>
-          <hr />
 
-          <div className={clsx("markdown", seCss["section--column"])}>
+          <div
+            className={clsx(
+              "markdown",
+              seCss["section--inner"],
+              seCss["section--column"],
+            )}
+          >
             <p className={caCss.card__title}>
               <span className={caCss.card__quote}>&ldquo;</span>Switching to
               QuestDB was a game-changer for our analytics. With Elasticsearch,
@@ -332,7 +345,9 @@ create table IF NOT EXISTS content_analytics_  (ts TIMESTAMP, ua TIMESTAMP, ca T
               <span className={caCss.card__quote}>&rdquo;</span>
             </p>
             <p className={caCss.card__title}>
-              <b>Ajay, Lead Media Analytics at Airtel, XStream Play </b>
+              <strong>
+                Ajay Pilaniya, Lead Media Analytics at Airtel, XStream Play
+              </strong>
             </p>
           </div>
         </div>
