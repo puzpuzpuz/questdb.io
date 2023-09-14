@@ -21,7 +21,10 @@ import Screenshot from "@theme/Screenshot"
   width={650}
 />
 
-> QuestDB is a time-series database that offers fast ingest speeds, InfluxDB Line Protocol and PGWire support and SQL query syntax. QuestDB is composed mostly in Java, and we've learned a lot of difficult and interesting lessons. We're happy to share them with you.
+> QuestDB is a time-series database that offers fast ingest speeds, InfluxDB
+> Line Protocol and PGWire support and SQL query syntax. QuestDB is composed
+> mostly in Java, and we've learned a lot of difficult and interesting lessons.
+> We're happy to share them with you.
 
 ## Investigating data structures
 
@@ -30,12 +33,11 @@ constructing a special-purpose concurrent map that heavily favors readers. The
 article will not just present yet another ready-to-use data structure. Instead,
 I will walk you through the design process while solving a real-world problem. I
 will even present dead ends that I bumped into along the way. It's a detective
-story for programmers interested in concurrent programming. 
+story for programmers interested in concurrent programming.
 
-By the end of the
-article, we will have a concurrent map for storing blobs of data in native
-memory. The map is lock-free on a reading path and is also very conservative
-with memory allocations. Let's get started!
+By the end of the article, we will have a concurrent map for storing blobs of
+data in native memory. The map is lock-free on a reading path and is also very
+conservative with memory allocations. Let's get started!
 
 _This article assumes basics in Java or a Java-like programming language._
 
@@ -46,8 +48,8 @@ I need a concurrent map where keys are strings and values are fixed-size blobs
 [job for the plain old ConcurentHashMap from JDK](https://twitter.com/PeterVeentjer/status/1685999603684872193),
 but there's a twist: the blobs must be available outside of the Java heap.
 
-Why? So that callers can get a pointer to a blob and pass it to Rust code via JNI. The Rust
-code then uses the public key to verify digital signatures.
+Why? So that callers can get a pointer to a blob and pass it to Rust code via
+JNI. The Rust code then uses the public key to verify digital signatures.
 
 Here's a simplified version of the interface:
 
@@ -88,18 +90,17 @@ brings two classes of challenges:
 The first issue boils down to ensuring that when a `map.get()` returns a
 pointer, the pointer must remain valid and the memory behind it must not change
 for _as long as needed_. In our case, it means until the
-`AuthCrypto.verifySignature()` returns. 
+`AuthCrypto.verifySignature()` returns.
 
-The second issue is all about concurrent
-data-structure design, and we will discuss this in more detail later. Let’s
-explore the first issue.
+The second issue is all about concurrent data-structure design, and we will
+discuss this in more detail later. Let’s explore the first issue.
 
 ## Pointer lifecycle management
 
 If our map's values were just regular objects managed by the JVM, things could
 be simple: `map.get()` would return a reference to an object and then it could
-forget this `get()` call ever happened. The `remove()`and `set()` methods would just
-remove the map's reference to the value object, and would never change an
+forget this `get()` call ever happened. The `remove()`and `set()` methods would
+just remove the map's reference to the value object, and would never change an
 already returned object. Easy. But that’s not our case, we are working with
 off-heap memory and have to manage it on our own.
 
@@ -108,8 +109,8 @@ Fundamentally, there are two ways to solve it:
 1. Change the `get()` contract so it doesn't return a pointer. Instead, it
    receives a pointer from the outside and copies the value there.
 1. `get()` still returns a pointer, but the map guarantees the memory behind it
-   stays immutable until the caller notifies the map that it’s done and that it won’t
-   use the pointer anymore.
+   stays immutable until the caller notifies the map that it’s done and that it
+   won’t use the pointer anymore.
 
 ### Option 1: Callers own the destination memory
 
@@ -129,33 +130,32 @@ its internals to this pointer and forget this `get()` call ever happened.
 This sounds quite nice at first, until we realize it just kicks the can down the
 road: it forces every calling thread to maintain its own buffer to pass to
 `get()`. If callers are all single-threaded, it’s still easy: each calling
-object owns a buffer to pass to `get()` . 
+object owns a buffer to pass to `get()` .
 
-But if calling functions are
-themselves concurrent, it becomes more complicated. We have to make sure each calling
-thread uses a different buffer. 
+But if calling functions are themselves concurrent, it becomes more complicated.
+We have to make sure each calling thread uses a different buffer.
 
-Ideally, the buffer would be allocated on stack,
-but this is Java so that’s not possible. We certainly do not want to
-allocate/deallocate a new buffer in the process heap for every invocation.
+Ideally, the buffer would be allocated on stack, but this is Java so that’s not
+possible. We certainly do not want to allocate/deallocate a new buffer in the
+process heap for every invocation.
 
-So what’s left? Pooling? That’s messy. 
+So what’s left? Pooling? That’s messy.
 
-ThreadLocal? Even more messy and harder to
-put a cap on the number of buffers. 
+ThreadLocal? Even more messy and harder to put a cap on the number of buffers.
 
-Maybe option 1 is not interesting as it seemed
-at first.
+Maybe option 1 is not interesting as it seemed at first.
 
 ### Option 2: Lifecycle notifications
 
 Let’s explore the 2nd option. The contract remains the same as outlined in the
 original proposal: `long get(String username)`. We have to make sure the memory
-behind the pointer remains unchanged until we are done. 
+behind the pointer remains unchanged until we are done.
 
-The absolute simplest thing would be to use a read-write lock. 
+The absolute simplest thing would be to use a read-write lock.
 
-Each map would have a read-write lock associated, and then readers acquire a read lock before calling `get()` and release it only after returning from `AuthCrypto.verifySignature()`:
+Each map would have a read-write lock associated, and then readers acquire a
+read lock before calling `get()` and release it only after returning from
+`AuthCrypto.verifySignature()`:
 
 ```java
 boolean verifySignature(CharSequence username, long challengePtr, int
@@ -172,44 +172,42 @@ challengeLen, long signaturePtr, int signatureLen) {
 
 Mutators would only have to acquire a write lock before calling `set()` or
 `remove()`. Not only is this design simple to reason about, it is also simple to
-implement. 
+implement.
 
-Assuming that only `set()` and `remove()` change the internal state,
-we can just take a single-threaded map implementation and it will do it. But
-there's a catch... It violates our original requirements! 
+Assuming that only `set()` and `remove()` change the internal state, we can just
+take a single-threaded map implementation and it will do it. But there's a
+catch... It violates our original requirements!
 
-Readers are often on the
-hot-path and we want them to remain lock-free. The proposed design blocks
-readers when the map is being updated, so this is a no-go. 
+Readers are often on the hot-path and we want them to remain lock-free. The
+proposed design blocks readers when the map is being updated, so this is a
+no-go.
 
-What can we do? We could change the
-locking schema to be more fine-grained - instead of locking the whole map we
-could lock particular entries. While this would improve practical behaviour, it
-would also complicate the map design and the readers could still be blocked when
-the same key is being updated. 
+What can we do? We could change the locking schema to be more fine-grained -
+instead of locking the whole map we could lock particular entries. While this
+would improve practical behaviour, it would also complicate the map design and
+the readers could still be blocked when the same key is being updated.
 
-What else? We could use an optimistic locking schema, but
-this brings its own intricacies.
+What else? We could use an optimistic locking schema, but this brings its own
+intricacies.
 
 It’s becoming clear that pointer lifecycle management will have to work in
 concert with the internal map implementation. So was this exercise completely
 fruitless? Not completely.
 
-There is still one design idea we could reuse: Map users must
-explicitly notify that they are no longer using the pointer. 
+There is still one design idea we could reuse: Map users must explicitly notify
+that they are no longer using the pointer.
 
-Let’s explore how to
-design map internals!
+Let’s explore how to design map internals!
 
 ## Designing a map for lock-free readers
 
 I consider myself an experienced generalist. I know bits and bobs about
 concurrent programming, distributed systems and all kinds of other areas, but
-I’m not really narrowly specialized in any particular topic. 
+I’m not really narrowly specialized in any particular topic.
 
-_A jack of all
-trades and master of none?_ Probably. So when I was thinking about a suitable
-data structure, I did what every generalist would do in 2023: asked ChatGPT!
+_A jack of all trades and master of none?_ Probably. So when I was thinking
+about a suitable data structure, I did what every generalist would do in 2023:
+asked ChatGPT!
 
 <Screenshot
   alt="The author asking ChatGPT about concurrent data-structures. GPT recommends looking at RCU as used in Linux kernel."
@@ -220,37 +218,36 @@ data structure, I did what every generalist would do in 2023: asked ChatGPT!
 I was amazed GPT realized that I meant to write “single writer” and not “single
 reader”, which I took as proof that GPT knows what is it talking about! 🙂 So I
 read further: I might have heard about RCU before, but I have never used it
-myself. I found the description a bit too vague to be used as an
-implementation guide, and it was a lunch time anyway.
+myself. I found the description a bit too vague to be used as an implementation
+guide, and it was a lunch time anyway.
 
 ### Copy-On-Write intermezzo
 
-While walking to a lunch place, I was thinking about it more and got an idea. Why not 
-use the [Copy-On-Write](https://en.wikipedia.org/wiki/Copy-on-write) technique
-to implement a
-[persistent map](https://en.wikipedia.org/wiki/Persistent_data_structure)? 
+While walking to a lunch place, I was thinking about it more and got an idea.
+Why not use the [Copy-On-Write](https://en.wikipedia.org/wiki/Copy-on-write)
+technique to implement a
+[persistent map](https://en.wikipedia.org/wiki/Persistent_data_structure)?
 
-That way, I
-could take a regular single-threaded map, and mutators would clone the current map,
-do their thing, and then atomically set this newly created map as the map for
-readers. Readers would then use whatever map was published as the latest. Published
-maps are immutable, thus always safe for concurrent readers, even from multiple
-threads,
+That way, I could take a regular single-threaded map, and mutators would clone
+the current map, do their thing, and then atomically set this newly created map
+as the map for readers. Readers would then use whatever map was published as the
+latest. Published maps are immutable, thus always safe for concurrent readers,
+even from multiple threads,
 [lock-free](http://concurrencyfreaks.blogspot.com/2013/05/lock-free-and-wait-free-definition-and.html).
-In fact, even wait-free. Yay! 
+In fact, even wait-free. Yay!
 
-Additionally, we would have to introduce a
-mechanism for safe deallocation of map internal buffers when a stale (=no
-longer the latest published map) map has no readers. Otherwise, we would be
-leaking memory. That’s a complication, but it feels like something easily
-fixable with enough dedication and atomic reference counters.
+Additionally, we would have to introduce a mechanism for safe deallocation of
+map internal buffers when a stale (=no longer the latest published map) map has
+no readers. Otherwise, we would be leaking memory. That’s a complication, but it
+feels like something easily fixable with enough dedication and atomic reference
+counters.
 
-So this all sounds good, but as have come to expect... there is still a catch. We need to allocate a block
-of memory for the map contents on every single mutation. We said that mutations
-are rare, so perhaps that’s not a big deal? Maybe it’s not, but one of the
-QuestDB design principles is to be conservative with memory allocations as they
-cost CPU cycles, memory bandwidth, cause CPU cache thrashing, and in general
-tend to introduce unpredictable behaviour.
+So this all sounds good, but as have come to expect... there is still a catch.
+We need to allocate a block of memory for the map contents on every single
+mutation. We said that mutations are rare, so perhaps that’s not a big deal?
+Maybe it’s not, but one of the QuestDB design principles is to be conservative
+with memory allocations as they cost CPU cycles, memory bandwidth, cause CPU
+cache thrashing, and in general tend to introduce unpredictable behaviour.
 
 ### Back to the drawing board: Map recycling
 
@@ -258,10 +255,10 @@ So I couldn’t implement a straightforward Copy-On-Write map, but I felt I was 
 the right path towards the goal: lock-Free readers. At some point I realized
 that, instead of allocating a new map whenever there is a change, I could keep
 reusing only 2 maps: one would be available for readers and the other for
-writers. 
+writers.
 
-Once a map is published for readers, it’s guaranteed to be immutable as
-long as there is at least one reader still accessing it.
+Once a map is published for readers, it’s guaranteed to be immutable as long as
+there is at least one reader still accessing it.
 
 It would look similar to this:
 
@@ -300,13 +297,12 @@ issues and open questions:
 
 ### Single-writer FTW!
 
-Let’s start with problem #2 - multiple mutating threads. 
+Let’s start with problem #2 - multiple mutating threads.
 
-We said that
-mutations are rare and never on the hot path. Hence, we can afford to be brutal
-and use a simple mutex - to make sure there is always at most a single mutator.
-The single-writer principle is known to simplify design of concurrent algorithms
-anyway. 
+We said that mutations are rare and never on the hot path. Hence, we can afford
+to be brutal and use a simple mutex - to make sure there is always at most a
+single mutator. The single-writer principle is known to simplify design of
+concurrent algorithms anyway.
 
 Thus the map now looks like this:
 
@@ -341,7 +337,7 @@ That was easy. Maybe violent, but easy.
 ### Racing threads
 
 Let’s explore something more complicated - problem #3 - multiple consecutive
-write operations. What do I mean by this? 
+write operations. What do I mean by this?
 
 Consider this scenario:
 
@@ -400,25 +396,23 @@ note over readerThread,writerThread1: Invariant violation: readerThread and writ
 
 If the scenario looks too long and boring and you skipped it, here is a short
 summary: a reader obtains `mapForReaders` and in the next moment this map
-becomes `writerMap`. So what was once a `readerMap` is now a `writerMap` and thus
-the next write operation can mutate it at will. Except the stale reader still
-thinks the same map is safe for reading. **That’s a bad concurrency bug!**
+becomes `writerMap`. So what was once a `readerMap` is now a `writerMap` and
+thus the next write operation can mutate it at will. Except the stale reader
+still thinks the same map is safe for reading. **That’s a bad concurrency bug!**
 
 How can we prevent the racy scenario outlined above? We already use a mutex on
 the write path, that’s almost as nasty as it gets. Almost?! Can we be even
-nastier? Sure we can! 
+nastier? Sure we can!
 
-Each internal map could have a reader counter and
-`getMapForWriters()` won’t return until the reader counter on the current
-`mapForWriters` reaches 0. In other words: the writer won’t mutate `writerMap` until
-all readers indicate they are no longer using this map. 
+Each internal map could have a reader counter and `getMapForWriters()` won’t
+return until the reader counter on the current `mapForWriters` reaches 0. In
+other words: the writer won’t mutate `writerMap` until all readers indicate they
+are no longer using this map.
 
-How about newly arriving
-readers? New readers don’t touch `writerMap` at all, they always load the
-current `readerMap` so that’s not a problem. 
+How about newly arriving readers? New readers don’t touch `writerMap` at all,
+they always load the current `readerMap` so that’s not a problem.
 
-Enough talking! Let’s see some
-code:
+Enough talking! Let’s see some code:
 
 ```java
 class ConcurrentMap {
@@ -486,10 +480,9 @@ class ConcurrentMap {
 }
 ```
 
-The code above looks way more complex than the previous buggy version. 
+The code above looks way more complex than the previous buggy version.
 
-Let’s go
-briefly through the changes:
+Let’s go briefly through the changes:
 
 1. The most visible change: **the `get()` method is gone!** Instead, there is a
    new method `concurrentReader()` which returns an interface `Reader` with two
@@ -498,31 +491,30 @@ briefly through the changes:
    because it could be any single-threaded implementation of a map-like
    structure. It only demonstrates that each internal map has its own reader
    counter.
-1. For the first time we see an implementation `getMapForWriters()`. It’s
-   really not doing anything else except waiting for all the stale readers from the
+1. For the first time we see an implementation `getMapForWriters()`. It’s really
+   not doing anything else except waiting for all the stale readers from the
    `writerMap` to disappear. The `backoff()` method may have various
    implementations and use primitives such as `Thread#yield()` or
    `LockSupport#parkNanos()`.
 
 ### Counting readers
 
-Let’s have a closer look at each change. 
+Let’s have a closer look at each change.
 
-Why did we introduce the `Reader`
-interface? Isn’t it just an unnecessary complication, and an example of the over-engineering so
-prevalent in Java culture? 
+Why did we introduce the `Reader` interface? Isn’t it just an unnecessary
+complication, and an example of the over-engineering so prevalent in Java
+culture?
 
-Well, maybe, but it simplifies the mechanism for readers to
-notify the map that they won’t access the returned pointer anymore. 
+Well, maybe, but it simplifies the mechanism for readers to notify the map that
+they won’t access the returned pointer anymore.
 
-How? Each
-internal map has its own reader counter. When a reader no longer needs a
-pointer returned by a prior `get()`, it must invoke `readerGone()` on the
-correct internal map. 
+How? Each internal map has its own reader counter. When a reader no longer needs
+a pointer returned by a prior `get()`, it must invoke `readerGone()` on the
+correct internal map.
 
-The `Reader` interface does exactly that - it knows which
-instance of `InternalMap` is in use. When a thread calls `reader.readerGone()`,
-it decrements the reader counter on that map. 
+The `Reader` interface does exactly that - it knows which instance of
+`InternalMap` is in use. When a thread calls `reader.readerGone()`, it
+decrements the reader counter on that map.
 
 For example:
 
@@ -539,19 +531,17 @@ challengeLen, long signaturePtr, int signatureLen) {
 }
 ```
 
-This hopefully made it clearer why we need the `Reader` interface. 
+This hopefully made it clearer why we need the `Reader` interface.
 
-A
-little aside: Do you still remember the design idea with a read-write-lock? I
+A little aside: Do you still remember the design idea with a read-write-lock? I
 decided not to use it, because it could block readers. But the lock usage
 pattern was an inspiration for this notification mechanism.
 
 ### Avoiding check-then-act bugs
 
-Let’s focus on the implementation of `concurrentReader()` method. 
+Let’s focus on the implementation of `concurrentReader()` method.
 
-It looks like
-this:
+It looks like this:
 
 ```java
 Reader concurrentReader() {
@@ -570,11 +560,10 @@ Reader concurrentReader() {
 It loads the current `readerMap`, increments its reader counter, and returns it
 to the caller if - and only if - the `readerMap` field still points to the same
 `InternalMap` instance. Otherwise, it decrements the reader counter to undo the
-increment, and retries everything from start. 
+increment, and retries everything from start.
 
-Why this complexity? Why do we
-need the retry mechanism at all? It’s to protect us against a similar problem
-with stale readers that we already discussed.
+Why this complexity? Why do we need the retry mechanism at all? It’s to protect
+us against a similar problem with stale readers that we already discussed.
 
 Consider this simpler implementation of `concurrentReader()`:
 
@@ -616,8 +605,9 @@ Broken down, we see that:
 1. The reader thread `concurrentReader()` returns a map which is being
    concurrently mutated by a writer thread -> **Boom 💥💥💥!**
 
-The extra check in `concurrentReader()` is meant to prevent the above scenario. It guarantees it incremented the reader counter on the map
-which is still the current `readerMap`:
+The extra check in `concurrentReader()` is meant to prevent the above scenario.
+It guarantees it incremented the reader counter on the map which is still the
+current `readerMap`:
 
 ```java
 Reader concurrentReader() {
@@ -636,9 +626,8 @@ Reader concurrentReader() {
 It is still possible that a reader thread increments the reader counter, returns
 the `Reader` to the caller, and in the next microsecond a writer thread swaps
 the maps so the map instance returned to the caller is now set as the
-`writerMap`. This is entirely possible, but it won’t do any harm. The
-writer won’t get access to the `writerMap` before its reader counter has reached
-zero.
+`writerMap`. This is entirely possible, but it won’t do any harm. The writer
+won’t get access to the `writerMap` before its reader counter has reached zero.
 
 ### What is left?
 
@@ -657,10 +646,9 @@ are still some unresolved issues:
 ### Dealing with lost updates
 
 We can fix the first problem. After swapping the maps, we could wait until the
-current `writerMap` has no readers and then update it. 
+current `writerMap` has no readers and then update it.
 
-So mutation operations
-would look like this:
+So mutation operations would look like this:
 
 ```java
 void set(String username, long keyPtr) {
@@ -677,13 +665,12 @@ returned map has no readers and no new reader will arrive until the next swap.
 On the other hand, it's inefficient: when we switch maps after writing, the new
 `writerMap` may have stale readers, causing delays until they're cleared.
 
-Is there a better option? It turns out that there is! 
+Is there a better option? It turns out that there is!
 
-We could change the first
-map, swap them and remember the operation including all parameters. During the
-next mutation we would replay the operation on the `mapForWriters` and, if
-mutations are sufficiently rare, by the time we are replaying the operation the
-`writerMap` has no longer any readers. 
+We could change the first map, swap them and remember the operation including
+all parameters. During the next mutation we would replay the operation on the
+`mapForWriters` and, if mutations are sufficiently rare, by the time we are
+replaying the operation the `writerMap` has no longer any readers.
 
 Let’s see the code:
 
@@ -720,10 +707,9 @@ allocation.
 
 ### Playing by the Java Memory Model rules
 
-Now let’s do the last, important change. 
+Now let’s do the last, important change.
 
-This is how the `ConcurrentMap` looks
-like:
+This is how the `ConcurrentMap` looks like:
 
 ```java
 class ConcurrentMap {
@@ -738,15 +724,14 @@ class ConcurrentMap {
 The whole mutable state is encapsulated in these 4 objects. The fields
 `writerMap` and `lastWriterOperations` are only accessed by a writer thread
 while holding a mutex. But the `readerMap` field is set by a writer thread and
-then loaded by readers. 
+then loaded by readers.
 
-Readers are lock-free, they do not acquire any mutex
-before accessing the reader map. That is a
+Readers are lock-free, they do not acquire any mutex before accessing the reader
+map. That is a
 [data race](https://en.wikipedia.org/wiki/Race_condition#Data_race) and it could
-cause visibility issues. 
+cause visibility issues.
 
-The fix is easy, just mark the `readerMap` as
-`volatile`:
+The fix is easy, just mark the `readerMap` as `volatile`:
 
 ```java
 class ConcurrentMap {
@@ -813,19 +798,20 @@ production. There are still some issues to be solved:
    map and some invariants. You could learn
    [TLA+](https://lamport.azurewebsites.net/tla/tla.html) and write a formal
    model of the map and then verify it.
-1. Performance optimizations. The current implementation uses the same write path
-   on both internal maps. Chances are that's not the best option. For example
-   there is no reason to calculate the hash code twice. There is no reason to
-   locate the bucket twice. The first `set()` could remember which bucket was
-   used and the second `set()` could reuse it. We could also add batching to the
-   writer path: the current implementation swaps the maps after every mutation.
-   This is inefficient when writers are mutating the map in a tight loop.
+1. Performance optimizations. The current implementation uses the same write
+   path on both internal maps. Chances are that's not the best option. For
+   example there is no reason to calculate the hash code twice. There is no
+   reason to locate the bucket twice. The first `set()` could remember which
+   bucket was used and the second `set()` could reuse it. We could also add
+   batching to the writer path: the current implementation swaps the maps after
+   every mutation. This is inefficient when writers are mutating the map in a
+   tight loop.
 
 ### Acknowledgements
 
 After I finished the implementation, I got really excited and I wanted to share
 it with the world. I naively thought that I was the first one to come up with
-this idea. I was wrong. 
+this idea. I was wrong.
 
 First, I found the
 [Double Instance Locking](http://concurrencyfreaks.blogspot.com/2013/11/double-instance-locking.html)
@@ -835,17 +821,17 @@ is very similar to the one I described here. It also uses 2 internals structures
 and readers are alternating between them. It uses a read-write lock to protect
 the map being mutated. Given there is only a single writer then at any given
 time there is at least one internal map which is available for reading. This
-gives readers lock freedom. 
+gives readers lock freedom.
 
-It's fair to say that the Double Instance Locking
-pattern is simpler to reason about. It decomposes the problem better. But I'd still
-argue my contribution is the trick with delayed replay of the last operation -
-if writers are sufficiently rare, then writers won't be blocked at all.
+It's fair to say that the Double Instance Locking pattern is simpler to reason
+about. It decomposes the problem better. But I'd still argue my contribution is
+the trick with delayed replay of the last operation - if writers are
+sufficiently rare, then writers won't be blocked at all.
 
 The same blog also links to the paper
 [Left-Right: A Concurrency Control Technique with Wait-Free Population Oblivious Reads](https://master.dl.sourceforge.net/project/ccfreaks/papers/LeftRight/leftright-extended.pdf?viasf=1)
-which on the surface also looks similar. It claims not only Lock-Freedom, but also
-Wait-Freedom. I have yet to deep dive into it.
+which on the surface also looks similar. It claims not only Lock-Freedom, but
+also Wait-Freedom. I have yet to deep dive into it.
 
 I would like to thank to reviewers of this article:
 [Andrei Pechkurov](https://twitter.com/AndreyPechkurov) and

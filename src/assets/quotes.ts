@@ -183,7 +183,7 @@ const quotes: Quote[] = [
   {
     logo: logos.airtel,
     text:
-      "Switching to QuestDB was a game-changer for our analytics. With Elasticsearch, we faced slow ingestion and latency issues for queries. With QuestDB, we now process 200M records per day smoothly.",
+      "Switching to QuestDB was a game-changer for our analytics. With Elasticsearch, we faced slow ingestion and latency issues for queries. With QuestDB, we now process 500M records per day smoothly.",
     company: "Airtel",
     author: "Ajay Pilaniya",
     role: "Lead Media Analytics",

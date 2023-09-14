@@ -107,6 +107,27 @@ const customers: Customer[] = [
   },
 
   {
+    id: "airtel-xstream-play",
+    logo: {
+      ...logos.airtel,
+      height: 100,
+      width: 150,
+    },
+    summary:
+      '"Since adopting QuestDB, processing 500M records daily has become a breeze."',
+    quote: {
+      author: "Ajay Pilaniya",
+      position: "Lead Media Analytics",
+    },
+    image: {
+      alt: "Airtel XStream Play, an OTT video streaming app",
+      height: 360,
+      src: "/img/pages/case-study/airtel-xstream-play/airtel-xstream-play.webp",
+      width: 640,
+    },
+  },
+
+  {
     id: "aquis",
     logo: {
       ...logos["aquis-exchange"],
