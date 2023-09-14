@@ -134,7 +134,6 @@ const config = {
       items: [
         {
           label: "Product",
-          position: "left",
           href: "#",
           items: [
             {
@@ -165,7 +164,6 @@ const config = {
         },
         {
           label: "Learn",
-          position: "left",
           href: "#",
           items: [
             {
@@ -195,12 +193,10 @@ const config = {
         {
           label: "Docs",
           to: "/docs/",
-          position: "left",
         },
         {
           label: "Pricing",
           to: "/pricing/",
-          position: "left",
         },
       ],
     },

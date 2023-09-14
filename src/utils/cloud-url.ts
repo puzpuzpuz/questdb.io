@@ -21,5 +21,5 @@ export const getCloudUrl = (
     )
     .join("&")
 
-  return `${cloudUrl}?${joined}`
+  return `${cloudUrl}signup?${joined}`
 }

@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
-import React, { ComponentProps, useCallback, useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 
 import Toggle from "@theme/Toggle"
@@ -18,41 +18,15 @@ import useThemeContext from "@theme/hooks/useThemeContext"
 import { usePluginData } from "@docusaurus/useGlobalData"
 import { Release } from "../../utils"
 
-const DefaultNavItemPosition = "right"
-
 function useColorModeToggle() {
   const {
     colorMode: { disableSwitch },
   } = useThemeConfig()
   const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext()
-  const toggle = useCallback(
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    (e) => (e.target.checked ? setDarkTheme() : setLightTheme()),
-    [setLightTheme, setDarkTheme],
-  )
-  return { isDarkTheme, toggle, disabled: disableSwitch }
-}
+  const toggle = (e: React.SyntheticEvent) =>
+    (e.target as HTMLInputElement).checked ? setDarkTheme() : setLightTheme()
 
-function splitNavItemsByPosition(
-  items: Array<ComponentProps<typeof NavbarItem>>,
-): {
-  leftItems: Array<ComponentProps<typeof NavbarItem>>
-  rightItems: Array<ComponentProps<typeof NavbarItem>>
-} {
-  const leftItems = items.filter(
-    (item) =>
-      // @ts-expect-error: temporary, will be fixed in Docusaurus TODO remove soon
-      (item.position ?? DefaultNavItemPosition) === "left",
-  )
-  const rightItems = items.filter(
-    (item) =>
-      // @ts-expect-error: temporary, will be fixed in Docusaurus TODO remove soon
-      (item.position ?? DefaultNavItemPosition) === "right",
-  )
-  return {
-    leftItems,
-    rightItems,
-  }
+  return { isDarkTheme, toggle, disabled: disableSwitch }
 }
 
 function Navbar(): JSX.Element {
@@ -65,19 +39,12 @@ function Navbar(): JSX.Element {
   } = useDocusaurusContext()
   const [sidebarShown, setSidebarShown] = useState(false)
   const [isSearchBarExpanded, setIsSearchBarExpanded] = useState(false)
-
-  useLockBodyScroll(sidebarShown)
-
-  const showSidebar = useCallback(() => {
-    setSidebarShown(true)
-  }, [])
-  const hideSidebar = useCallback(() => {
-    setSidebarShown(false)
-  }, [])
-
+  const location = useLocation()
   const windowSize = useWindowSize()
-
   const colorModeToggle = useColorModeToggle()
+  const { release } = usePluginData<{ release: Release }>(
+    "fetch-latest-release",
+  )
 
   useEffect(() => {
     if (windowSize === windowSizes.desktop) {
@@ -85,12 +52,10 @@ function Navbar(): JSX.Element {
     }
   }, [windowSize])
 
-  const { leftItems, rightItems } = splitNavItemsByPosition(items)
-  const location = useLocation()
+  useLockBodyScroll(sidebarShown)
 
-  const { release } = usePluginData<{ release: Release }>(
-    "fetch-latest-release",
-  )
+  const showSidebar = () => setSidebarShown(true)
+  const hideSidebar = () => setSidebarShown(false)
 
   return (
     <header
@@ -103,14 +68,12 @@ function Navbar(): JSX.Element {
           <a className={clsx("navbar__brand", styles.brand)} href="/">
             QuestDB
           </a>
-          {leftItems.map((item, i) => (
+          {items.map((item, i) => (
             <NavbarItem {...item} key={i} />
           ))}
         </div>
+
         <div className="navbar__items navbar__items--right">
-          {rightItems.map((item, i) => (
-            <NavbarItem {...item} key={i} />
-          ))}
           <a
             href="https://github.com/questdb/questdb"
             aria-label="GitHub repository"
@@ -131,7 +94,9 @@ function Navbar(): JSX.Element {
               isSearchBarExpanded={isSearchBarExpanded}
             />
           </div>
+
           {!location.pathname.startsWith("/get-questdb") && <MainCTA />}
+
           <div
             aria-label="Navigation bar toggle"
             className="navbar__toggle"
@@ -160,11 +125,13 @@ function Navbar(): JSX.Element {
           </div>
         </div>
       </div>
+
       <div
         role="presentation"
         className="navbar-sidebar__backdrop"
         onClick={hideSidebar}
       />
+
       <div className="navbar-sidebar">
         <div className="navbar-sidebar__brand">
           <a
