@@ -269,16 +269,9 @@ const XStreamPlay = () => {
             condition. It scans the entire table and returns all rows. This is a
             testament to QuestDB's performance capabilities within large
             workloads. The end result is a fast, flexible and functional
-            dashboard:
+            internal dashboard.
           </p>
 
-          <Image
-            alt="Timeline of Market Events visualized on Grafana"
-            height={521}
-            src="/img/pages/case-study/airtel-xstream-play/device-analytics.webp"
-            width={1002}
-            description="Device analytics internal dashboard"
-          />
           <p className="font-size--large">
             Content analytics provides another strong example. The following SQL
             statement creates a table for content analytics data, which includes
