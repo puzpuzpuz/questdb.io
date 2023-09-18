@@ -318,6 +318,7 @@ const config = {
         blog: false,
         docs: {
           ...markdownPlugins,
+          include: ["**/*!(.partial).{md,mdx}"],
           sidebarPath: require.resolve("./sidebars.js"),
         },
 
