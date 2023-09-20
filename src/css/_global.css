@@ -276,6 +276,11 @@ html[data-theme="light"] .markdown img[src$=".svg"][alt*="chart"] {
 .markdown table code {
   display: inline-block;
   max-width: 25ch;
+  line-height: 1;
+}
+
+.markdown table td p:only-child {
+  margin: 0;
 }
 
 .alert,

@@ -114,15 +114,15 @@ module.exports = {
             hidden: true, // hidden from sidebar but accessible via link
           },
         },
-
-        "third-party-tools/grafana",
         {
           customProps: {
             tag: "New",
           },
           type: "doc",
-          id: "third-party-tools/superset",
+          id: "third-party-tools/cube",
         },
+        "third-party-tools/grafana",
+        "third-party-tools/superset",
         {
           label: "Kafka",
           type: "category",
@@ -132,30 +132,14 @@ module.exports = {
             "third-party-tools/kafka/jdbc",
           ],
         },
-
         "third-party-tools/pandas",
         "third-party-tools/telegraf",
         "third-party-tools/prometheus",
         "third-party-tools/redpanda",
         "third-party-tools/flink",
-        {
-          customProps: {
-            tag: "New",
-          },
-          type: "doc",
-          id: "third-party-tools/spark",
-        },
-
+        "third-party-tools/spark",
         "third-party-tools/mindsdb",
-
-        {
-          customProps: {
-            tag: "New",
-          },
-          type: "doc",
-          id: "third-party-tools/sqlalchemy",
-        },
-
+        "third-party-tools/sqlalchemy",
         "third-party-tools/qstudio",
       ],
     },
@@ -226,9 +210,11 @@ module.exports = {
             "reference/function/text",
             "reference/function/timestamp-generator",
             "reference/function/timestamp",
+            "reference/function/touch",
             "reference/function/trigonometric",
           ],
         },
+        "reference/logging",
         {
           type: "category",
           label: "Operators",

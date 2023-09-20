@@ -34,7 +34,7 @@ QuestDB officially supports the following filesystems:
 - EXT4
 - NTFS
 - OVERLAYFS (used by Docker)
-- XFS
+- XFS (`ftype=1` only)
 
 Other file systems supporting
 [mmap](https://man7.org/linux/man-pages/man2/mmap.2.html) feature may work with
@@ -69,6 +69,20 @@ ingestion, smaller table [partitions](/docs/concept/partitions/) maybe reduce
 the write amplification. This applies to tables with partition directories
 exceeding a few hundred MBs on disk. For example, partition by day can be
 reduced to by hour, partition by month to by day, and so on.
+
+### Partitioning
+
+Database partitioning splits database data into fractional pieces called
+partitions. Partitions are stored and accessed separately from one another to
+improve overall performance and scalability.
+
+Partitioning is only possible on tables with a designated timestamp. Available
+partition intervals are `NONE`, `YEAR`, `MONTH`, `WEEK`, `DAY`, and `HOUR`. For
+more information, see the
+[full partitioning documentation](/docs/concept/partitions/).
+
+Beyond the base performance benefits of a database partition, QuestDB requires a
+database partition to provide out-of-order (O3) indexing.
 
 #### Partition split
 

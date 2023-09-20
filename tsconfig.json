@@ -45,7 +45,8 @@
       "@theme/useWindowWidth": ["src/theme/useWindowWidth"],
       "@theme/ILPClientsTable": ["src/theme/ILPClientsTable"],
       "@theme/BlogPostPage": ["src/theme/BlogPostPage"],
-      "@theme/DemoConsoleButton": ["src/theme/DemoConsoleButton"]
+      "@theme/DemoConsoleButton": ["src/theme/DemoConsoleButton"],
+      "@theme/ConfigTable": ["src/theme/ConfigTable"]
     }
   },
   "include": ["src/", "types/", "**/*.ts"]

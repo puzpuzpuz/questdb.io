@@ -25,7 +25,7 @@ alterTable
   ::= 'ALTER' 'TABLE' tableName
 
 dropTable
-  ::= 'DROP' ('TABLE' tableName ('IF' 'EXISTS')?|'ALL' 'TABLES') ';'
+  ::= 'DROP' ('TABLE' 'IF' 'EXISTS' tableName |'ALL' 'TABLES') ';'
 
 castDef
   ::= 'cast' '(' columnRef 'as' typeDef ')'

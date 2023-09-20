@@ -32,8 +32,8 @@ import Screenshot from "@theme/Screenshot"
 - Default behavior is`PARTITION BY NONE` when using
   [CREATE TABLE](/docs/reference/sql/create-table/).
 - Default behavior is `PARTITION BY DAY` via
-  [InfluxDB Line Protocol ingestion](/docs/reference/api/ilp/overview/). This is set by
-  `line.default.partition.by`.
+  [InfluxDB Line Protocol ingestion](/docs/reference/api/ilp/overview/). This is
+  set by `line.default.partition.by`.
 - Partitions are defined at table creation. For more information, refer to the
   [CREATE TABLE section](/docs/reference/sql/create-table/).
 - The naming convention for partition directories is as follows:
@@ -57,8 +57,10 @@ We recommend partitioning tables to benefit from the following advantages:
   partitions.
 - Separating data files physically. This makes it easy to implement file
   retention policies or extract certain intervals.
-- From QuestDB 7.2, heavily out-of-order commits can [split the partitions](#splitting-and-squashing-time-partitions) into
-  parts to reduce [write amplification](/docs/deployment/capacity-planning/#write-amplification).
+- Enables out-of-order indexing. From QuestDB 7.2, heavily out-of-order commits
+  can [split the partitions](#splitting-and-squashing-time-partitions) into
+  parts to reduce
+  [write amplification](/docs/deployment/capacity-planning/#write-amplification).
 
 ## Checking time partition information
 
@@ -81,8 +83,8 @@ into two parts: the prefix sub-partition and the suffix sub-partition.
 
 A partition split happens when both of the following are true:
 
-- The prefix size is bigger than the combination of the suffix and the rows to be
-  merged.
+- The prefix size is bigger than the combination of the suffix and the rows to
+  be merged.
 - The estimated prefix size on disk is higher than
   `cairo.o3.partition.split.min.size` (50MB by default).
 

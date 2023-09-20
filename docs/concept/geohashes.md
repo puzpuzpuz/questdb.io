@@ -176,6 +176,32 @@ CAST(#123 as geohash(1c))
 CAST(#123 as geohash(4c))
 ```
 
+### make_geohash() function
+
+Need to create a geohash? Use `make_geohash()`
+
+Returns a geohash equivalent of latitude and longitude, with precision specified
+in bits.
+
+```sql title=make_geohash(lat,long,bits)
+SELECT make_geohash(142.89124148, -12.90604153, 40)
+```
+
+Returns:
+
+```
+rjtwedd0
+```
+
+Use this function via:
+
+- SQL over HTTP
+- PostgreSQL wire protocol
+- [Java embedded usage](/docs/concept/geohashes/#java-embedded-usage) scenario
+
+For more information on the `make_geohash()` function, see the
+[Spatial functions](/docs/reference/function/spatial/#make_geohash) page.
+
 ## SQL examples
 
 The following queries create a table with two `geohash` type columns of varying
@@ -262,14 +288,13 @@ WHERE device_id = 'device_3' sample by 1h;
 ### Within operator
 
 The `within` operator can be used as a prefix match to evaluate if a geohash is
-equal to or is within a larger grid. 
+equal to or is within a larger grid.
 
-It can only be applied in `LATEST ON` queries and all symbol
-columns within the query **must be indexed**.
+It can only be applied in `LATEST ON` queries and all symbol columns within the
+query **must be indexed**.
 
-The following query will return the most
-recent entries by device ID if the `g8c` column contains a geohash within
-`u33d`:
+The following query will return the most recent entries by device ID if the
+`g8c` column contains a geohash within `u33d`:
 
 ```questdb-sql title="LATEST BY usage"
 SELECT * FROM geo_data
@@ -407,9 +432,9 @@ tracking geohash="46swgj10"
 
 :::note
 
-The InfluxDB Line Protocol parser does not support geohash literals, only strings. This means that
-table columns of type `geohash` type with the desired precision must exist
-before inserting rows with this protocol.
+The InfluxDB Line Protocol parser does not support geohash literals, only
+strings. This means that table columns of type `geohash` type with the desired
+precision must exist before inserting rows with this protocol.
 
 If a value cannot be converted or is omitted it will be set as `NULL`
 
@@ -454,8 +479,8 @@ ts,geohash
 17/01/2022 01:02:21,46swgj10
 ```
 
-Just like InfluxDB Line Protocol, CSV import supports geohash strings only, so the same
-restrictions apply.
+Just like InfluxDB Line Protocol, CSV import supports geohash strings only, so
+the same restrictions apply.
 
 ## The PostgreSQL wire protocol
 
