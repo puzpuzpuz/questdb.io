@@ -1,0 +1,331 @@
+---
+title: "Time-series IoT tracker using QuestDB, Node.js, and Grafana"
+author: Yitaek Hwang
+author_title: Guest
+author_url: https://github.com/Yitaek
+author_image_url: https://avatars.githubusercontent.com/Yitaek
+description:
+  "Learn with step-by-step examples how to use time-series data and build a
+  real-time IoT tracker."
+tags: [tutorial, grafana, nodejs]
+image: "/img/blog/2023-09-12/banner.webp"
+slug: time-series-iot-tracker-nodejs-grafana
+buttonText: "Build IoT on QuestDB Cloud"
+---
+
+import Banner from "@theme/Banner"
+import Screenshot from "@theme/Screenshot"
+
+<Banner
+  alt="The weird, wild and colourful world of working with time bound data"
+  src="/img/blog/2023-09-12/banner.webp"
+  width={475}
+/>
+
+Time-series data are all around us. We rely on financial tick data to make
+monetary decisions. Application services track web engagement and deep system
+metrics. Even data with no obvious relationship to time are often bound to
+time-based metadata. In almost every aspect of our connected lives, time leads a
+stream of data, from GPS and geolocation to health monitors and much more.
+
+Managing time-series data - especially at large volumes - is challenging with
+traditional tools. Why? Time-series data needs precise chronological order. The
+key insight within a data set is seldom an individual data point, but rather the
+patterns seen once data are down-sampled or aggregated. Without chronological
+order, insights from these patterns are lost.
+
+Since traditional tools were not designed to handle order at very high ingest
+volume, we see performance challenges at scale. In recent years, we’ve seen a
+rise of
+[time-series databases](https://questdb.io/glossary/time-series-database/) that
+are better optimized for these workloads.
+
+In this tutorial, we’ll simulate a busy, real-time IoT tracker and see how
+QuestDB, a fast time-series database, can ingest and analyze that data
+efficiently.
+
+## Time-series data and IoT
+
+This project will have three main components:
+
+- Node.js IoT simulator to generate some fake data to QuestDB
+- QuestDB to store that data
+- Grafana to visualize the data
+
+You can easily replace the IoT simulator with real-data sources from managed
+services like AWS IoT Core or Azure IoT. But we want to show off ingestion and
+query performance, so we’re using simulated data for convenience.
+
+### Prerequisites
+
+- [Node.js 18+](https://nodejs.org/en)
+- [Docker & Docker Compose](https://docs.docker.com/get-docker/)
+
+## IoT simulator setup
+
+First, create a new Node.js project:
+
+```
+mkdir questdb-iot && npm init -y
+```
+
+Next, install the
+[QuestDB Node.js client](https://github.com/questdb/nodejs-questdb-client) and
+[`chance`](https://chancejs.com/usage/node.html) library to generate fake data.
+
+```shell
+npm install @questdb/nodejs-client chance
+```
+
+The QuestDB Node.js client applies the InfluxDB Line Protocol (ILP). QuestDB
+also supports the PostgreSQL wire protocol if you would rather use the
+PostgreSQL client libraries. For those not familiar with the InfluxDB Line
+Protocol, it is an efficient, text-based protocol for sending time-series data
+points in a concise manner. It compactly sends timestamp, measurement value, as
+well as other metadata. For more information, check out the
+[InfluxDB Line Protocol reference guide](/docs/reference/api/ilp/overview/).
+
+The simulator code is a variation of the
+[Python Quickstart example](https://github.com/questdb/questdb-quickstart/blob/main/ingestion/python/tsbs_send/ilp_ingestion.py).
+In the code, we loop over 10,000 devices, generate a random `deviceId`, `latitude`,
+`longitude`, and `temperature` values along with a random `deviceVersion` within
+`v1.0`, `v1.1`, and `v2.0`. We can imagine this as a sort of sensor, perhaps a
+bursty one in a satellite orbiting the earth.
+
+```javascript
+const { Sender } = require("@questdb/nodejs-client")
+const Chance = require("chance")
+
+function delay(time) {
+  return new Promise((resolve) => setTimeout(resolve, time))
+}
+
+async function run() {
+  // create a sender with a 4k buffer
+  // it is important to size the buffer correctly so messages can fit
+  const sender = new Sender({ bufferSize: 4096 })
+
+  // connect to QuestDB
+  // host and port are required in connect options
+  await sender.connect({ port: 9009, host: "localhost" })
+
+  // initialize random generator lib
+  const chance = new Chance()
+
+  // device types
+  const deviceVersions = ["v1.0", "v1.1", "v2.0"]
+
+  // loop over devices
+  for (let deviceId = 0; deviceId < 10000; deviceId++) {
+    const randomVersion =
+      deviceVersions[Math.floor(Math.random() * deviceVersions.length)]
+
+    sender
+      .table("devices")
+      .symbol("deviceVersions", randomVersion)
+      .stringColumn("deviceId", chance.guid())
+      .floatColumn("lat", chance.latitude())
+      .floatColumn("lon", chance.longitude())
+      .floatColumn("temp", chance.floating({ min: 0, max: 100 }))
+      .atNow()
+    // flush the buffer of the sender, sending the data to QuestDB
+    // the buffer is cleared after the data is sent and the sender is ready to accept new data
+    await sender.flush()
+  }
+
+  // close the connection after all rows ingested
+  await sender.close()
+  return new Promise((resolve) => resolve(0))
+}
+
+run()
+  .then((value) => console.log(value))
+  .catch((err) => console.log(err))
+```
+
+As we are using the InfluxDB Line Protocol, there is no need to predefine the
+schema on the database before sending the data. If a table does not exist, it
+will be created. This is useful for bootstrapping a quick project and tinkering
+around.
+
+## QuestDB and Grafana setup
+
+For convenience, we will use Docker Compose to bootstrap QuestDB and Grafana.
+
+Create a `docker-compose.yml` file and paste the following:
+
+```yaml
+services:
+  questdb:
+    image: questdb/questdb:7.3.1
+    hostname: questdb
+    container_name: questdb
+    ports:
+      - "9000:9000"
+
+      - "9009:9009"
+
+    environment:
+      - QDB_PG_READONLY_USER_ENABLED=true
+
+  grafana:
+    image: grafana/grafana-oss:10.1.0
+    hostname: grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+```
+
+This starts up QuestDB and Grafana in a Docker network and creates a read-only
+user for Grafana to pull data from QuestDB.
+
+Next, start up the containers:
+
+```
+docker-compose up -d
+```
+
+We now have port `9000` (QuestDB UI), `9009` (InfluxDB Line Protocol), and `3000`
+(Grafana UI) mapped to `localhost`.
+
+## Ingesting data
+
+Now to send data.
+
+Start the simulator!
+
+```shell
+node index.js
+```
+
+As a specialized time series database, QuestDB has a better handle on the volume
+and the [cardinality](/glossary/high-cardinality/) of the incoming time-series
+data compared to a traditional database, or to alternative time-series
+databases. It also provides features like
+[data deduplication](/docs/concept/deduplication/) and
+[out-of-order (O3)](/blog/2021/05/10/questdb-release-6-0-tsbs-benchmark/#the-problem-with-out-of-order-data)
+indexing which are essential with high amounts of incoming data.
+
+Neat, fast. However, 10,000 "devices" reporting is not _that many_ in the
+time-series world. Let's crank up our sample data, thus increasing both the
+overall burst and the cardinality of one of our columns. For this, we will run
+the script multiple times and make our loop more flavourful.
+
+We don't want to cook our computers, but we can get creative. For a more robust
+test scenario, we will raise the number of "devices" to, say, a million, and add
+a very highly random column full of values between negative million and a
+million:
+
+```javascript
+...
+  for (let deviceId = 0; deviceId < 1000000; deviceId++) {
+      ...
+      .floatColumn("curio", chance.integer({ min: -1000000, max: 1000000 }))
+      ...
+  }
+...
+```
+
+And maybe we want to run it a couple times, for good measure?
+
+```javascript
+...
+Promise.all([run(), run()])
+  .then((values) => console.log(values))
+  .catch((err) => console.log(err))
+```
+
+Now run it, navigate to `localhost:9000`, and we should see our data arrive.
+
+<Screenshot
+  alt=""
+  title="2,000,000 rows in 17ms - not bad for a local Macbook Pro!"
+  width={900}
+  src="/img/blog/2023-09-12/questdb-query-5.webp"
+/>
+
+A broad `SELECT` query returns fast, even when Docker-ized. Just like that, we
+have nice table view of all of our simulated devices.
+
+Measuring database performance depends on many factors, like hardware, the
+schema, overall infrastructure and so on. However, we can still get a sense of
+how a specialized time-series database handles bursting data, even in a local
+case.
+
+But speedy ingest is not all we're after. We also want to query and visualize
+our data. Let's start with the built-in Chart view and see the temperature of
+all devices with `v2.0` over a period of time:
+
+<Screenshot
+  alt=""
+  title="Built in QuestDB charts are fast & easy"
+  width={900}
+  src="/img/blog/2023-09-12/questdb-chart-4.webp"
+/>
+
+## Connecting to Grafana
+
+Instead of making charts directly within our database, we will offload
+visualization to a specialized layer for easier access. For this, we'll use
+Grafana.
+
+Navigate to `localhost:3000` and use the default credentials to login:
+`admin`/`admin`. Remember, if you are creating something in production, change
+the default user and password values!
+
+Click on “Add data source” and choose the PostgreSQL type. Since we’re running
+this within the same Docker network, we can use the container name for the host
+and specify QuestDB’s PostgreSQL wire port `8812` (i.e., `questdb:8812`). The
+read-only user credentials are `user`/`quest`, with the default database as
+`qdb`.
+
+<Screenshot
+  alt=""
+  title="Setting QuestDB in Grafana - nevermind the logo!"
+  width={900}
+  src="/img/blog/2023-09-12/grafana-type-questdb-3.webp"
+/>
+
+After connecting, click on “Explore data”.
+
+Use the native SQL query to visualize our dataset:
+
+<Screenshot
+  alt=""
+  title="Our data, visualized in Grafana"
+  width={900}
+  src="/img/blog/2023-09-12/grafana-dashboard-query-2.webp"
+/>
+
+Now build out panels using built-in Grafana types. For example, we can use the
+time-series visualization:
+
+<Screenshot
+  alt=""
+  title="Marvelous threshold lines"
+  width={900}
+  src="/img/blog/2023-09-12/grafana-dashboard-1.webp"
+/>
+
+This adds threshold lines, and zooms in so we can see the different
+temperatures. From here, there are many ways we can alter the visual acuity to
+make the tracked values clear and easy to see.
+
+## Wrapping up
+
+In this tutorial, we used a random IoT device data generator to show how to
+ingest bursting data into QuestDB. We then used Grafana to visualize the data.
+Underneath, we used the
+[QuestDB Node.js Client library](https://github.com/questdb/nodejs-questdb-client)
+to utilize the InfluxDB Line Protocol for concise data transfer. Once the data
+hit QuestDB, we saw how fast it was to analyze them and also to create simple
+visualizations in the Web Console. Finally, we connected Grafana to the QuestDB
+PostgreSQL endpoint to build more complex panels.
+
+In a real-world scenario, the data source may be coming directly from the
+devices, over a managed IoT connection service like AWS IoT Core, Azure IoT, or
+from a third-party. In that case, we can modify our simulator to listen to those
+events and use the same client library to send data. We may elect to also queue
+and batch our calls or use multiple threads to spread out the load. Whichever
+way we choose, using a specialized time series database like QuestDB prevents us
+from running into issues as burst and scale increases.
