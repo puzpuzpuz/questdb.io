@@ -11,13 +11,11 @@ const NotFound = ({ location }) => {
   return (
     <Layout title="Page not found">
       <Section>
-        <Section.Title size="small">
-          404 - <code className={styles.missingLink}>{missingLink}</code> not
-          found
-        </Section.Title>
+        <Section.Title size="small">404 not found</Section.Title>
 
         <Section.Subtitle>
-          Sorry, couldn&apos;t find this page :(
+          Couldn&apos;t find page{" "}
+          <code className={styles.missingLink}>{missingLink}</code>
         </Section.Subtitle>
 
         <div className={styles.search}>
@@ -25,12 +23,13 @@ const NotFound = ({ location }) => {
         </div>
 
         <div>
-          <Section.Subtitle>Or check out other content</Section.Subtitle>
+          <Section.Subtitle>Other pages</Section.Subtitle>
           <ul className={styles.otherContentLinks}>
             {[
+              { to: "/docs/", label: "What is QuestDB?" },
+              { to: "/get-questdb/", label: "Get QuestDB" },
               { to: "/cloud/", label: "QuestDB Cloud" },
               { to: "/blog/", label: "Read our Blog" },
-              { to: "/get-questdb/", label: "Download QuestDB" },
               { to: "/docs/", label: "Read our Docs" },
             ].map(({ to, label }) => (
               <li key={to}>

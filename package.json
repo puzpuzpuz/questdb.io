@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NO_UPDATE_NOTIFIER=true docusaurus start",
     "prebuild": "docusaurus clear && node ./scripts/cleanup-guidelines",
-    "build": "cross-env USE_SIMPLE_CSS_MINIFIER=true PWA_SW_CUSTOM= docusaurus build",
+    "build": "cross-env NO_UPDATE_NOTIFIER=true USE_SIMPLE_CSS_MINIFIER=true PWA_SW_CUSTOM= docusaurus build",
     "deploy": "docusaurus deploy",
     "serve": "docusaurus serve",
     "prepare": "node ./prepare.js"

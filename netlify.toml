@@ -384,6 +384,10 @@
   from ="/blog/visualizing-iot-data-questdb/"
   to = "/blog/visualizing-iot-data-mqtt-questdb-grafana/"
 
+[[redirects]]
+  from ="/docs/get-started/"
+  to ="/docs/get-started/introduction/"
+
 [[headers]]
   for = "/*"
   [headers.values]
