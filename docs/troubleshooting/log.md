@@ -116,4 +116,4 @@ Debug:
 ## Log configuration
 
 QuestDB logging can be configured globally to `DEBUG` via either providing
-the java option `-Debug` or setting the environment variable `QDB_DEBUG=true`.
+the java option `-Debug` or setting the environment variable `QDB_DEBUG=true`. See [reference manual](/docs/reference/configuration/#logging) for details on logging configuration. 
