@@ -6,6 +6,14 @@ description: BACKUP SQL keyword reference documentation.
 
 Creates a backup for one, several, or all database tables.
 
+:::note
+
+The BACKUP statement is deprecated since QuestDB version 7.3.3 on all operating
+systems except Windows. We recommend the
+[SNAPSHOT](/docs/reference/sql/snapshot/) statements instead.
+
+:::
+
 ## Syntax
 
 ![Flow chart showing the syntax of the BACKUP keyword](/img/docs/diagrams/backup.svg)
@@ -61,6 +69,63 @@ a new directory. Subsequent backups on the same date will look as follows:
 │   ...
 ```
 
+## Creating a full backup
+
+When creating a backup in QuestDB, you can specify that the whole database or
+specific tables should be backed up. This process will create a backup in the
+`backup directory`.
+
+A backup can then be triggered via [SQL command](/docs/reference/sql/backup/)
+and the backup is complete as soon as the SQL query has finished executing:
+
+```questdb-sql
+-- backup whole database
+BACKUP DATABASE;
+-- backup a specific table
+BACKUP TABLE my_table;
+```
+
+Note that calling `BACKUP TABLE <table_name>` will only copy table data and
+metadata to the destination folder. This form of backup will not copy entire
+database configuration files required to perform a complete database restore.
+
+Alternatively, the [REST API](/docs/reference/api/rest/#exec---execute-queries)
+can be used to execute the SQL for a database backup:
+
+```bash title="Backing up a database via curl"
+curl -G --data-urlencode "query=BACKUP DATABASE;" \
+  http://localhost:9000/exec
+```
+
+## Restoring from a backup
+
+In order to restore a backup, the QuestDB executable must be provided with the
+directory location of an existing backup as the **root directory**. This can
+done via the `-d` flag as `-d /path/to/backup` when starting up QuestDB.
+
+```bash
+java -p /path/to/questdb-<version>.jar \
+     -m io.questdb/io.questdb.ServerMain \
+     -d /path/to/backup_directory
+```
+
+Users who are starting QuestDB via `systemd` or the official AWS AMI may refer
+to the
+[systemd file](https://github.com/questdb/questdb/blob/master/pkg/ami/marketplace/assets/systemd.service#L21)
+for reference. To verify that database information has been successfully
+imported, check logs via `journalctl -u questdb` which will contain a list
+existing tables.
+
+Docker instances may have a backup directory mounted to the root directory as
+follows:
+
+```bash
+docker run \
+ -p 9000:9000  -p 9009:9009 \
+ -p 8812:8812 -p 9003:9003 \
+ -v "/path/to/backup_directory:/root/.questdb/" questdb/questdb
+```
+
 ## Examples
 
 ```questdb-sql title="Single table"
@@ -73,4 +138,27 @@ BACKUP TABLE table1, table2, table3;
 
 ```questdb-sql title="All tables"
 BACKUP DATABASE;
+```
+
+The following example sets up a cronjob which triggers a daily backup via REST
+API:
+
+```bash
+# this will add crontab record that will run trigger at backup every-day at 01:00 AM
+# copy paste this into server terminal
+crontab -l | { cat; echo "0 1 * * * /usr/bin/curl --silent -G --data-urlencode 'query=BACKUP DATABASE;' http://localhost:9000/exec &>/dev/null"; } | crontab -
+```
+
+This example shows how to compress a backup using the `tar` utility. An archive
+file `questdb_backup.tar.gz` will be created in the directory that the command
+is run:
+
+```bash
+tar -zcvf questdb_backup.tar.gz /path/to/backup
+```
+
+The backup file can be expanded using the same utility:
+
+```bash
+tar -xf questdb_backup.tar.gz
 ```

@@ -4,7 +4,7 @@ sidebar_label: SNAPSHOT
 description: SNAPSHOT SQL keyword reference documentation.
 ---
 
-Prepares the database for a filesystem (disk) snapshot.
+Prepares the database for a full backup or a filesystem (disk) snapshot.
 
 :::note
 
@@ -29,28 +29,36 @@ cairo.snapshot.instance.id=your_id
 A snapshot instance ID may be an arbitrary string value, such as string
 representation of a UUID.
 
-Collecting a snapshot of the database involves the following steps:
+Database snapshots may be used in combination with filesystem snapshots or
+together with file copying (full backup). Collecting a snapshot involves the
+following steps:
 
 1. Run `SNAPSHOT PREPARE` statement to acquire reader locks for all database
    tables, create table metadata file copies in the `snapshot` directory, and
    flush the committed data to disk.
-2. Start a filesystem snapshot. Refer to the
-   [next section](#filesystem-snapshot) to learn how to create a filesystem
-   snapshot on the most common cloud providers.
+2. Start a filesystem snapshot or copy the
+   [root directory](/docs/concept/root-directory-structure/) to the backup
+   location on the disk. Refer to the [next section](#filesystem-snapshot) to
+   learn how to create a filesystem snapshot on the most common cloud providers.
 3. Run `SNAPSHOT COMPLETE` statement to release the reader locks and delete the
    metadata file copies.
 
-For some cloud vendors, snapshot creation operation is asynchronous, i.e. the
-point-in-time snapshot is created immediately, as soon as the operation starts,
-but the end snapshot artifact may become available later. In such case, the
-`SNAPSHOT COMPLETE` statement (step 3) may be run without waiting for the end
-artifact, but once the snapshot creation has started.
+For some cloud vendors, filesystem snapshot creation operation is asynchronous,
+i.e. the point-in-time snapshot is created immediately, as soon as the operation
+starts, but the end snapshot artifact may become available later. In such case,
+the `SNAPSHOT COMPLETE` statement (step 3) may be run without waiting for the
+end artifact, but once the snapshot creation has started.
+
+In case you prefer full backups over filesystem snapshots, you should keep in
+mind that the database will retain older partition and column file files on disk
+until `SNAPSHOT COMPLETE`. This means that you may run out of disk space if your
+disk doesn't have enough free space at the time you call `SNAPSHOT PREPARE`.
 
 :::caution
 
-No DDL statements, such as `ALTER TABLE my_table DROP COLUMN my_col`, should be
-run in parallel with the above steps. Otherwise, the snapshot may contain
-corrupted metadata making it unusable.
+No DDL statements, such as `CREATE TABLE`, should be run in parallel with the
+above steps. Otherwise, the snapshot may contain corrupted metadata making it
+unusable.
 
 :::
 
@@ -68,6 +76,10 @@ differences in terminology and services:
   with persistent disk snapshots
 
 ## Snapshot recovery
+
+In case of a full backup, you should also delete the old root directory and copy
+the files from your backup to the same location or, alternatively, you can point
+the database at the new root directory.
 
 To start the database on a filesystem snapshot, you should make sure to
 configure a different snapshot instance ID.
@@ -95,5 +107,12 @@ cairo.snapshot.recovery.enabled=false
 ```questdb-sql
 SNAPSHOT PREPARE;
 -- Start a filesystem snapshot.
+SNAPSHOT COMPLETE;
+```
+
+```questdb-sql
+SNAPSHOT PREPARE;
+-- Copy the root directory, e.g.:
+-- $ cp -r /root/dir/path /backup/dir/path
 SNAPSHOT COMPLETE;
 ```
